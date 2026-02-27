@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue.js 互動式課程 - 第一堂課</title>
+
+    <!-- Meta Tags for SEO -->
+    <meta name="description" content="Vue.js 互動式課程第一堂：從 Node.js 到 Vue 框架基礎，協助學生快速掌握現代網頁開發工具。">
+    <meta name="keywords" content="Vue.js, Node.js, Composition API, Options API, 網頁開發課程">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts: Inter & Outfit -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Outfit:wght@300;400;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- jQuery & GSAP -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
+    <style>
+        :root {
+            --pearl-white: #FDFDFD;
+            --soft-gray: #F5F5F7;
+            --accent-blue: #4F46E5;
+            --glass-bg: rgba(255, 255, 255, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.5);
+            --vite-cyan: #646CFF;
+        }
+
+        body {
+            font-family: 'Inter', 'Noto Sans TC', sans-serif;
+            background: radial-gradient(circle at top left, #FFFFFF 0%, #F0F2F5 100%);
+            color: #1D1D1F;
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        h1,
+        h2,
+        h3 {
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            z-index: 100;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 3rem;
+            border-radius: 2.5rem;
+            max-width: 700px;
+            width: 90%;
+            position: relative;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            padding: 2rem;
+        }
+
+        .slide.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .bg-blob {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(79, 70, 229, 0.05) 0%, rgba(255, 255, 255, 0) 70%);
+            border-radius: 50%;
+            z-index: -1;
+            filter: blur(60px);
+        }
+
+        .nav-btn {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .progress-bar {
+            height: 4px;
+            background: #E5E7EB;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .progress-inner {
+            height: 100%;
+            background: linear-gradient(90deg, #4F46E5, #818CF8);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .card-hover {
+            transition: all 0.4s ease;
+            cursor: pointer;
+        }
+
+        .card-hover:hover {
+            background: white;
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05);
+        }
+
+        pre {
+            background: #1E1E1E;
+            color: #D4D4D4;
+            padding: 1.5rem;
+            border-radius: 1rem;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.85rem;
+            overflow-x: auto;
+            line-height: 1.6;
+        }
+
+        .keyword {
+            color: #569CD6;
+        }
+
+        .string {
+            color: #CE9178;
+        }
+
+        .comment {
+            color: #6A9955;
+        }
+
+        .const {
+            color: #9CDCFE;
+        }
+
+        .attr {
+            color: #9CDCFE;
+        }
+
+        .tag {
+            color: #569CD6;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Generic Code Modal -->
+    <div id="codeModal" class="modal">
+        <div class="modal-content glass-panel">
+            <button onclick="toggleModal('codeModal', false)"
+                class="absolute top-6 right-6 text-gray-400 hover:text-gray-900 transition-colors">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+            <h3 id="modalTitle" class="text-3xl font-bold mb-6 text-indigo-900 font-outfit">Component Demo</h3>
+            <div id="modalDescription" class="text-gray-500 mb-6 text-sm leading-relaxed text-left"></div>
+            <div id="modalCode"></div>
+            <p class="mt-8 text-xs text-gray-400 italic text-center">
+                * 點擊彈窗外或右上方關閉按鈕即可返回。
+            </p>
+        </div>
+    </div>
+
+    <!-- NPM Modal -->
+    <div id="npmModal" class="modal">
+        <div class="modal-content glass-panel">
+            <button onclick="toggleModal('npmModal', false)"
+                class="absolute top-6 right-6 text-gray-400 hover:text-gray-900">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+            <h3 class="text-3xl font-bold mb-6 text-left">NPM 常用指令速查</h3>
+            <div class="space-y-4">
+                <div class="p-4 bg-gray-900 rounded-xl">
+                    <div class="text-xs text-indigo-400 font-mono mb-2 text-left">// 下載並安裝專案中列出的所有套件</div>
+                    <code class="text-white block text-left">npm install</code>
+                </div>
+                <div class="p-4 bg-gray-900 rounded-xl">
+                    <div class="text-xs text-indigo-400 font-mono mb-2 text-left">// 安裝特定的開源套件</div>
+                    <code class="text-white block text-left">npm install &lt;套件名稱&gt;</code>
+                </div>
+                <div class="p-4 bg-gray-900 rounded-xl">
+                    <div class="text-xs text-indigo-400 font-mono mb-2 text-left">// 啟動 Vite 開發伺服器</div>
+                    <code class="text-white block text-left">npm run dev</code>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dynamic Background Blobs -->
+    <div id="blob1" class="bg-blob" style="top: -10%; left: -10%;"></div>
+    <div id="blob2" class="bg-blob" style="bottom: -10%; right: -10%;"></div>
+
+    <!-- Main Content Container -->
+    <main id="app" class="relative w-full h-full">
+
+        <!-- Header / Progress Area -->
+        <div class="fixed top-0 left-0 w-full z-50 p-6 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <div
+                    class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-indigo-200">
+                    <i class="fab fa-vuejs text-xl"></i>
+                </div>
+                <span class="font-bold text-lg tracking-tight">Vue.js <span
+                        class="text-indigo-600">Mastery</span></span>
+            </div>
+
+            <div class="w-1/3 max-w-xs">
+                <div class="progress-bar">
+                    <div id="progressBar" class="progress-inner"></div>
+                </div>
+                <div class="text-[10px] text-gray-400 mt-1 flex justify-between font-medium tracking-widest uppercase">
+                    <span>Lesson 01</span>
+                    <span id="pageCounter">1 / 13</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slides -->
+        <div id="slideContainer" class="relative w-full h-full">
+
+            <!-- Slide 1: Welcome -->
+            <section class="slide active" id="slide-1">
+                <div class="max-w-4xl text-center space-y-8">
+                    <div
+                        class="inline-block px-4 py-1.5 rounded-full bg-indigo-50 text-indigo-600 text-xs font-bold uppercase tracking-widest mb-4">
+                        Interactive Textbook</div>
+                    <h1 class="text-6xl md:text-8xl font-bold tracking-tight text-gray-900 leading-tight">
+                        探索 <span class="text-indigo-600">Vue.js</span> <br>的無限可能
+                    </h1>
+                    <p class="text-xl text-gray-500 max-w-2xl mx-auto leading-relaxed">
+                        第一堂課：從基礎環境到框架思維。我們將帶領你跨出網頁開發的第一步，揭開現代前端開發的神秘面紗。
+                    </p>
+                    <div class="pt-8">
+                        <button onclick="nextSlide()"
+                            class="nav-btn bg-black text-white px-10 py-4 rounded-full font-semibold text-lg hover:bg-gray-800 focus:outline-none focus:ring-4 focus:ring-indigo-100 transition-all">
+                            開始學習課程 <i class="fas fa-arrow-right ml-2 opacity-70"></i>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 2: Node.js Overview -->
+            <section class="slide" id="slide-2">
+                <div class="max-w-6xl w-full grid md:grid-cols-2 gap-12 items-center text-left">
+                    <div class="space-y-6">
+                        <div
+                            class="flex items-center space-x-3 text-indigo-600 font-bold tracking-widest uppercase text-sm">
+                            <i class="fas fa-server"></i>
+                            <span>環境基礎</span>
+                        </div>
+                        <h2 class="text-5xl font-bold text-gray-900">什麼叫 Node.js？</h2>
+                        <div class="space-y-4 text-lg text-gray-600 leading-relaxed">
+                            <p>
+                                想像一下，<span class="text-indigo-600 font-semibold">Node.js
+                                    就如同一台大型卡車</span>。它的工作就是幫你把世界各地開發好的「程式套件」載運到你的電腦裡。
+                            </p>
+                            <p>
+                                只要下一行指令，卡車就會幫你處理好一切。這就是所謂的 <span class="bg-indigo-50 px-1 font-mono">NPM</span> (Node
+                                Package Manager)。
+                            </p>
+                        </div>
+                        <div class="flex space-x-4 pt-4">
+                            <button onclick="toggleModal('npmModal', true)"
+                                class="nav-btn bg-indigo-600 text-white px-8 py-4 rounded-2xl font-bold text-md shadow-lg shadow-indigo-100">
+                                <i class="fas fa-terminal mr-2"></i> NPM 常用指令速查
+                            </button>
+                        </div>
+                    </div>
+                    <div class="relative">
+                        <img src="nodejs_truck_analogy_1772189068385.png" alt="Node.js Truck"
+                            class="w-full rounded-3xl shadow-2xl glass-panel p-2">
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 3: Installing Node.js -->
+            <section class="slide" id="slide-3">
+                <div class="glass-panel max-w-4xl w-full p-12 rounded-[2.5rem] relative overflow-hidden">
+                    <div class="absolute -top-10 -right-10 w-40 h-40 bg-emerald-50 rounded-full blur-3xl"></div>
+
+                    <div class="text-center space-y-8 text-left">
+                        <h2 class="text-4xl font-bold text-gray-900 text-center">準備你的工具箱</h2>
+                        <p class="text-lg text-gray-500 max-w-xl mx-auto text-center">
+                            要開始開發 Vue，我們必須先在電腦上安裝 Node.js。這就像是買一輛卡車，我們才能開始載貨。
+                        </p>
+
+                        <div
+                            class="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm inline-block w-full max-w-md mx-auto">
+                            <div class="flex items-center justify-between mb-6">
+                                <div class="text-left">
+                                    <div class="text-sm font-bold text-gray-400 uppercase tracking-widest text-left">
+                                        Recommended</div>
+                                    <div class="text-2xl font-bold text-left">Node.js LTS 版本</div>
+                                </div>
+                                <i class="fab fa-node-js text-5xl text-emerald-500"></i>
+                            </div>
+                            <a href="https://nodejs.org/" target="_blank"
+                                class="block w-full py-5 bg-emerald-600 text-white rounded-2xl font-bold hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-100 mb-4 text-center ring-offset-2 focus:ring-4 focus:ring-emerald-200">
+                                立即前往官網下載 <i class="fas fa-external-link-alt ml-2 text-sm opacity-70"></i>
+                            </a>
+                            <p class="text-xs text-gray-400 text-center">請務必下載 <span
+                                    class="text-emerald-600 font-bold">LTS</span> (穩定版)。</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 4: Code Editor (Antigravity) -->
+            <section class="slide" id="slide-4">
+                <div class="max-w-6xl w-full grid md:grid-cols-2 gap-16 items-center text-left">
+                    <div class="relative order-2 md:order-1">
+                        <div class="glass-panel p-2 rounded-3xl shadow-2xl bg-white/50">
+                            <div class="w-full aspect-video rounded-2xl bg-gray-900 overflow-hidden flex flex-col">
+                                <div class="h-8 bg-gray-800 flex items-center px-4 space-x-2">
+                                    <div class="w-2.5 h-2.5 rounded-full bg-rose-500"></div>
+                                    <div class="w-2.5 h-2.5 rounded-full bg-amber-500"></div>
+                                    <div class="w-2.5 h-2.5 rounded-full bg-emerald-500"></div>
+                                    <div class="text-[10px] text-gray-500 font-mono ml-4">Antigravity - Untitled-1.vue
+                                    </div>
+                                </div>
+                                <div class="p-6 font-mono text-sm text-left">
+                                    <div class="flex space-x-4">
+                                        <span class="text-gray-600">1</span>
+                                        <span class="text-indigo-400">&lt;script <span
+                                                class="text-emerald-400">setup</span>&gt;</span>
+                                    </div>
+                                    <div class="flex space-x-4">
+                                        <span class="text-gray-600">2</span>
+                                        <span class="text-white"> console.<span class="text-amber-300">log</span>(<span
+                                                class="text-emerald-400">'Hello Antigravity'</span>)</span>
+                                    </div>
+                                    <div class="flex space-x-4">
+                                        <span class="text-gray-600">3</span>
+                                        <span class="text-indigo-400">&lt;/script&gt;</span>
+                                    </div>
+                                    <div
+                                        class="mt-8 p-4 border border-indigo-500/30 rounded-lg bg-indigo-500/5 text-left">
+                                        <div class="text-[10px] text-indigo-400 uppercase font-bold mb-1 text-left">AI
+                                            Suggestion
+                                        </div>
+                                        <div class="text-xs text-gray-300 text-left">我建議你在這裡使用 Composition API
+                                            來優化你的邏輯...</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="space-y-8 order-1 md:order-2">
+                        <div
+                            class="inline-flex items-center px-4 py-1 rounded-full bg-indigo-50 text-indigo-600 text-xs font-bold uppercase tracking-widest">
+                            Tools of the Trade</div>
+                        <h2 class="text-5xl font-bold leading-tight">打開你的工作坊：<br><span
+                                class="text-indigo-600">工作環境建置</span></h2>
+                        <p class="text-lg text-gray-600">
+                            我們會使用像 <span class="font-bold text-indigo-600">Antigravity</span>
+                            這樣強大的 AI 編輯器。它能理解你的邏輯，協助你快速排除 Bug，並提供即時的代碼建議。
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 5: Build Tool (Vite) -->
+            <section class="slide" id="slide-5">
+                <div class="max-w-6xl w-full grid md:grid-cols-2 gap-12 items-center text-left">
+                    <div class="space-y-8">
+                        <div
+                            class="inline-flex items-center px-4 py-1 rounded-full bg-cyan-50 text-cyan-600 text-xs font-bold uppercase tracking-widest">
+                            Efficiency</div>
+                        <h2 class="text-5xl font-bold text-gray-900">極速物流工人：<span class="text-cyan-600">VITE</span></h2>
+                        <p class="text-lg text-gray-600 leading-relaxed">
+                            Vite 是幫你整理現場的「極速工人」。當你開發時，他會立刻把分散的程式碼碎片打包，並瞬間呈現在你面前。
+                        </p>
+
+                        <div class="grid grid-cols-1 gap-4">
+                            <div
+                                class="p-5 bg-slate-50 rounded-2xl border border-slate-100 flex items-center space-x-4 group card-hover">
+                                <div
+                                    class="w-10 h-10 rounded-full bg-rose-100 flex items-center justify-center text-rose-500">
+                                    <i class="fas fa-history"></i>
+                                </div>
+                                <div class="text-left">
+                                    <h4 class="font-bold text-sm text-gray-900 text-left">傳統工具 (Webpack)</h4>
+                                    <p class="text-xs text-gray-500 font-medium text-left">每次啟動都要先處理整座山的代碼，等到天荒地老...</p>
+                                </div>
+                            </div>
+                            <div
+                                class="p-5 bg-cyan-50 rounded-2xl border border-cyan-100 flex items-center space-x-4 group card-hover">
+                                <div
+                                    class="w-10 h-10 rounded-full bg-cyan-100 flex items-center justify-center text-cyan-600">
+                                    <i class="fas fa-bolt"></i>
+                                </div>
+                                <div class="text-left">
+                                    <h4 class="font-bold text-sm text-cyan-700 text-left">現代標竿 (Vite)</h4>
+                                    <p class="text-xs text-cyan-600 font-medium text-left">採用 ESM
+                                        原生加載，「你要什麼他才搬什麼」，啟動只需不到 1 秒。</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="relative">
+                        <img src="vite_worker_logistics_1772189910594.png" alt="Vite Worker"
+                            class="w-full rounded-3xl shadow-2xl glass-panel p-2">
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 6: From Manual to Modular (Why Vue) -->
+            <section class="slide" id="slide-6">
+                <div class="max-w-6xl w-full grid md:grid-cols-2 gap-12 items-center text-left">
+                    <div class="space-y-6">
+                        <div
+                            class="flex items-center space-x-3 text-emerald-600 font-bold tracking-widest uppercase text-sm">
+                            <i class="fas fa-microchip"></i>
+                            <span>架構思維：模組化開發</span>
+                        </div>
+                        <h2 class="text-5xl font-bold text-gray-900 leading-tight text-left">為什麼工程師需要 Vue？</h2>
+                        <div class="space-y-4 text-lg text-gray-600 leading-relaxed text-left">
+                            <p class="text-left text-base">
+                                曾經我們像在工廠「手工打造」每一顆按鈕。但在大型專案中，我們需要更高層次的抽象（Abstraction）。
+                            </p>
+                            <div class="p-6 bg-rose-50 border-l-4 border-rose-500 rounded-r-2xl mb-4 text-left">
+                                <h4 class="font-bold text-rose-700 mb-2 flex items-center text-left">
+                                    <i class="fas fa-tools mr-2 opacity-50 text-left"></i> 指令式開發 (Imperative)
+                                </h4>
+                                <p class="text-sm text-rose-600 leading-relaxed text-left">
+                                    你需要精確告訴 JS：抓 ID、綁 Listener、改文本、改樣式。代碼與 UI 高度耦合（Tight Coupling），改一個地方整組壞光光。
+                                </p>
+                            </div>
+                            <div class="p-6 bg-emerald-50 border-l-4 border-emerald-500 rounded-r-2xl text-left">
+                                <h4 class="font-bold text-emerald-700 mb-2 flex items-center text-left">
+                                    <i class="fas fa-cubes mr-2 opacity-50 text-left"></i> 宣告式與響應式 (Declarative)
+                                </h4>
+                                <p class="text-sm text-emerald-600 leading-relaxed text-left">
+                                    你只需定義 **「狀態 (State)」**。Vue 會根據狀態自動映射出 UI。這種 **「響應式數據綁定」** 讓工程師只需專注於數據邏輯，繁瑣的 DOM
+                                    更新交由框架處理。
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="relative">
+                        <img src="vuejs_framework_foundation_1772189090223.png" alt="Vue Framework"
+                            class="w-full rounded-3xl shadow-2xl glass-panel p-2">
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 7: Vue Evolution -->
+            <section class="slide" id="slide-7">
+                <div class="max-w-5xl w-full space-y-12 text-center">
+                    <div class="space-y-4">
+                        <h2 class="text-4xl font-bold text-gray-900 text-center">Vue 的版本進階：2 vs 3</h2>
+                        <p class="text-gray-500 text-center">我們正站在技術的浪潮之巔。</p>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-8 text-left">
+                        <div class="p-8 glass-panel rounded-[2rem] border-t-8 border-gray-100 opacity-60">
+                            <div class="flex items-center justify-between mb-6">
+                                <h3 class="text-2xl font-bold text-left">Vue 2 (Legacy)</h3>
+                                <span
+                                    class="px-3 py-1 bg-gray-100 text-gray-500 rounded-full text-xs font-bold uppercase text-left">已停止維護</span>
+                            </div>
+                            <p class="text-sm text-gray-600 text-left">老派的 Options API。主要痛點在於邏輯難以複用（Mixins 難維護）且對 TS
+                                支持有限。</p>
+                        </div>
+
+                        <div
+                            class="p-8 glass-panel rounded-[2rem] border-t-8 border-emerald-500 shadow-xl shadow-emerald-50 text-left">
+                            <div class="flex items-center justify-between mb-6">
+                                <h3 class="text-2xl font-bold text-left">Vue 3 (Current)</h3>
+                                <span
+                                    class="px-3 py-1 bg-emerald-100 text-emerald-600 rounded-full text-xs font-bold uppercase text-left">最新標準</span>
+                            </div>
+                            <p class="text-sm text-gray-600 mb-6 font-medium text-left leading-relaxed">
+                                引進了 **Composition API**（類似 React Hooks）。代碼可以根據 **功能模組** 拆分，實現高度的可複用性（Reusability）與強大的 TS
+                                支持。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 8: API Styles (Code Comparison) -->
+            <section class="slide" id="slide-8">
+                <div class="max-w-6xl w-full space-y-12 text-center">
+                    <div>
+                        <h2 class="text-4xl font-bold text-gray-900 text-center">兩個開發風格的較量</h2>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-12 text-left">
+                        <!-- Options API Code -->
+                        <div class="glass-panel p-6 rounded-3xl">
+                            <div class="flex justify-between items-center mb-4">
+                                <span
+                                    class="text-xs font-bold text-gray-400 uppercase tracking-widest text-left">Options
+                                    API (填格子)</span>
+                                <span
+                                    class="text-[10px] px-2 py-0.5 bg-rose-50 text-rose-500 rounded-full font-bold uppercase text-left">Vue
+                                    2 style</span>
+                            </div>
+                            <div
+                                class="bg-[#1E1E1E] p-4 rounded-xl text-[11px] font-mono leading-relaxed h-[300px] overflow-auto">
+                                <pre class="bg-transparent p-0 m-0"><span class="tag">&lt;script&gt;</span>
+<span class="keyword">export default</span> {
+  <span class="keyword">data</span>() {
+    <span class="keyword">return</span> { <span class="const">count</span>: <span class="string">0</span> }
+  },
+  <span class="keyword">methods</span>: {
+    <span class="keyword">increment</span>() {
+      <span class="keyword">this</span>.<span class="const">count</span>++;
+    }
+  }
+}
+<span class="tag">&lt;/script&gt;</span></pre>
+                            </div>
+                        </div>
+
+                        <!-- Composition API Code -->
+                        <div class="glass-panel p-6 rounded-3xl border-2 border-indigo-600/10">
+                            <div class="flex justify-between items-center mb-4">
+                                <span
+                                    class="text-xs font-bold text-indigo-600 uppercase tracking-widest text-left">Composition
+                                    API (模組化)</span>
+                                <span
+                                    class="text-[10px] px-2 py-0.5 bg-indigo-50 text-indigo-600 rounded-full font-bold uppercase text-left">Vue
+                                    3 standard</span>
+                            </div>
+                            <div
+                                class="bg-[#1E1E1E] p-4 rounded-xl text-[11px] font-mono leading-relaxed h-[300px] overflow-auto">
+                                <pre class="bg-transparent p-0 m-0"><span class="tag">&lt;script <span class="attr">setup</span>&gt;</span>
+<span class="keyword">import</span> { ref } <span class="keyword">from</span> <span class="string">'vue'</span>;
+
+<span class="keyword">const</span> <span class="const">count</span> = <span class="keyword">ref</span>(<span class="string">0</span>);
+
+<span class="keyword">function</span> <span class="keyword">increment</span>() {
+  <span class="const">count</span>.value++;
+}
+<span class="tag">&lt;/script&gt;</span></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 9: Create Project -->
+            <section class="slide" id="slide-9">
+                <div class="max-w-4xl w-full space-y-8 text-left text-left">
+                    <div
+                        class="inline-flex items-center px-4 py-1 rounded-full bg-indigo-50 text-indigo-600 text-xs font-bold uppercase tracking-widest text-left">
+                        Hands-on</div>
+                    <h2 class="text-5xl font-bold text-gray-900 text-left">啟動你的第一個專案</h2>
+                    <p class="text-lg text-gray-600 text-left">
+                        打開終端機，呼叫我們的大型卡車幫我們搭建 Vue 的地基：
+                    </p>
+
+                    <div class="p-8 bg-gray-900 rounded-[2rem] shadow-xl relative overflow-hidden group">
+                        <div class="flex items-center space-x-2 text-gray-500 mb-6 font-mono text-xs text-left">
+                            <span class="w-3 h-3 rounded-full bg-rose-500/50"></span>
+                            <span class="w-3 h-3 rounded-full bg-amber-500/50"></span>
+                            <span class="w-3 h-3 rounded-full bg-emerald-500/50"></span>
+                            <span class="ml-4 uppercase text-left">Terminal</span>
+                        </div>
+                        <div class="space-y-4 font-mono text-lg text-left">
+                            <div class="flex items-start text-left">
+                                <span class="text-emerald-400 mr-4 text-left">$</span>
+                                <span class="text-white text-left">npm create vue@latest</span>
+                            </div>
+                            <div class="pl-8 text-gray-400 space-y-1 text-sm text-left">
+                                <p class="text-left">✔ Project name: <span class="text-indigo-400">my-vue-project</span>
+                                </p>
+                                <p class="text-left">✔ Add TypeScript? ... No</p>
+                                <p class="text-left">✔ Add Vue Router ... No</p>
+                                <p class="text-left">... (一路按 Enter 即可)</p>
+                            </div>
+                        </div>
+                        <i
+                            class="fab fa-vuejs absolute -bottom-10 -right-10 text-9xl text-white/5 opacity-50 group-hover:rotate-12 transition-transform duration-700"></i>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 10: Project Execution -->
+            <section class="slide" id="slide-10">
+                <div class="max-w-6xl w-full grid md:grid-cols-2 gap-16 items-center text-left">
+                    <div class="space-y-8">
+                        <div
+                            class="inline-flex items-center px-4 py-1 rounded-full bg-emerald-50 text-emerald-600 text-xs font-bold uppercase tracking-widest text-left">
+                            Execution</div>
+                        <h2 class="text-5xl font-bold text-gray-900 text-left">掛載並運行</h2>
+                        <p class="text-lg text-gray-600 text-left">
+                            地基蓋好後，進入資料夾並安裝「簽收單 (package.json)」上的所有零件：
+                        </p>
+
+                        <div class="space-y-4">
+                            <div class="flex items-center space-x-6 p-6 glass-panel rounded-2xl text-left">
+                                <div
+                                    class="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center font-bold">
+                                    1</div>
+                                <div class="text-left">
+                                    <div
+                                        class="font-mono bg-gray-900 text-white px-3 py-1 rounded-lg inline-block mb-1 text-left">
+                                        cd my-vue-project</div>
+                                    <div class="text-sm text-gray-400 text-left">進入專案資料夾</div>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-6 p-6 glass-panel rounded-2xl text-left">
+                                <div
+                                    class="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center font-bold">
+                                    2</div>
+                                <div class="text-left">
+                                    <div
+                                        class="font-mono bg-gray-900 text-white px-3 py-1 rounded-lg inline-block mb-1 text-left">
+                                        npm install</div>
+                                    <div class="text-sm text-gray-400 text-left">下載所有必要套件</div>
+                                </div>
+                            </div>
+                            <div
+                                class="flex items-center space-x-6 p-6 glass-panel rounded-2xl border-2 border-emerald-500/20 text-left">
+                                <div
+                                    class="w-12 h-12 bg-emerald-500 text-white rounded-xl flex items-center justify-center font-bold">
+                                    3</div>
+                                <div class="text-left text-left">
+                                    <div
+                                        class="font-mono bg-emerald-600 text-white px-3 py-1 rounded-lg inline-block mb-1 text-left">
+                                        npm run dev</div>
+                                    <div class="text-sm text-emerald-600 font-bold text-left">啟動 Vite，開啟本地預覽</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Browser Mockup -->
+                    <div class="relative">
+                        <div class="glass-panel p-2 rounded-3xl shadow-2xl bg-white overflow-hidden text-center">
+                            <div class="h-10 bg-gray-100 flex items-center px-4 space-x-2 border-b">
+                                <div class="flex space-x-1.5">
+                                    <div class="w-2.5 h-2.5 rounded-full bg-gray-300"></div>
+                                    <div class="w-2.5 h-2.5 rounded-full bg-gray-300"></div>
+                                    <div class="w-2.5 h-2.5 rounded-full bg-gray-300"></div>
+                                </div>
+                                <div
+                                    class="bg-white border rounded-full h-6 flex-1 mx-4 flex items-center px-3 text-[10px] text-gray-400">
+                                    http://localhost:5173
+                                </div>
+                            </div>
+                            <div class="p-12 text-center space-y-6">
+                                <div
+                                    class="w-20 h-20 bg-emerald-50 mx-auto rounded-3xl flex items-center justify-center">
+                                    <i class="fab fa-vuejs text-4xl text-emerald-500"></i>
+                                </div>
+                                <h4 class="text-2xl font-bold text-center">Server Running!</h4>
+                                <p class="text-sm text-gray-500 text-center">你的專案已在 Vite 的守護下順利啟動。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 11: Filesystem Map -->
+            <section class="slide" id="slide-11">
+                <div class="max-w-5xl w-full grid md:grid-cols-2 gap-12 text-left">
+                    <div class="space-y-8 text-left">
+                        <div
+                            class="inline-flex items-center px-4 py-1 rounded-full bg-indigo-50 text-indigo-600 text-xs font-bold uppercase tracking-widest text-left">
+                            Blueprint</div>
+                        <h2 class="text-5xl font-bold text-gray-900 text-left">專案架構圖</h2>
+                        <div class="space-y-3 text-left">
+                            <div
+                                class="flex items-center p-4 bg-white rounded-xl shadow-sm border border-gray-100 group card-hover text-left">
+                                <i class="fas fa-folder text-amber-400 mr-4 text-left"></i>
+                                <div class="text-left">
+                                    <span class="font-bold text-gray-900 text-left">src /</span>
+                                    <p class="text-xs text-gray-500 text-left">代碼的核心，這就是你的戰場。</p>
+                                </div>
+                            </div>
+                            <div
+                                class="flex items-center p-4 bg-white rounded-xl shadow-sm border border-gray-100 group card-hover text-left">
+                                <i class="fas fa-file-code text-indigo-500 mr-4 text-left"></i>
+                                <div class="text-left">
+                                    <span class="font-bold text-gray-900 text-left">App.vue</span>
+                                    <p class="text-xs text-gray-500 text-left">專案的根組件（Root Component）。</p>
+                                </div>
+                            </div>
+                            <div
+                                class="flex items-center p-4 bg-white rounded-xl shadow-sm border border-gray-100 group card-hover text-left">
+                                <i class="fas fa-box text-rose-500 mr-4 text-left"></i>
+                                <div class="text-left">
+                                    <span class="font-bold text-gray-900 text-left">package.json</span>
+                                    <p class="text-xs text-gray-500 text-left">專案身分證與依賴列表。</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div
+                        class="glass-panel p-8 rounded-[2rem] bg-slate-900 text-white font-mono text-sm leading-loose border-2 border-indigo-500/20 text-left">
+                        <div class="text-xs text-indigo-400 mb-6 uppercase tracking-widest font-bold text-left">File
+                            Explorer</div>
+                        <div class="space-y-1 text-left">
+                            <div class="flex items-center text-gray-500 text-left"><i
+                                    class="fas fa-chevron-down mr-2 text-[10px] text-left"></i> <i
+                                    class="fas fa-folder-open text-amber-400 mr-2 text-left"></i> my-vue</div>
+                            <div class="flex items-center ml-4 text-gray-600 text-left italic">... node_modules</div>
+                            <div class="flex items-center ml-4 text-white text-left"><i
+                                    class="fas fa-chevron-down mr-2 text-[10px] text-left"></i> <i
+                                    class="fas fa-folder-open text-amber-400 mr-2 text-left"></i> src</div>
+                            <div class="flex items-center ml-10 text-emerald-400 font-bold text-left"><i
+                                    class="fab fa-vuejs mr-2 text-left"></i> App.vue</div>
+                            <div class="flex items-center ml-10 text-amber-300 text-left"><i
+                                    class="fab fa-js mr-2 text-left"></i> main.js</div>
+                            <div class="flex items-center ml-4 text-rose-400 text-left"><i
+                                    class="fas fa-file-contract mr-2 text-left"></i> package.json</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 12: Anatomy of a SFC -->
+            <section class="slide" id="slide-12">
+                <div class="max-w-6xl w-full text-center space-y-12">
+                    <div class="space-y-4 text-center">
+                        <div
+                            class="flex items-center justify-center space-x-3 text-indigo-600 font-bold text-sm uppercase">
+                            <i class="fas fa-puzzle-piece"></i>
+                            <span>Single File Component</span>
+                        </div>
+                        <h2 class="text-4xl font-bold text-gray-900 text-center">組件的解剖學 (SFC)</h2>
+                        <p class="text-gray-500 max-w-2xl mx-auto text-center">
+                            Vue 最核心的發明：單檔案組件。將一切邏輯封裝在一個零件裡。
+                        </p>
+                    </div>
+
+                    <div class="grid md:grid-cols-3 gap-8">
+                        <!-- Template -->
+                        <div onclick="showCodeModal('template')"
+                            class="p-8 glass-panel rounded-[2rem] border-b-8 border-orange-500 group card-hover hover:bg-orange-50 transition-all text-center">
+                            <div
+                                class="w-16 h-16 bg-orange-100 rounded-2xl flex items-center justify-center text-orange-600 mb-6 mx-auto text-2xl group-hover:rotate-12 transition-transform">
+                                <i class="fas fa-code"></i>
+                            </div>
+                            <h4 class="font-bold text-xl mb-3 text-orange-900 text-center">&lt;template&gt;</h4>
+                            <p class="text-xs text-orange-600 mb-4 font-bold uppercase tracking-widest text-center">HTML
+                                骨架</p>
+                            <p class="text-xs text-gray-500 leading-relaxed text-center">
+                                定義結構與數據綁定。<br><span class="text-orange-500 font-bold underline">點擊查看範例</span>
+                            </p>
+                        </div>
+
+                        <!-- Script -->
+                        <div onclick="showCodeModal('script')"
+                            class="p-8 glass-panel rounded-[2rem] border-b-8 border-indigo-500 group card-hover hover:bg-indigo-50 transition-all text-center">
+                            <div
+                                class="w-16 h-16 bg-indigo-100 rounded-2xl flex items-center justify-center text-indigo-600 mb-6 mx-auto text-2xl group-hover:scale-110 transition-transform">
+                                <i class="fas fa-terminal"></i>
+                            </div>
+                            <h4 class="font-bold text-xl mb-3 text-indigo-900 text-center">&lt;script&gt;</h4>
+                            <p class="text-xs text-indigo-600 mb-4 font-bold uppercase tracking-widest text-center">JS
+                                大腦與狀態</p>
+                            <p class="text-xs text-gray-500 leading-relaxed text-center">
+                                定義變數、方法與計算屬性。<br><span class="text-indigo-500 font-bold underline">點擊查看範例</span>
+                            </p>
+                        </div>
+
+                        <!-- Style -->
+                        <div onclick="showCodeModal('style')"
+                            class="p-8 glass-panel rounded-[2rem] border-b-8 border-rose-500 group card-hover hover:bg-rose-50 transition-all text-center">
+                            <div
+                                class="w-16 h-16 bg-rose-100 rounded-2xl flex items-center justify-center text-rose-600 mb-6 mx-auto text-2xl group-hover:rotate-[-12deg] transition-transform">
+                                <i class="fas fa-paint-brush"></i>
+                            </div>
+                            <h4 class="font-bold text-xl mb-3 text-rose-900 text-center">&lt;style&gt;</h4>
+                            <p class="text-xs text-rose-600 mb-4 font-bold uppercase tracking-widest text-center">CSS 樣式
+                            </p>
+                            <p class="text-xs text-gray-500 leading-relaxed text-center">
+                                這裡可以設定 Scoped 封裝樣式。<br><span class="text-rose-500 font-bold underline">點擊查看範例</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 13: Final -->
+            <section class="slide" id="slide-13">
+                <div class="max-w-4xl text-center space-y-12">
+                    <div
+                        class="w-32 h-32 bg-indigo-600 text-white rounded-[2.5rem] flex items-center justify-center text-5xl mx-auto shadow-2xl shadow-indigo-200 rotate-6 mb-8">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <div class="space-y-4">
+                        <h2 class="text-5xl font-bold text-gray-900 text-center">掌握了地基，下一步就是起飛</h2>
+                        <p class="text-xl text-gray-500 text-center">
+                            你已經建立好了現代網頁開發的知識體系。
+                        </p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
+                        <div class="p-6 bg-white rounded-3xl border border-gray-100 text-left">
+                            <div class="text-indigo-600 font-bold mb-1 text-left">第一週：環境</div>
+                            <p class="text-[11px] text-gray-400 text-left">Node, NPM, Vite 就位。</p>
+                        </div>
+                        <div class="p-6 bg-white rounded-3xl border border-gray-100 text-left">
+                            <div class="text-indigo-600 font-bold mb-1 text-left">第二週：指令</div>
+                            <p class="text-[11px] text-gray-400 text-left">掌握 Template 互動語法。</p>
+                        </div>
+                        <div class="p-6 bg-white rounded-3xl border border-gray-100 text-left">
+                            <div class="text-indigo-600 font-bold mb-1 text-left">第三週：響應式</div>
+                            <p class="text-[11px] text-gray-400 text-left">Ref, Computed 深化。</p>
+                        </div>
+                    </div>
+
+                    <div class="pt-8">
+                        <button onclick="goToSlide(1)"
+                            class="nav-btn bg-black text-white px-12 py-5 rounded-full font-bold text-xl hover:scale-105 transition-transform">
+                            重新溫習教材
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+
+        <!-- Navigation UI -->
+        <div class="fixed bottom-0 left-0 w-full p-8 flex justify-between items-center pointer-events-none text-center">
+            <button id="prevBtn" onclick="prevSlide()"
+                class="pointer-events-auto nav-btn glass-panel w-14 h-14 rounded-full flex items-center justify-center text-gray-800 disabled:opacity-0"
+                disabled>
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <button id="nextBtn" onclick="nextSlide()"
+                class="pointer-events-auto nav-btn bg-white text-gray-900 w-24 h-14 rounded-full flex items-center justify-center font-bold shadow-lg">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+
+    </main>
+
+    <script>
+        let currentSlide = 1;
+        const totalSlides = 13;
+
+        const demos = {
+            template: {
+                title: "&lt;template&gt; 範例",
+                desc: "這裡是 HTML 骨架。使用 Mustache {{ }} 來插入變數，並用 v-on 綁定事件。",
+                code: `<pre class="text-left"><span class="tag">&lt;template&gt;</span>
+  <span class="tag">&lt;div <span class="attr">class</span>=<span class="string">"container"</span>&gt;</span>
+    <span class="tag">&lt;h1&gt;</span>{{ message }}<span class="tag">&lt;/h1&gt;</span>
+    <span class="tag">&lt;button <span class="attr">@click</span>=<span class="string">"doSomething"</span>&gt;</span>點我<span class="tag">&lt;/button&gt;</span>
+  <span class="tag">&lt;/div&gt;</span>
+<span class="tag">&lt;/template&gt;</span></pre>`
+            },
+            script: {
+                title: "&lt;script setup&gt; 範例",
+                desc: "這裡是 Vue 3 的大腦。使用 ref() 來宣告響應式狀態，使用 computed 來處理計算屬性。",
+                code: `<pre class="text-left"><span class="tag">&lt;script <span class="attr">setup</span>&gt;</span>
+<span class="keyword">import</span> { ref, computed } <span class="keyword">from</span> <span class="string">'vue'</span>;
+
+<span class="keyword">const</span> <span class="const">price</span> = <span class="keyword">ref</span>(<span class="string">100</span>);
+<span class="keyword">const</span> <span class="const">withTax</span> = <span class="keyword">computed</span>(() => <span class="const">price</span>.value * <span class="string">1.05</span>);
+
+<span class="keyword">function</span> <span class="keyword">doSomething</span>() {
+  <span class="const">price</span>.value += <span class="string">10</span>;
+}
+<span class="tag">&lt;/script&gt;</span></pre>`
+            },
+            style: {
+                title: "&lt;style scoped&gt; 範例",
+                desc: "這裡是樣式區。加上 **scoped** 屬性可以確保樣式只會作用在這個特定組件，不會汙染全域環境。",
+                code: `<pre class="text-left"><span class="tag">&lt;style <span class="attr">scoped</span>&gt;</span>
+<span class="tag">.container</span> {
+  <span class="keyword">display</span>: flex;
+  <span class="keyword">color</span>: <span class="string">#4F46E5</span>;
+}
+<span class="tag">h1</span> {
+  <span class="keyword">font-weight</span>: <span class="string">800</span>;
+}
+<span class="tag">&lt;/style&gt;</span></pre>`
+            }
+        };
+
+        function showCodeModal(type) {
+            const data = demos[type];
+            $('#modalTitle').html(data.title);
+            $('#modalDescription').text(data.desc);
+            $('#modalCode').html(data.code);
+            toggleModal('codeModal', true);
+        }
+
+        function toggleModal(id, show) {
+            $(`#${id}`).css('display', show ? 'flex' : 'none');
+            if (show) {
+                gsap.from(`#${id} .modal-content`, { y: 20, opacity: 0, duration: 0.4 });
+            }
+        }
+
+        function updateProgress() {
+            const progress = (currentSlide / totalSlides) * 100;
+            $('#progressBar').css('width', progress + '%');
+            $('#pageCounter').text(`${currentSlide} / ${totalSlides}`);
+
+            $('#prevBtn').prop('disabled', currentSlide === 1);
+            if (currentSlide === totalSlides) {
+                $('#nextBtn').html('<i class="fas fa-redo"></i>').attr('onclick', 'goToSlide(1)');
+            } else {
+                $('#nextBtn').html('<i class="fas fa-chevron-right"></i>').attr('onclick', 'nextSlide()');
+            }
+        }
+
+        function goToSlide(n) {
+            if (n === currentSlide) return;
+
+            const direction = n > currentSlide ? 1 : -1;
+            const $oldSlide = $(`#slide-${currentSlide}`);
+            const $newSlide = $(`#slide-${n}`);
+
+            const tl = gsap.timeline({
+                onComplete: () => {
+                    $oldSlide.removeClass('active').css('visibility', 'hidden');
+                    currentSlide = n;
+                    updateProgress();
+                }
+            });
+
+            gsap.set($newSlide, {
+                x: 100 * direction + '%',
+                opacity: 0,
+                visibility: 'visible'
+            });
+            $newSlide.addClass('active');
+
+            tl.to($oldSlide, {
+                x: -100 * direction + '%',
+                opacity: 0,
+                duration: 0.8,
+                ease: "power3.inOut"
+            }, 0);
+
+            tl.to($newSlide, {
+                x: '0%',
+                opacity: 1,
+                duration: 0.8,
+                ease: "power3.inOut"
+            }, 0);
+
+            tl.from($newSlide.find('> div'), {
+                y: 30 * direction,
+                duration: 0.8,
+                ease: "power2.out",
+                delay: 0.1
+            }, 0);
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides) {
+                goToSlide(currentSlide + 1);
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 1) {
+                goToSlide(currentSlide - 1);
+            }
+        }
+
+        // Floating blobs animation
+        gsap.to("#blob1", {
+            x: "30vw",
+            y: "20vh",
+            duration: 20,
+            repeat: -1,
+            yoyo: true,
+            ease: "sine.inOut"
+        });
+
+        gsap.to("#blob2", {
+            x: "-30vw",
+            y: "-20vh",
+            duration: 25,
+            repeat: -1,
+            yoyo: true,
+            ease: "sine.inOut"
+        });
+
+        // Initialize
+        $(document).ready(() => {
+            updateProgress();
+
+            gsap.from("#slide-1 .max-w-4xl > *", {
+                opacity: 0,
+                y: 50,
+                stagger: 0.2,
+                duration: 1,
+                ease: "power3.out"
+            });
+        });
+
+        // Keyboard navigation
+        $(document).keydown((e) => {
+            if (e.which === 39) nextSlide(); // Right arrow
+            if (e.which === 37) prevSlide(); // Left arrow
+        });
+    </script>
+</body>
+
+</html>

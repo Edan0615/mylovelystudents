@@ -1,0 +1,218 @@
+// 全局組件樣式
+
+// 背景動畫
+.background-animation {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    overflow: hidden;
+}
+
+.gradient-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.3;
+    animation: float 20s infinite ease-in-out;
+}
+
+.orb-1 {
+    width: 500px;
+    height: 500px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    top: -200px;
+    left: -200px;
+    animation-delay: 0s;
+}
+
+.orb-2 {
+    width: 400px;
+    height: 400px;
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    bottom: -150px;
+    right: -150px;
+    animation-delay: 7s;
+}
+
+.orb-3 {
+    width: 350px;
+    height: 350px;
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    animation-delay: 14s;
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translate(0, 0) scale(1);
+    }
+    33% {
+        transform: translate(30px, -30px) scale(1.1);
+    }
+    66% {
+        transform: translate(-20px, 20px) scale(0.9);
+    }
+}
+
+.gradient-text {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+// 玻璃態卡片
+.glass-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.glass-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.5);
+}
+
+.card-header-custom {
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.card-header-custom h3 {
+    color: white;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.icon-wrapper {
+    font-size: 1.5rem;
+}
+
+.card-body-custom {
+    padding: 2rem;
+}
+
+// 確保所有文字都能正常顯示
+.text-white {
+    color: #ffffff !important;
+}
+
+.text-white-50 {
+    color: rgba(255, 255, 255, 0.5) !important;
+}
+
+.text-muted {
+    color: rgba(255, 255, 255, 0.6) !important;
+}
+
+// 確保所有標題文字可見
+h1, h2, h3, h4, h5, h6 {
+    &.text-white {
+        color: #ffffff !important;
+    }
+}
+
+// 確保 lead 文字可見
+.lead {
+    &.text-white-50 {
+        color: rgba(255, 255, 255, 0.5) !important;
+    }
+}
+
+// 確保按鈕文字可見
+.btn {
+    color: white !important;
+    
+    &.btn-secondary {
+        color: #212529 !important;
+    }
+}
+
+// 確保導航欄文字可見
+.navbar-nav .nav-link {
+    color: rgba(0, 0, 0, 0.55) !important;
+    
+    &:hover {
+        color: rgba(0, 0, 0, 0.7) !important;
+    }
+}
+
+// 分析內容文字
+.analysis-content {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 1.5rem;
+    border-radius: 12px;
+    color: #212529 !important;
+    line-height: 1.8;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    font-size: 0.95rem;
+    font-weight: 400;
+    max-height: 60vh;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0, 0, 0, 0.3) transparent;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.analysis-content h3,
+.analysis-content h4,
+.analysis-content strong {
+    color: #212529 !important;
+    font-weight: 700;
+}
+
+.analysis-content p {
+    color: #212529 !important;
+    margin-bottom: 1rem;
+}
+
+.analysis-content ul,
+.analysis-content ol {
+    color: #212529 !important;
+    padding-left: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.analysis-content li {
+    margin-bottom: 0.5rem;
+    color: #212529 !important;
+}
+
+// 表格文字
+.table {
+    color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.table th,
+.table td {
+    color: rgba(255, 255, 255, 0.9) !important;
+}
+
+// 響應式
+@media (max-width: 768px) {
+    .card-body-custom {
+        padding: 1.25rem;
+    }
+    
+    .analysis-content {
+        padding: 1rem;
+        font-size: 0.9rem;
+        max-height: 50vh;
+    }
+}
+
