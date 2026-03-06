@@ -1,0 +1,6 @@
+body{
+    color:rgb(242, 215, 57)
+}
+@media (max-width: 768px) {
+.sidebar { display: none; }
+}
