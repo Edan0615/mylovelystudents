@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS 盒模型 (Box Model) 教學 </title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- jQuery CDN -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap"
+        rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Outfit', 'Noto Sans TC', 'sans-serif'],
+                    },
+                    colors: {
+                        glass: 'rgba(255, 255, 255, 0.7)',
+                    },
+                    backdropBlur: {
+                        xs: '2px',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            color: #2d3436;
+        }
+
+        .box-model-preview {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+        }
+
+        /* Custom range slider styling */
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            background: transparent;
+        }
+
+        input[type=range]:focus {
+            outline: none;
+        }
+
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 6px;
+            cursor: pointer;
+            background: #edf2f7;
+            border-radius: 3px;
+        }
+
+        input[type=range]::-webkit-slider-thumb {
+            height: 18px;
+            width: 18px;
+            border-radius: 50%;
+            background: #4a90e2;
+            cursor: pointer;
+            -webkit-appearance: none;
+            margin-top: -6px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border: 2px solid white;
+        }
+
+        .box-margin {
+            background-color: rgba(246, 173, 85, 0.2);
+            border: 1px dashed #f6ad55;
+            position: relative;
+            transition: padding 0.2s ease;
+        }
+
+        .box-border {
+            background-color: rgba(250, 240, 137, 0.2);
+            border: 2px solid #ecc94b;
+            position: relative;
+            transition: border-width 0.2s ease;
+        }
+
+        .box-padding {
+            background-color: rgba(104, 211, 145, 0.2);
+            border: 1px dashed #48bb78;
+            position: relative;
+            transition: padding 0.2s ease;
+        }
+
+        .box-content {
+            background-color: rgba(66, 153, 225, 0.2);
+            border: 1px solid #4299e1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 120px;
+            min-height: 120px;
+            text-align: center;
+            font-weight: 600;
+            color: #3182ce;
+            padding: 10px;
+        }
+
+        .layer-label {
+            position: absolute;
+            top: 4px;
+            left: 6px;
+            font-size: 10px;
+            font-weight: 800;
+            color: rgba(0, 0, 0, 0.3);
+            text-transform: uppercase;
+            pointer-events: none;
+            letter-spacing: 0.05em;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+
+            100% {
+                transform: translateY(0px);
+            }
+        }
+
+        .float-anim {
+            animation: float 4s ease-in-out infinite;
+        }
+
+        /* Group headers */
+        .control-group-title {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #718096;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .control-group-title::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: #e2e8f0;
+            margin-left: 0.75rem;
+        }
+    </style>
+</head>
+
+<body class="p-6 md:p-12">
+
+    <div class="max-w-7xl mx-auto">
+        <!-- Header -->
+        <header class="mb-12 text-center">
+            <h1 class="text-4xl md:text-5xl font-bold text-gray-800 mb-4 tracking-tight">
+                CSS 盒模型 <span class="text-blue-600">Box Model</span> 互動課程
+            </h1>
+            <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+                你好！這次我們要深入探索盒子的每一個細節：外距 (Margin)、邊框 (Border) 與內距 (Padding)。
+            </p>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+
+            <!-- Controls Panel -->
+            <div class="lg:col-span-4 space-y-6">
+                <div class="glass-card p-8 rounded-[2rem] max-h-[80vh] overflow-y-auto custom-scrollbar">
+
+                    <!-- Content Section -->
+                    <div class="mb-8">
+                        <h3 class="control-group-title">內容設定</h3>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">盒子文字</label>
+                            <input type="text" id="content-text" value="盒子內容"
+                                class="w-full px-4 py-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400 transition">
+                        </div>
+                    </div>
+
+                    <!-- Margin Section -->
+                    <div class="mb-8">
+                        <h3 class="control-group-title">外距 (Margin)</h3>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="text-[11px] font-bold text-gray-500 uppercase">Margin Top</label>
+                                <div class="flex items-center gap-2">
+                                    <input type="range" id="m-top" min="0" max="80" value="20" class="flex-1">
+                                    <span id="m-top-val" class="text-xs font-mono w-8 text-orange-600">20</span>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="text-[11px] font-bold text-gray-500 uppercase">Margin Right</label>
+                                <div class="flex items-center gap-2">
+                                    <input type="range" id="m-right" min="0" max="80" value="20" class="flex-1">
+                                    <span id="m-right-val" class="text-xs font-mono w-8 text-orange-600">20</span>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="text-[11px] font-bold text-gray-500 uppercase">Margin Bottom</label>
+                                <div class="flex items-center gap-2">
+                                    <input type="range" id="m-bottom" min="0" max="80" value="20" class="flex-1">
+                                    <span id="m-bottom-val" class="text-xs font-mono w-8 text-orange-600">20</span>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="text-[11px] font-bold text-gray-500 uppercase">Margin Left</label>
+                                <div class="flex items-center gap-2">
+                                    <input type="range" id="m-left" min="0" max="80" value="20" class="flex-1">
+                                    <span id="m-left-val" class="text-xs font-mono w-8 text-orange-600">20</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Border Section -->
+                    <div class="mb-8">
+                        <h3 class="control-group-title">邊框 (Border)</h3>
+                        <div>
+                            <div class="flex justify-between items-center mb-2">
+                                <label class="text-sm font-semibold text-gray-700">邊框寬度 (Width)</label>
+                                <span id="b-width-val"
+                                    class="text-sm font-mono text-yellow-600 bg-yellow-50 px-2 rounded">2px</span>
+                            </div>
+                            <input type="range" id="b-width" min="0" max="40" value="2" class="w-full">
+                        </div>
+                    </div>
+
+                    <!-- Padding Section -->
+                    <div class="mb-8">
+                        <h3 class="control-group-title">內距 (Padding)</h3>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="text-[11px] font-bold text-gray-500 uppercase">Padding Top</label>
+                                <div class="flex items-center gap-2">
+                                    <input type="range" id="p-top" min="0" max="80" value="20" class="flex-1">
+                                    <span id="p-top-val" class="text-xs font-mono w-8 text-green-600">20</span>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="text-[11px] font-bold text-gray-500 uppercase">Padding Right</label>
+                                <div class="flex items-center gap-2">
+                                    <input type="range" id="p-right" min="0" max="80" value="20" class="flex-1">
+                                    <span id="p-right-val" class="text-xs font-mono w-8 text-green-600">20</span>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="text-[11px] font-bold text-gray-500 uppercase">Padding Bottom</label>
+                                <div class="flex items-center gap-2">
+                                    <input type="range" id="p-bottom" min="0" max="80" value="20" class="flex-1">
+                                    <span id="p-bottom-val" class="text-xs font-mono w-8 text-green-600">20</span>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="text-[11px] font-bold text-gray-500 uppercase">Padding Left</label>
+                                <div class="flex items-center gap-2">
+                                    <input type="range" id="p-left" min="0" max="80" value="20" class="flex-1">
+                                    <span id="p-left-val" class="text-xs font-mono w-8 text-green-600">20</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pt-6 border-t border-gray-100">
+                        <button id="reset-btn"
+                            class="w-full py-4 bg-gray-800 text-white rounded-2xl font-bold hover:bg-gray-700 transition duration-300 shadow-xl flex items-center justify-center">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15">
+                                </path>
+                            </svg>
+                            還原預設值
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Visualization Panel -->
+            <div class="lg:col-span-8 h-full">
+                <div
+                    class="glass-card p-6 md:p-12 rounded-[2.5rem] min-h-[600px] flex items-center justify-center relative bg-white">
+
+                    <div class="w-full flex justify-center">
+                        <!-- Box Model Viz -->
+                        <div id="viz-margin" class="box-margin rounded-2xl border-orange-300 shadow-inner">
+                            <span class="layer-label">Margin</span>
+                            <div id="viz-border" class="box-border rounded-xl border-yellow-500">
+                                <span class="layer-label">Border</span>
+                                <div id="viz-padding" class="box-padding rounded-lg">
+                                    <span class="layer-label">Padding</span>
+                                    <div class="box-content rounded-md" id="viz-content">
+                                        <div class="flex flex-col items-center">
+                                            <span
+                                                class="text-[11px] text-blue-400 mb-1 uppercase tracking-widest font-bold">Content</span>
+                                            <span id="viz-content-text" class="text-lg">盒子內容</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Legend / Status -->
+                    <div class="absolute bottom-8 right-8 text-right hidden md:block">
+                        <div class="text-[10px] text-gray-400 uppercase font-black space-y-1">
+                            <div class="flex items-center justify-end"><span
+                                    class="w-2 h-2 bg-orange-200 mr-2 rounded-full"></span> Margin</div>
+                            <div class="flex items-center justify-end"><span
+                                    class="w-2 h-2 bg-yellow-200 mr-2 rounded-full"></span> Border</div>
+                            <div class="flex items-center justify-end"><span
+                                    class="w-2 h-2 bg-green-200 mr-2 rounded-full"></span> Padding</div>
+                            <div class="flex items-center justify-end"><span
+                                    class="w-2 h-2 bg-blue-200 mr-2 rounded-full"></span> Content</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-8 grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="glass-card p-4 rounded-2xl text-center">
+                        <div class="text-[10px] text-gray-500 font-bold uppercase mb-1">總寬度</div>
+                        <div id="total-width" class="text-xl font-bold text-gray-800">200px</div>
+                    </div>
+                    <div class="glass-card p-4 rounded-2xl text-center">
+                        <div class="text-[10px] text-gray-500 font-bold uppercase mb-1">總高度</div>
+                        <div id="total-height" class="text-xl font-bold text-gray-800">200px</div>
+                    </div>
+                    <div class="glass-card p-4 rounded-2xl col-span-2">
+                        <p class="text-[11px] text-gray-500 leading-tight">
+                            提示：增加 <strong>Margin</strong> 會推開其他夥伴，增加 <strong>Padding</strong> 會讓肚子（內部空間）變大。
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-16 text-center text-gray-400 text-[12px] uppercase tracking-widest">
+            Developed for 賴冠宏 | Design Aesthetics First
+        </footer>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            function updateBox() {
+                // Get values
+                const mt = parseInt($('#m-top').val());
+                const mr = parseInt($('#m-right').val());
+                const mb = parseInt($('#m-bottom').val());
+                const ml = parseInt($('#m-left').val());
+
+                const bw = parseInt($('#b-width').val());
+
+                const pt = parseInt($('#p-top').val());
+                const pr = parseInt($('#p-right').val());
+                const pb = parseInt($('#p-bottom').val());
+                const pl = parseInt($('#p-left').val());
+
+                const text = $('#content-text').val();
+
+                // Update text displays
+                $('#m-top-val').text(mt);
+                $('#m-right-val').text(mr);
+                $('#m-bottom-val').text(mb);
+                $('#m-left-val').text(ml);
+
+                $('#b-width-val').text(bw + 'px');
+
+                $('#p-top-val').text(pt);
+                $('#p-right-val').text(pr);
+                $('#p-bottom-val').text(pb);
+                $('#p-left-val').text(pl);
+
+                $('#viz-content-text').text(text);
+
+                // Update Box Styles
+                // Margin simulation: we use padding on the outer container to visualize the gap
+                $('#viz-margin').css({
+                    'padding-top': mt + 'px',
+                    'padding-right': mr + 'px',
+                    'padding-bottom': mb + 'px',
+                    'padding-left': ml + 'px'
+                });
+
+                $('#viz-border').css({
+                    'border-width': bw + 'px'
+                });
+
+                $('#viz-padding').css({
+                    'padding-top': pt + 'px',
+                    'padding-right': pr + 'px',
+                    'padding-bottom': pb + 'px',
+                    'padding-left': pl + 'px'
+                });
+
+                // Calculate Totals (simplified: content is roughly 120x120 + padding + border + margin)
+                const contentW = $('#viz-content').outerWidth();
+                const contentH = $('#viz-content').outerHeight();
+
+                const totalW = contentW + (bw * 2) + ml + mr;
+                const totalH = contentH + (bw * 2) + mt + mb;
+
+                $('#total-width').text(Math.round(totalW) + 'px');
+                $('#total-height').text(Math.round(totalH) + 'px');
+            }
+
+            // Event listeners
+            $('input[type=range], #content-text').on('input', function () {
+                updateBox();
+            });
+
+            // Reset
+            $('#reset-btn').click(function () {
+                $('#m-top, #m-right, #m-bottom, #m-left').val(20);
+                $('#p-top, #p-right, #p-bottom, #p-left').val(20);
+                $('#b-width').val(2);
+                $('#content-text').val("盒子內容");
+                updateBox();
+            });
+
+            // Initialize
+            updateBox();
+        });
+    </script>
+</body>
+
+</html>

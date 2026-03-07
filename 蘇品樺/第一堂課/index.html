@@ -148,6 +148,81 @@
             transition: margin-left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
+        /* 3D Visual Effects */
+        .perspective-1000 {
+            perspective: 1000px;
+        }
+
+        .rotate-x-12 {
+            transform: rotateX(12deg);
+        }
+
+        .rotate-y-\[-25deg\] {
+            transform: rotateY(-25deg);
+        }
+
+        .rotate-z-3 {
+            transform: rotateZ(3deg);
+        }
+
+        .hover\:rotate-y-\[-15deg\]:hover {
+            transform: rotateY(-15deg) scale(1.05);
+        }
+
+        @keyframes bounce-slow {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-15px);
+            }
+        }
+
+        .animate-bounce-slow {
+            animation: bounce-slow 4s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0% {
+                transform: translateX(-100%);
+            }
+
+            100% {
+                transform: translateX(100%);
+            }
+        }
+
+        .animate-shimmer {
+            animation: shimmer 2s infinite linear;
+        }
+
+        @keyframes packet-flow {
+            0% {
+                left: 0;
+                opacity: 0;
+            }
+
+            10% {
+                opacity: 1;
+            }
+
+            90% {
+                opacity: 1;
+            }
+
+            100% {
+                left: 100%;
+                opacity: 0;
+            }
+        }
+
+        .animate-packet {
+            animation: packet-flow 3s infinite linear;
+        }
+
         .demo-step-active {
             border-color: #6366f1 !important;
             background-color: #fcfdff !important;
@@ -196,6 +271,12 @@
                     <span
                         class="icon-box w-9 h-9 flex items-center justify-center rounded-lg bg-slate-100 mr-3 group-hover:bg-white transition-colors">💡</span>
                     <span class="sidebar-text">程式開發心法</span>
+                </a>
+                <a href="#browser-comm"
+                    class="nav-link flex items-center px-4 py-3 rounded-xl text-slate-600 hover:bg-slate-100 transition-all group">
+                    <span
+                        class="icon-box w-9 h-9 flex items-center justify-center rounded-lg bg-slate-100 mr-3 group-hover:bg-white transition-colors">🖥️</span>
+                    <span class="sidebar-text">與瀏覽器打交道</span>
                 </a>
                 <a href="#frontend-backend"
                     class="nav-link flex items-center px-4 py-3 rounded-xl text-slate-600 hover:bg-slate-100 transition-all group">
@@ -282,7 +363,7 @@
                 <p class="text-slate-500 mt-4 font-medium italic">「在動手寫程式之前，先武裝你的大腦」</p>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
                 <div
                     class="p-10 rounded-[2.5rem] bg-indigo-50 border border-indigo-100 relative overflow-hidden group shadow-sm transition-all hover:shadow-lg">
                     <div
@@ -310,11 +391,163 @@
                         <h3 class="text-4xl font-black mb-6 text-indigo-400 tracking-tighter">D.R.Y.</h3>
                         <p class="text-xl font-bold text-white mb-4">Don't Repeat Yourself</p>
                         <p class="text-slate-400 leading-relaxed mb-8">
-                            <b>不要重複你自己</b>。如果同樣的代碼寫了兩次以上，就應該將它模組化。讓程式具備高度的可複用性，這也是展示型網頁的核心靈魂。
+                            <b>不要重複你自己</b>。如果同樣的代碼寫了兩次以上，就應該將它<b>「模組化」</b>。
                         </p>
+
+                        <!-- DRY Comparison -->
+                        <div
+                            class="bg-white/5 rounded-2xl border border-white/10 p-5 mb-8 font-mono text-[10px] space-y-4">
+                            <div>
+                                <div class="text-red-400 mb-2">// ❌ Bad: 重複寫三次</div>
+                                <div class="text-slate-500 bg-black/20 p-2 rounded-lg">
+                                    print("Hello A")<br>
+                                    print("Hello B")<br>
+                                    print("Hello C")
+                                </div>
+                            </div>
+                            <div>
+                                <div class="text-emerald-400 mb-2">// ✅ Good: 封裝成函式</div>
+                                <div
+                                    class="text-indigo-300 bg-indigo-500/10 p-2 rounded-lg border border-indigo-500/20">
+                                    function say(name) {<br>
+                                    &nbsp;&nbsp;print("Hello " + name)<br>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+
                         <div
                             class="px-5 py-3 bg-white/10 rounded-xl border border-white/10 text-indigo-300 font-bold text-sm">
                             ⚡ 懶惰是工程師的美德：我們只寫一次，然後重複使用
+                        </div>
+                    </div>
+                </div>
+
+                <div
+                    class="p-10 rounded-[2.5rem] bg-emerald-50 border border-emerald-100 relative overflow-hidden group shadow-sm transition-all hover:shadow-lg">
+                    <div
+                        class="absolute -right-8 -top-8 text-9xl opacity-[0.05] font-black group-hover:scale-110 transition-transform text-emerald-600">
+                        P</div>
+                    <div class="relative z-10">
+                        <h3 class="text-4xl font-black mb-6 text-emerald-700 tracking-tighter">殺雞焉用牛刀</h3>
+                        <p class="text-xl font-bold text-slate-800 mb-4">The Principle of Least Power</p>
+                        <p class="text-slate-600 leading-relaxed mb-8">
+                            <b>選擇最合適的工具</b>。每種語言都有擅長的領域。就像廚房裡的西瓜刀與水果刀，雖然功能重疊，但各有優勢。高手會用最輕量、最快速的技術達成目標。
+                        </p>
+                        <div
+                            class="px-5 py-3 bg-white/60 rounded-xl border border-emerald-100 text-emerald-700 font-bold text-xs leading-relaxed">
+                            🛠️ 本課實踐：用 <span
+                                class="underline decoration-emerald-300 underline-offset-4 decoration-2">jQuery</span>
+                            簡化 JS、用 <span
+                                class="underline decoration-emerald-300 underline-offset-4 decoration-2">Tailwind</span>
+                            加速佈局、透過 <span
+                                class="underline decoration-emerald-300 underline-offset-4 decoration-2">CDN</span>
+                            輕量導入。
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Communicating with the Browser -->
+        <section id="browser-comm">
+            <div class="mb-16 text-center">
+                <h2 class="font-heading text-4xl font-bold mb-4 text-slate-900">🖥️ 與瀏覽器打交道</h2>
+                <div class="h-1.5 w-16 bg-indigo-500 rounded-full mx-auto"></div>
+                <p class="text-slate-500 mt-4 font-medium uppercase tracking-widest text-xs">Talking to your Browser</p>
+            </div>
+
+            <div class="relative max-w-6xl mx-auto py-10 px-6">
+                <div class="flex flex-col lg:flex-row items-center justify-between gap-16">
+                    <!-- Text Content -->
+                    <div class="w-full lg:w-1/2 space-y-8">
+                        <div
+                            class="bg-white p-8 rounded-[2.5rem] shadow-xl border border-slate-100 relative overflow-hidden group">
+                            <div
+                                class="absolute -right-4 -top-4 text-7xl opacity-[0.03] font-black group-hover:scale-110 transition-transform">
+                                HELLO</div>
+                            <h3 class="text-2xl font-bold mb-6 text-slate-800">網頁開發是什麼？</h3>
+                            <p class="text-slate-600 leading-relaxed text-lg mb-6">
+                                其實，學習網頁開發本質上就是在<b>「學習如何跟瀏覽器打交道」</b>。
+                            </p>
+                            <p class="text-slate-600 leading-relaxed">
+                                瀏覽器就像是一個高度精密的藝術畫布，而我們編寫的代碼（HTML/CSS/JS）就是告訴瀏覽器如何畫出我們要的成品。
+                            </p>
+                        </div>
+                        <div
+                            class="bg-indigo-900 text-white p-8 rounded-[2.5rem] shadow-2xl relative overflow-hidden group">
+                            <div
+                                class="absolute -right-4 -top-4 text-7xl opacity-5 font-black group-hover:scale-110 transition-transform text-white">
+                                CANVAS</div>
+                            <h3 class="text-2xl font-bold mb-6 text-indigo-300">前端的角色</h3>
+                            <p class="opacity-80 leading-relaxed text-lg">
+                                特別是前端開發，我們絕大部分的時間都在這塊「畫布」上揮毫。無論是佈局排版、色彩搭配，還是動態交互，核心都是為了讓瀏覽器能完美呈現給使用者看。
+                            </p>
+                            <div
+                                class="mt-8 pt-8 border-t border-white/10 flex items-center gap-4 text-indigo-300 font-bold">
+                                <span
+                                    class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center">💡</span>
+                                你的代碼，就是給瀏覽器的指令集
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Visual Section - Tilted Browser -->
+                    <div class="w-full lg:w-1/2 flex justify-center perspective-1000">
+                        <div
+                            class="relative w-full max-w-md aspect-[4/3] transform rotate-x-12 rotate-y-[-25deg] rotate-z-3 hover:rotate-y-[-15deg] transition-all duration-700">
+                            <!-- Browser Frame -->
+                            <div
+                                class="absolute inset-0 bg-white rounded-2xl shadow-[50px_50px_100px_rgba(0,0,0,0.1)] border-t border-slate-200 overflow-hidden">
+                                <!-- Browser Header -->
+                                <div class="h-10 bg-slate-100 border-b border-slate-200 flex items-center px-4 gap-1.5">
+                                    <div class="w-3 h-3 rounded-full bg-red-400"></div>
+                                    <div class="w-3 h-3 rounded-full bg-yellow-400"></div>
+                                    <div class="w-3 h-3 rounded-full bg-green-400"></div>
+                                    <div
+                                        class="ml-4 h-6 flex-1 bg-white rounded-md border border-slate-200/50 flex items-center px-2">
+                                        <div class="h-2 w-24 bg-slate-100 rounded-full"></div>
+                                    </div>
+                                </div>
+                                <!-- Browser Body -->
+                                <div class="p-6 space-y-4">
+                                    <div class="flex items-center gap-4">
+                                        <div class="w-12 h-12 rounded-full bg-indigo-100"></div>
+                                        <div class="space-y-2 flex-1">
+                                            <div class="h-3 w-3/4 bg-slate-100 rounded-full"></div>
+                                            <div class="h-3 w-1/2 bg-slate-100 rounded-full"></div>
+                                        </div>
+                                    </div>
+                                    <div
+                                        class="h-32 w-full bg-slate-50 rounded-xl border border-slate-100 flex items-center justify-center overflow-hidden relative">
+                                        <div
+                                            class="absolute inset-0 bg-gradient-to-br from-indigo-50/50 to-emerald-50/50">
+                                        </div>
+                                        <div
+                                            class="relative text-indigo-300 font-bold text-sm tracking-widest uppercase">
+                                            Canvas Content</div>
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div class="h-16 bg-slate-100 rounded-xl border border-slate-100/50"></div>
+                                        <div class="h-16 bg-slate-100 rounded-xl border border-slate-100/50"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Floating Elements -->
+                            <div
+                                class="absolute -top-6 -right-6 w-24 h-24 bg-indigo-500 rounded-3xl shadow-xl flex items-center justify-center text-3xl animate-bounce-slow z-20">
+                                🎨
+                            </div>
+                            <div
+                                class="absolute -bottom-8 -left-8 w-20 h-20 bg-emerald-400 rounded-2xl shadow-xl flex items-center justify-center text-3xl animate-pulse z-20">
+                                ⚡
+                            </div>
+
+                            <!-- Decorative Shadow -->
+                            <div
+                                class="absolute -bottom-10 left-10 right-10 h-4 bg-slate-900/10 blur-xl rounded-full transform -rotate-x-12">
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -323,74 +556,101 @@
 
         <!-- Frontend vs Backend -->
         <section id="frontend-backend">
-            <div class="mb-16 text-center">
-                <h2 class="font-heading text-4xl font-bold mb-4 text-slate-900">🌓 前端與後端</h2>
-                <div class="h-1.5 w-16 bg-primary rounded-full mx-auto"></div>
+            <div class="mb-16 text-center text-slate-900">
+                <h2 class="font-heading text-4xl font-bold mb-4">🌓 前端與後端</h2>
+                <div class="h-1.5 w-16 bg-indigo-500 rounded-full mx-auto"></div>
                 <p class="text-slate-500 mt-4 font-medium uppercase tracking-widest text-xs">System Architecture Model
                 </p>
             </div>
 
-            <div class="relative max-w-5xl mx-auto py-10 px-6">
+            <div class="relative max-w-6xl mx-auto py-10 px-6">
                 <!-- Visual Model -->
-                <div class="flex flex-col lg:flex-row items-stretch justify-center gap-0">
-                    <!-- Frontend Side -->
+                <div class="flex flex-col lg:flex-row items-stretch justify-center gap-0 perspective-1000">
+                    <!-- Frontend Side: The UI Painter -->
                     <div
-                        class="flex-1 p-10 rounded-[2.5rem] bg-white border-2 border-slate-100 shadow-xl relative z-10 text-center">
+                        class="flex-1 p-10 rounded-[2.5rem] bg-white border border-slate-100 shadow-xl relative z-20 text-center group hover:-translate-y-2 transition-all duration-500">
                         <div
-                            class="w-20 h-20 bg-indigo-50 rounded-2xl flex items-center justify-center text-4xl mx-auto mb-6">
+                            class="absolute -right-4 -top-4 text-7xl opacity-[0.03] font-black group-hover:scale-110 transition-transform">
+                            PIXEL</div>
+                        <div
+                            class="w-24 h-24 bg-indigo-50 rounded-3xl flex items-center justify-center text-5xl mx-auto mb-8 border border-indigo-100 shadow-inner group-hover:rotate-6 transition-transform">
                             🎨</div>
-                        <h3 class="text-2xl font-bold mb-4 text-slate-800">前端 Frontend</h3>
-                        <p class="text-slate-500 text-sm leading-relaxed mb-8">使用者直接接觸的介面<br>專注於<b>「互動」</b>與<b>「美感」</b>
-                        </p>
-                        <div class="flex flex-wrap justify-center gap-2">
-                            <span
-                                class="px-3 py-1 bg-slate-50 border border-slate-100 rounded-lg text-[10px] font-bold text-slate-400">UI/UX</span>
-                            <span
-                                class="px-3 py-1 bg-slate-50 border border-slate-100 rounded-lg text-[10px] font-bold text-slate-400">ANIMATION</span>
-                            <span
-                                class="px-3 py-1 bg-slate-50 border border-slate-100 rounded-lg text-[10px] font-bold text-slate-400">ASSETS</span>
+                        <h3 class="text-3xl font-black mb-4 text-slate-800 tracking-tighter">前端 Frontend</h3>
+                        <p class="text-slate-500 font-bold mb-8">「看得見的藝術品」</p>
+
+                        <div class="space-y-4 text-left p-6 bg-slate-50 rounded-3xl border border-slate-100">
+                            <div class="flex items-center gap-3">
+                                <span
+                                    class="w-8 h-8 rounded-lg bg-indigo-500 text-white flex items-center justify-center text-xs">✨</span>
+                                <span class="text-slate-700 font-bold">互動與動畫</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span
+                                    class="w-8 h-8 rounded-lg bg-indigo-500 text-white flex items-center justify-center text-xs">📐</span>
+                                <span class="text-slate-700 font-bold">排版與設計</span>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Communication Bridge -->
-                    <div class="w-full lg:w-32 flex flex-col items-center justify-center py-10 lg:py-0 relative">
-                        <div class="w-1 lg:w-full h-full lg:h-1 bg-slate-100 relative">
-                            <div class="absolute inset-0 bg-indigo-500/20 animate-pulse"></div>
+                    <!-- Communication Bridge: The Data Flow -->
+                    <div class="w-full lg:w-48 flex flex-col items-center justify-center py-10 lg:py-0 relative z-10">
+                        <!-- Horizontal Line for Desktop -->
+                        <div class="hidden lg:block w-full h-2 bg-slate-100 relative overflow-hidden">
                             <div
-                                class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 px-4 py-2 bg-indigo-600 text-white text-[10px] rounded-full font-black shadow-lg">
-                                API BRIDGE</div>
+                                class="absolute inset-0 bg-indigo-500/20 translate-x-[-100%] animate-[shimmer_3s_infinite]">
+                            </div>
+                        </div>
+                        <!-- Vertical Line for Mobile -->
+                        <div class="lg:hidden w-2 h-20 bg-slate-100 relative overflow-hidden">
+                            <div
+                                class="absolute inset-0 bg-indigo-500/20 translate-y-[-100%] animate-[shimmer_3s_infinite]">
+                            </div>
+                        </div>
+
+                        <div
+                            class="px-6 py-3 bg-indigo-600 text-white text-[10px] rounded-2xl font-black shadow-xl absolute z-30 tracking-widest uppercase">
+                            HTTP Request & Response ⇄
                         </div>
                     </div>
 
-                    <!-- Backend Side -->
+                    <!-- Backend Side: The Logic Engine -->
                     <div
-                        class="flex-1 p-10 rounded-[2.5rem] bg-slate-900 text-white shadow-2xl relative z-20 text-center">
+                        class="flex-1 p-10 rounded-[2.5rem] bg-slate-900 text-white shadow-2xl relative z-20 text-center group hover:-translate-y-2 transition-all duration-500">
                         <div
-                            class="w-20 h-20 bg-white/5 rounded-2xl flex items-center justify-center text-4xl mx-auto mb-6">
+                            class="absolute -left-4 -top-4 text-7xl opacity-[0.05] font-black group-hover:scale-110 transition-transform">
+                            LOGIC</div>
+                        <div
+                            class="w-24 h-24 bg-white/5 rounded-3xl flex items-center justify-center text-5xl mx-auto mb-8 border border-white/5 shadow-inner group-hover:-rotate-6 transition-transform">
                             ⚙️</div>
-                        <h3 class="text-2xl font-bold mb-4 text-white">後端 Backend</h3>
-                        <p class="text-slate-400 text-sm leading-relaxed mb-8">隱藏在幕後的運算中心<br>專注於<b>「資料」</b>與<b>「邏輯」</b>
-                        </p>
-                        <div class="flex flex-wrap justify-center gap-2">
-                            <span
-                                class="px-3 py-1 bg-white/5 border border-white/5 rounded-lg text-[10px] font-bold text-slate-500">DATABASE</span>
-                            <span
-                                class="px-3 py-1 bg-white/5 border border-white/5 rounded-lg text-[10px] font-bold text-slate-500">SECURITY</span>
-                            <span
-                                class="px-3 py-1 bg-white/5 border border-white/5 rounded-lg text-[10px] font-bold text-slate-500">SERVER</span>
+                        <h3 class="text-3xl font-black mb-4 text-white tracking-tighter">後端 Backend</h3>
+                        <p class="text-slate-400 font-bold mb-8">「看不見的動力源」</p>
+
+                        <div class="space-y-4 text-left p-6 bg-white/5 rounded-3xl border border-white/5">
+                            <div class="flex items-center gap-3">
+                                <span
+                                    class="w-8 h-8 rounded-lg bg-emerald-500 text-white flex items-center justify-center text-xs">💾</span>
+                                <span class="text-slate-300 font-bold">資料存取與管理</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span
+                                    class="w-8 h-8 rounded-lg bg-emerald-500 text-white flex items-center justify-center text-xs">🛡️</span>
+                                <span class="text-slate-300 font-bold">運算邏輯與安全</span>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Showcase Site Emphasis -->
+                <!-- Intuitive Metaphor Summary -->
                 <div
-                    class="mt-16 p-10 rounded-[2.5rem] bg-indigo-50 border border-indigo-100 relative overflow-hidden group">
-                    <div
-                        class="absolute -right-12 -bottom-12 text-9xl opacity-[0.03] rotate-12 group-hover:scale-110 transition-transform">
-                        DISPLAY</div>
-                    <div class="relative z-10 max-w-2xl mx-auto text-center">
-                        <p class="text-indigo-800 leading-relaxed italic text-xl font-bold">
-                            本課程專精於「前端極致化」，將網頁技術轉化為視覺表現，讓每一行代碼都成為你畫布上的繽紛色彩。
+                    class="mt-16 bg-white p-10 rounded-[3rem] border border-slate-100 shadow-lg relative overflow-hidden flex flex-col md:flex-row items-center gap-10">
+                    <div class="w-24 h-24 bg-amber-50 rounded-full flex items-center justify-center text-5xl shrink-0">
+                        🍔</div>
+                    <div class="flex-1">
+                        <h4 class="text-2xl font-black text-slate-800 mb-4 tracking-tighter">簡單來說：就像點漢堡</h4>
+                        <p class="text-slate-600 leading-relaxed text-lg italic">
+                            <b>前端</b> 是點餐機上的精美圖片（給你看的）；<br>
+                            <b>後端</b> 是廚房裡的廚師（實際幫你做漢堡的）。<br>
+                            兩者缺一不可，這就是最直觀的「前後端分離」。
                         </p>
                     </div>
                 </div>
@@ -446,46 +706,113 @@
         <section id="frameworks">
             <div class="mb-16">
                 <h2 class="font-heading text-4xl font-bold mb-4 text-slate-900">🧩 框架與函式庫</h2>
-                <div class="h-1.5 w-16 bg-accent rounded-full"></div>
+                <div class="h-1.5 w-16 bg-indigo-500 rounded-full"></div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
-                <div class="p-12 rounded-[2.5rem] bg-slate-50 border border-slate-100 relative overflow-hidden group">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+                <!-- Bootstrap Section -->
+                <div
+                    class="p-10 rounded-[3rem] bg-slate-50 border border-slate-100 relative overflow-hidden group shadow-sm hover:shadow-xl transition-all duration-500">
                     <div class="absolute top-0 right-0 p-8 opacity-10 grayscale group-hover:grayscale-0 transition-all">
                         <img src="https://getbootstrap.com/docs/5.3/assets/brand/bootstrap-logo-shadow.png"
                             alt="Bootstrap" class="w-24">
                     </div>
-                    <h3 class="text-3xl font-bold mb-6 text-purple-600">Bootstrap</h3>
-                    <p class="text-slate-600 leading-relaxed mb-8 text-lg">
-                        它能大幅簡化 CSS 的撰寫。透過預設的元件與「格線系統」，讓我們可以像玩樂高一樣快速拼湊出介面。
-                    </p>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div
-                            class="bg-white p-4 rounded-2xl text-center shadow-sm font-semibold text-slate-700 border border-slate-100 text-sm">
-                            快速排版</div>
-                        <div
-                            class="bg-white p-4 rounded-2xl text-center shadow-sm font-semibold text-slate-700 border border-slate-100 text-sm">
-                            各式 UI 元件</div>
+
+                    <div class="relative z-10">
+                        <h3 class="text-3xl font-black mb-6 text-purple-600 tracking-tighter">Bootstrap</h3>
+                        <p class="text-slate-600 leading-relaxed mb-10 text-lg">
+                            它能大幅簡化 CSS 的撰寫。核心理念是<b>「封裝元件」</b>。讓我們能快速拼湊出專業級的介面。
+                        </p>
+
+                        <!-- Code Comparison Model -->
+                        <div class="bg-white rounded-[2rem] border border-slate-200 shadow-2xl overflow-hidden mb-8">
+                            <div class="bg-slate-900 px-6 py-4 flex items-center justify-between">
+                                <span class="text-white text-xs font-black tracking-widest uppercase">Navbar 實作對比</span>
+                                <div class="flex gap-1.5">
+                                    <div class="w-3 h-3 rounded-full bg-red-400"></div>
+                                    <div class="w-3 h-3 rounded-full bg-yellow-400"></div>
+                                    <div class="w-3 h-3 rounded-full bg-green-400"></div>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2">
+                                <!-- Vanilla Way -->
+                                <div class="p-6 border-b md:border-b-0 md:border-r border-slate-100">
+                                    <div class="text-[10px] font-black text-slate-400 mb-4 tracking-wider uppercase">
+                                        Vanilla HTML/CSS</div>
+                                    <div
+                                        class="bg-slate-50 p-4 rounded-xl font-mono text-[10px] leading-tight text-slate-500">
+                                        &lt;nav class="my-nav"&gt;<br>
+                                        &nbsp;&nbsp;&lt;div class="container"&gt;<br>
+                                        &nbsp;&nbsp;&nbsp;&nbsp;...<br>
+                                        &lt;/nav&gt;<br><br>
+                                        <span class="text-indigo-400">.my-nav {<br>
+                                            &nbsp;&nbsp;display: flex;<br>
+                                            &nbsp;&nbsp;padding: 1rem;<br>
+                                            &nbsp;&nbsp;background: #fff;<br>
+                                            &nbsp;&nbsp;... (需要 20+ 行 CSS)<br>
+                                            }</span>
+                                    </div>
+                                </div>
+                                <!-- Bootstrap Way -->
+                                <div class="p-6 bg-indigo-50/30">
+                                    <div class="text-[10px] font-black text-purple-500 mb-4 tracking-wider uppercase">
+                                        Bootstrap Magic</div>
+                                    <div
+                                        class="bg-slate-900 p-4 rounded-xl font-mono text-[10px] leading-tight text-slate-300">
+                                        &lt;nav class="<span class="text-yellow-400">navbar bg-light</span>"&gt;<br>
+                                        &nbsp;&nbsp;&lt;div class="container"&gt;<br>
+                                        &nbsp;&nbsp;&nbsp;&nbsp;...<br>
+                                        &lt;/nav&gt;<br><br>
+                                        <span class="text-emerald-400">// 免寫額外 CSS！<br>直接用內建 Class 搞定</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div
+                                class="p-4 bg-slate-50 text-center text-[10px] font-bold text-slate-400 border-t border-slate-100">
+                                🚀 一行 Class 勝過二十行 CSS，這就是框架的力量
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <div class="p-12 rounded-[2.5rem] bg-indigo-50 border border-indigo-100 relative overflow-hidden group">
-                    <div class="absolute top-0 right-0 p-8 opacity-20 text-7xl font-black text-indigo-400">
-                        jQ
-                    </div>
-                    <h3 class="text-3xl font-bold mb-6 text-indigo-600">jQuery</h3>
-                    <p class="text-slate-600 leading-relaxed mb-8 text-lg">
-                        簡化 JavaScript 的函式庫。核心理念是 "Write less, do more"。讓我們更輕鬆地操作元素與製作動畫。
-                    </p>
-                    <div class="bg-slate-900 p-8 rounded-3xl font-mono text-sm shadow-xl">
-                        <div class="text-slate-400 mb-2">// 隠藏圖片的語法</div>
-                        <div class="flex gap-4">
-                            <span class="text-white opacity-50">原生:</span>
-                            <span class="text-blue-400">...style.display='none'</span>
-                        </div>
-                        <div class="flex gap-4 mt-2">
-                            <span class="text-white font-bold">jQuery:</span>
-                            <span class="text-yellow-400">$('.img').hide()</span>
+                <!-- jQuery Section -->
+                <div
+                    class="p-10 rounded-[3rem] bg-indigo-50 border border-indigo-100 relative overflow-hidden group shadow-sm hover:shadow-xl transition-all duration-500">
+                    <div
+                        class="absolute top-0 right-0 p-8 opacity-20 text-7xl font-black text-indigo-400 group-hover:rotate-12 transition-transform">
+                        jQ</div>
+
+                    <div class="relative z-10">
+                        <h3 class="text-3xl font-black mb-6 text-indigo-600 tracking-tighter">jQuery</h3>
+                        <p class="text-slate-600 leading-relaxed mb-10 text-lg">
+                            簡化 JavaScript 的函式庫。核心理念是 <b>"Write less, do more"</b>。讓我們更輕鬆地操作元素。
+                        </p>
+
+                        <div
+                            class="bg-slate-900 p-10 rounded-[2.5rem] font-mono text-sm shadow-2xl border border-white/10 group-hover:scale-[1.02] transition-transform">
+                            <div class="text-slate-500 mb-6 text-xs italic">// 如何隱藏一張圖片？</div>
+                            <div class="space-y-6">
+                                <div>
+                                    <div class="text-[10px] font-black text-slate-500 mb-2 uppercase tracking-widest">原生
+                                        JavaScript (Vanilla JS)</div>
+                                    <div class="bg-white/5 p-4 rounded-xl text-blue-300">
+                                        document.querySelector('.img').style.display = <span
+                                            class="text-indigo-400">'none'</span>;
+                                    </div>
+                                </div>
+                                <div class="relative">
+                                    <div class="absolute left-[-20px] top-1/2 -translate-y-1/2 w-4 h-4 text-indigo-400">
+                                        ⚡</div>
+                                    <div class="text-[10px] font-black text-indigo-400 mb-2 uppercase tracking-widest">
+                                        jQuery 極簡法</div>
+                                    <div
+                                        class="bg-indigo-500/20 p-4 rounded-xl text-yellow-300 border border-indigo-500/30">
+                                        <span class="text-indigo-400">$</span>(<span
+                                            class="text-emerald-400">'.img'</span>).<span
+                                            class="text-indigo-200 font-bold">hide</span>();
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -530,19 +857,82 @@
                     </div>
                 </div>
 
-                <div class="p-12 bg-slate-50 rounded-[3rem] border border-slate-100">
-                    <div class="relative py-20 px-4">
-                        <div class="flex items-center gap-8 justify-between">
-                            <div class="text-5xl">📱</div>
-                            <div class="flex-1 h-2 bg-slate-200 rounded-full relative overflow-hidden">
-                                <div class="absolute inset-0 bg-primary animate-ping opacity-20"></div>
-                                <div class="absolute h-full bg-primary w-1/3 left-0 animate-[shimmer_2s_infinite]">
+                <div
+                    class="p-8 lg:p-12 bg-slate-50 rounded-[3rem] border border-slate-100 shadow-inner relative overflow-hidden">
+                    <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-slate-100/50 to-transparent">
+                    </div>
+
+                    <div class="relative z-10 py-10">
+                        <!-- Path Labels -->
+                        <div
+                            class="flex justify-between text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4">
+                            <span>Request (請求)</span>
+                            <span>Response (回應)</span>
+                        </div>
+
+                        <!-- Data Flow Visualization -->
+                        <div class="flex items-center gap-6 justify-between relative">
+                            <!-- Client -->
+                            <div class="text-center group">
+                                <div class="text-5xl group-hover:scale-110 transition-transform">📱</div>
+                                <div class="mt-4 text-[10px] font-bold text-slate-400">CLIENT</div>
+                            </div>
+
+                            <!-- Connection Line -->
+                            <div class="flex-1 h-12 relative flex items-center">
+                                <!-- Base Line -->
+                                <div class="w-full h-1 bg-slate-200 rounded-full"></div>
+
+                                <!-- Animated Packets -->
+                                <div class="absolute inset-0">
+                                    <div class="absolute top-1/2 -translate-y-1/2 w-3 h-3 bg-indigo-500 rounded-sm shadow-[0_0_10px_rgba(99,102,241,0.5)] animate-packet"
+                                        style="animation-delay: 0s;"></div>
+                                    <div class="absolute top-1/2 -translate-y-1/2 w-3 h-3 bg-indigo-500 rounded-sm shadow-[0_0_10px_rgba(99,102,241,0.5)] animate-packet"
+                                        style="animation-delay: 1s;"></div>
+                                    <div class="absolute top-1/2 -translate-y-1/2 w-3 h-3 bg-indigo-500 rounded-sm shadow-[0_0_10px_rgba(99,102,241,0.5)] animate-packet"
+                                        style="animation-delay: 2s;"></div>
+                                </div>
+
+                                <!-- Process Steps (Floating) -->
+                                <div class="absolute -top-12 left-1/2 -translate-x-1/2 flex gap-2">
+                                    <span
+                                        class="px-3 py-1 bg-white border border-slate-100 rounded-full text-[9px] font-bold text-slate-400 shadow-sm whitespace-nowrap">DNS
+                                        Lookup</span>
+                                    <span
+                                        class="px-3 py-1 bg-white border border-slate-100 rounded-full text-[9px] font-bold text-slate-400 shadow-sm whitespace-nowrap">TLS
+                                        Handshake</span>
                                 </div>
                             </div>
-                            <div class="text-5xl">☁️</div>
+
+                            <!-- Server -->
+                            <div class="text-center group">
+                                <div class="relative">
+                                    <div class="text-5xl group-hover:scale-110 transition-transform relative z-10">☁️
+                                    </div>
+                                    <!-- Mini Server Racks -->
+                                    <div
+                                        class="absolute -bottom-2 -right-2 w-8 h-8 bg-slate-800 rounded-md border border-slate-700 shadow-xl flex flex-col p-1 gap-1">
+                                        <div class="h-0.5 bg-emerald-400 animate-pulse"></div>
+                                        <div class="h-0.5 bg-slate-600"></div>
+                                        <div class="h-0.5 bg-emerald-400 animate-pulse" style="animation-delay: 0.5s;">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mt-4 text-[10px] font-bold text-slate-400">SERVER</div>
+                            </div>
                         </div>
-                        <div class="mt-8 text-center font-mono text-sm text-slate-400">
-                            DATA TRANSFER: <span class="text-slate-800">HTTPS/TLS 1.3</span>
+
+                        <!-- Protocol Status -->
+                        <div class="mt-16 flex items-center justify-center gap-4">
+                            <div
+                                class="px-4 py-2 bg-emerald-50 text-emerald-600 rounded-xl text-[10px] font-black border border-emerald-100 flex items-center gap-2">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                                HTTPS SECURE CONNECTION
+                            </div>
+                            <div
+                                class="px-4 py-2 bg-slate-100 text-slate-500 rounded-xl text-[10px] font-black border border-slate-200">
+                                TLS 1.3 / HTTP 2.0
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -695,11 +1085,21 @@
                                     JavaScript。當按鈕被點擊，程式會捕獲數值並即時反映在畫面上。這時候計算機才真正「活」了過來！</p>
                                 <div
                                     class="bg-slate-900 rounded-2xl p-6 font-mono text-sm text-yellow-200/80 shadow-inner leading-6">
-                                    <span class="text-white">$('.btn').on('click', <span
-                                            class="text-blue-400">function()</span> {</span><br>
-                                    &nbsp;&nbsp;let num = <span class="text-blue-400">$(this)</span>.text();<br>
-                                    &nbsp;&nbsp;<span class="text-slate-500">// 將數字寫入顯示區</span><br>
-                                    &nbsp;&nbsp;<span class="text-blue-400">$('#screen')</span>.text(num);<br>
+                                    <span class="text-blue-400">const</span> buttons = <span
+                                        class="text-yellow-400">document.querySelectorAll</span>(<span
+                                        class="text-orange-400">'.btn'</span>);<br>
+                                    <br>
+                                    <span class="text-white">buttons.<span class="text-yellow-400">forEach</span>(btn =>
+                                        {</span><br>
+                                    &nbsp;&nbsp;btn.<span class="text-yellow-400">addEventListener</span>(<span
+                                        class="text-orange-400">'click'</span>, () => {<br>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="text-blue-400">let</span> num = btn.<span
+                                        class="text-white">innerText</span>;<br>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;document.<span
+                                        class="text-yellow-400">querySelector</span>(<span
+                                        class="text-orange-400">'#screen'</span>).<span
+                                        class="text-white">innerText</span> = num;<br>
+                                    &nbsp;&nbsp;});<br>
                                     <span class="text-white">});</span>
                                 </div>
                             </div>
@@ -710,49 +1110,48 @@
                     <div
                         class="w-full lg:w-2/5 p-8 lg:p-12 bg-slate-50 flex flex-col items-center justify-between relative overflow-hidden">
                         <div
-                            class="absolute inset-x-0 top-20 text-center text-slate-200 font-black text-8xl opacity-10 select-none pointer-events-none">
+                            class="absolute inset-0 flex items-center justify-center text-slate-200 font-black text-7xl opacity-[0.05] pointer-events-none select-none">
                             LIVE MODEL</div>
 
                         <!-- Calculator Output -->
-                        <div id="calculatorResult" class="w-full max-w-sm transition-all duration-700 origin-center">
+                        <div id="calculatorResult" class="w-full max-w-sm relative z-10">
                             <div class="p-8 bg-white rounded-[3rem] shadow-2xl border border-slate-200">
                                 <div id="calc-screen"
-                                    class="w-full h-24 mb-8 flex items-end justify-end p-8 text-4xl font-black transition-all duration-500 text-slate-300 bg-slate-50 rounded-3xl border-2 border-transparent">
+                                    class="w-full h-24 mb-8 flex items-end justify-end p-8 text-4xl font-black rounded-3xl border-2 border-transparent bg-white text-slate-800">
                                     0</div>
                                 <div class="grid grid-cols-4 gap-4" id="calc-btns">
-                                    <!-- Buttons will be styled dynamicly -->
                                     <button
-                                        class="calc-btn w-full aspect-square border-2 border-slate-100 rounded-2xl flex items-center justify-center font-black text-slate-300 transition-all">7</button>
+                                        class="calc-btn w-full aspect-square border-2 border-slate-100 rounded-2xl flex items-center justify-center font-black">7</button>
                                     <button
-                                        class="calc-btn w-full aspect-square border-2 border-slate-100 rounded-2xl flex items-center justify-center font-black text-slate-300 transition-all">8</button>
+                                        class="calc-btn w-full aspect-square border-2 border-slate-100 rounded-2xl flex items-center justify-center font-black">8</button>
                                     <button
-                                        class="calc-btn w-full aspect-square border-2 border-slate-100 rounded-2xl flex items-center justify-center font-black text-slate-300 transition-all">9</button>
+                                        class="calc-btn w-full aspect-square border-2 border-slate-100 rounded-2xl flex items-center justify-center font-black">9</button>
                                     <button
-                                        class="calc-btn w-full aspect-square border-2 border-slate-100 rounded-2xl flex items-center justify-center font-black text-slate-300 transition-all">÷</button>
+                                        class="calc-btn w-full aspect-square border-2 border-slate-100 rounded-2xl flex items-center justify-center font-black">÷</button>
                                     <button
-                                        class="calc-btn w-full aspect-square border-2 border-slate-100 rounded-2xl flex items-center justify-center font-black text-slate-300 transition-all">4</button>
+                                        class="calc-btn w-full aspect-square border-2 border-slate-100 rounded-2xl flex items-center justify-center font-black">4</button>
                                     <button
-                                        class="calc-btn w-full aspect-square border-2 border-slate-100 rounded-2xl flex items-center justify-center font-black text-slate-300 transition-all">5</button>
+                                        class="calc-btn w-full aspect-square border-2 border-slate-100 rounded-2xl flex items-center justify-center font-black">5</button>
                                     <button
-                                        class="calc-btn w-full aspect-square border-2 border-slate-100 rounded-2xl flex items-center justify-center font-black text-slate-300 transition-all">6</button>
+                                        class="calc-btn w-full aspect-square border-2 border-slate-100 rounded-2xl flex items-center justify-center font-black">6</button>
                                     <button
-                                        class="calc-btn w-full aspect-square border-2 border-slate-100 rounded-2xl flex items-center justify-center font-black text-slate-300 transition-all">×</button>
+                                        class="calc-btn w-full aspect-square border-2 border-slate-100 rounded-2xl flex items-center justify-center font-black">×</button>
                                     <button
-                                        class="calc-btn w-full aspect-square border-2 border-slate-100 rounded-2xl flex items-center justify-center font-black text-slate-300 transition-all">1</button>
+                                        class="calc-btn w-full aspect-square border-2 border-slate-100 rounded-2xl flex items-center justify-center font-black">1</button>
                                     <button
-                                        class="calc-btn w-full aspect-square border-2 border-slate-100 rounded-2xl flex items-center justify-center font-black text-slate-300 transition-all">2</button>
+                                        class="calc-btn w-full aspect-square border-2 border-slate-100 rounded-2xl flex items-center justify-center font-black">2</button>
                                     <button
-                                        class="calc-btn w-full aspect-square border-2 border-slate-100 rounded-2xl flex items-center justify-center font-black text-slate-300 transition-all">3</button>
+                                        class="calc-btn w-full aspect-square border-2 border-slate-100 rounded-2xl flex items-center justify-center font-black">3</button>
                                     <button
-                                        class="calc-btn w-full aspect-square border-2 border-slate-100 rounded-2xl flex items-center justify-center font-black text-slate-300 transition-all">-</button>
+                                        class="calc-btn w-full aspect-square border-2 border-slate-100 rounded-2xl flex items-center justify-center font-black">-</button>
                                     <button
-                                        class="calc-btn w-full aspect-square border-2 border-slate-100 rounded-2xl flex items-center justify-center font-black text-slate-300 transition-all">C</button>
+                                        class="calc-btn w-full aspect-square border-2 border-slate-100 rounded-2xl flex items-center justify-center font-black">C</button>
                                     <button
-                                        class="calc-btn w-full aspect-square border-2 border-slate-100 rounded-2xl flex items-center justify-center font-black text-slate-300 transition-all">0</button>
+                                        class="calc-btn w-full aspect-square border-2 border-slate-100 rounded-2xl flex items-center justify-center font-black">0</button>
                                     <button
-                                        class="calc-btn w-full aspect-square border-2 border-slate-100 rounded-2xl flex items-center justify-center font-black text-slate-300 transition-all">+</button>
+                                        class="calc-btn w-full aspect-square border-2 border-slate-100 rounded-2xl flex items-center justify-center font-black">+</button>
                                     <button
-                                        class="calc-btn w-full aspect-square border-2 border-slate-100 rounded-2xl flex items-center justify-center font-black transition-all"
+                                        class="calc-btn w-full aspect-square border-2 border-slate-100 rounded-2xl flex items-center justify-center font-black"
                                         id="equal-btn">=</button>
                                 </div>
                             </div>
@@ -798,13 +1197,15 @@
                 }
             });
 
-            // --- Interactive Demo Modal Logic ---
+            // --- Interactive Demo Modal State (Scoped for easy access) ---
             const $modal = $('#demoModal');
             let currentDemoStep = 1;
+            let expression = '';
 
             $('#openDemoBtn').on('click', function () {
                 $modal.removeClass('hidden');
                 currentDemoStep = 1; // Reset to start
+                expression = '';      // Reset math state
                 updateDemoUI();
             });
 
@@ -829,89 +1230,97 @@
             function updateDemoUI() {
                 $('#currentStepNum').text(currentDemoStep);
 
-                // Update Step Highlight & Auto-Scroll
+                // Update Step Highlight
                 $('.demo-step').each(function () {
                     const step = $(this).data('step');
                     const isActive = step === currentDemoStep;
-
                     $(this).toggleClass('demo-step-active', isActive);
-
-                    // Use GSAP for smooth step focus
-                    gsap.to(this, {
-                        opacity: isActive ? 1 : 0.4,
-                        scale: isActive ? 1 : 0.95,
-                        duration: 0.5,
-                        ease: "power2.out"
-                    });
+                    $(this).css({ opacity: isActive ? 1 : 1, scale: isActive ? 1 : 1 });//我就要全部顯示
 
                     if (isActive) {
                         const container = $('#demo-steps-container');
                         const scrollTop = $(this).offset().top - container.offset().top + container.scrollTop() - 40;
-                        container.animate({ scrollTop: scrollTop }, 500);
+                        container.animate({ scrollTop: scrollTop }, 400);
                     }
                 });
 
-                // Update Result Visuals with GSAP animations
+                // Update Result Visuals - Minimalist Theory
                 const $screen = $('#calc-screen');
                 const $btns = $('.calc-btn');
                 const $equal = $('#equal-btn');
 
                 if (currentDemoStep === 1) {
-                    // Phase 1: HTML Only
-                    gsap.to($screen, { backgroundColor: "#f8fafc", color: "#cbd5e1", borderColor: "transparent", duration: 0.4 });
-                    gsap.to($btns, { backgroundColor: "transparent", color: "#e2e8f0", borderColor: "#f1f5f9", duration: 0.4 });
-                    gsap.to($equal, { backgroundColor: "transparent", color: "#e2e8f0", borderColor: "#f1f5f9", scale: 1, duration: 0.4 });
-                    $screen.text('0');
-                }
-                else if (currentDemoStep === 2) {
-                    // Phase 2: Add CSS (Visuals only)
-                    gsap.to($screen, { backgroundColor: "#f1f5f9", color: "#1e293b", borderColor: "#6366f1", duration: 0.4 });
-                    gsap.to($btns, { backgroundColor: "#ffffff", color: "#475569", borderColor: "#e2e8f0", duration: 0.4 });
-                    gsap.to($equal, { backgroundColor: "#6366f1", color: "#ffffff", borderColor: "#6366f1", scale: 1, opacity: 1, duration: 0.5 });
-                }
-                else if (currentDemoStep === 3) {
-                    // Phase 3: Add JS (Interactivity)
-                    gsap.fromTo($screen, { boxShadow: "0 0 0px rgba(99,102,241,0)" }, { boxShadow: "0 0 20px rgba(99,102,241,0.2)", repeat: -1, yoyo: true, duration: 1 });
+                    // Phase 1: Keep it high contrast as requested
+                    $screen.css({ background: '#ffffff', color: '#0f172a', border: '2px solid transparent', boxShadow: 'none' }).text('0');
+                    $btns.css({ background: 'transparent', color: '#0f172a', borderColor: '#f1f5f9', cursor: 'default' });
+                } else if (currentDemoStep === 2) {
+                    // Phase 2: Add CSS Styling (Borders, specific colors)
+                    $screen.css({ background: '#f1f5f9', color: '#1e293b', border: '2px solid #6366f1', boxShadow: 'none' });
+                    $btns.css({ background: '#ffffff', color: '#475569', borderColor: '#e2e8f0', cursor: 'default' });
+                    $equal.css({ background: '#6366f1', color: '#ffffff', borderColor: '#6366f1' });
+                } else {
+                    // Phase 3: Add JS (Interaction Glow)
+                    $screen.css({ background: '#ffffff', color: '#0f172a', border: '2px solid #6366f1', boxShadow: '0 0 20px rgba(99,102,241,0.2)' });
+                    $btns.css({ background: '#ffffff', color: '#0f172a', borderColor: '#e2e8f0', cursor: 'pointer' });
+                    $equal.css({ background: '#6366f1', color: '#ffffff' });
                 }
 
-                // Increase non-active step opacity for better overall readability
-                $('.demo-step').each(function () {
-                    if (!$(this).hasClass('demo-step-active')) {
-                        gsap.to(this, { opacity: 0.7, scale: 0.98, duration: 0.5 });
-                    }
-                });
-
-                // Nav Buttons State
-                $('#prevDemoStep').css('pointer-events', currentDemoStep === 1 ? 'none' : 'auto').css('opacity', currentDemoStep === 1 ? 0.3 : 1);
-                $('#nextDemoStep').css('pointer-events', currentDemoStep === 3 ? 'none' : 'auto').css('opacity', currentDemoStep === 3 ? 0.3 : 1);
+                $('#prevDemoStep').toggle(currentDemoStep > 1);
+                $('#nextDemoStep').toggle(currentDemoStep < 3);
             }
 
-            // JavaScript: Calculator Buttons Functionality (Only Phase 3)
-            $('.calc-btn, #equal-btn').on('click', function () {
-                if (currentDemoStep < 3) {
-                    // Simple UX feedback to alert user it's not active yet
-                    $(this).addClass('bg-red-50').delay(100).queue(function (next) {
-                        $(this).removeClass('bg-red-50');
-                        next();
-                    });
-                    return;
-                }
-
-                const val = $(this).text();
+            // Calculator Interactivity Logic (Final Robust Version)
+            $(document).on('click', '.calc-btn', function (e) {
+                const val = $(this).text().trim();
                 const $screen = $('#calc-screen');
-                const currentText = $screen.text();
+
+                // Visual tactile feedback (Works in all phases)
+                gsap.fromTo(this,
+                    { scale: 0.9, filter: "brightness(1.2)" },
+                    { scale: 1, filter: "brightness(1)", duration: 0.1, ease: "power2.out" }
+                );
+
+                // Only perform math operations in Phase 3
+                if (currentDemoStep !== 3) return;
 
                 if (val === 'C') {
-                    $screen.text('0');
+                    expression = '';
+                    $screen.text('0').css('color', '#0f172a');
                 } else if (val === '=') {
-                    // Just a joke result for demo
-                    $screen.text('AWESOME ⚡');
-                } else {
-                    if (currentText === '0' || isNaN(currentText)) {
-                        $screen.text(val);
-                    } else if (currentText.length < 12) {
-                        $screen.text(currentText + val);
+                    if (!expression) return;
+                    try {
+                        let mathExpr = expression.replace(/÷/g, '/').replace(/×/g, '*');
+                        let res = eval(mathExpr);
+                        // Format long decimals
+                        if (res.toString().includes('.') && res.toString().split('.')[1].length > 4) {
+                            res = parseFloat(res.toFixed(4));
+                        }
+                        $screen.text(res);
+                        expression = res.toString();
+                    } catch (err) {
+                        $screen.text('Error');
+                        expression = '';
                     }
+                } else {
+                    const ops = ['+', '-', '×', '÷'];
+                    const isOp = ops.includes(val);
+                    const currentText = $screen.text();
+
+                    if (currentText === '0' || currentText === 'Error') {
+                        if (isOp) return; // Can't start with operator
+                        expression = val;
+                    } else {
+                        const lastChar = expression.slice(-1);
+                        const lastIsOp = ops.includes(lastChar);
+
+                        if (isOp && lastIsOp) {
+                            // Replace last operator with new one
+                            expression = expression.slice(0, -1) + val;
+                        } else if (expression.length < 12) {
+                            expression += val;
+                        }
+                    }
+                    $screen.text(expression).css('color', '#0f172a');
                 }
             });
 
@@ -952,7 +1361,7 @@
                 });
             }, { threshold: 0.1 });
 
-            $('section, .card-hover, .bg-slate-50, .bg-indigo-50').each(function () {
+            $('section, .card-hover').each(function () {
                 $(this).addClass('opacity-0 translate-y-8 transition-all duration-700 ease-out');
                 observer.observe(this);
             });
