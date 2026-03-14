@@ -1,9 +1,14 @@
 <template>
-  <button @click="sayHello" class="btn btn-primary">Click me</button>
 </template>
 
 <script setup>
-    function sayHello() {
-        alert("Hello");
-    }
+//composition api
+//option api
+import {computed,onMounted} from 'vue';
+let apple = computed(() => {
+  return 'apple'
+})
+onMounted(() => {
+  console.log('Myinfo is mounted successfully...')
+})
 </script>

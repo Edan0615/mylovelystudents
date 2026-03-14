@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>張毓倫 - 第三次上課課本：Bootstrap 深度解析</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- jQuery CDN -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap"
+        rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #ffffff;
+            color: #333333;
+        }
+
+        .code-block {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            font-family: 'Courier New', Courier, monospace;
+            overflow-x: auto;
+        }
+
+        .section-title {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 2rem;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -0.5rem;
+            left: 0;
+            width: 50%;
+            height: 4px;
+            background-color: #3b82f6;
+            border-radius: 2px;
+        }
+    </style>
+</head>
+
+<body class="antialiased selection:bg-blue-200 selection:text-blue-900">
+
+    <!-- Navbar -->
+    <nav class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex-shrink-0 flex items-center space-x-2">
+                    <div
+                        class="w-8 h-8 bg-blue-600 text-white rounded-lg flex items-center justify-center font-bold text-xl">
+                        B
+                    </div>
+                    <span class="font-bold text-xl text-gray-900">第三次上課課本 - 張毓倫</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="bg-gray-50 py-20 border-b border-gray-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight mb-4">
+                深入了解 <span class="text-blue-600">Bootstrap</span> 框架
+            </h1>
+            <p class="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto">
+                快速、響應式、且功能強大的前端開發利器。這次要帶你一窺這個最受歡迎的 CSS 框架的奧秘。
+            </p>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 space-y-24">
+
+        <!-- 1. 什麼是 Bootstrap -->
+        <section>
+            <h2 class="text-3xl font-bold section-title">到底什麼是 Bootstrap？</h2>
+            <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 leading-relaxed text-lg">
+                <p class="mb-4">
+                    我們在之前的課程中學習過了基本的 <strong>CSS</strong>，也有簡單介紹過 Bootstrap。但這次，我們要來深入了解它究竟是在做什麼的。
+                </p>
+                <p class="text-gray-700">
+                    簡單來說，Bootstrap 就是一個<strong
+                        class="text-blue-600">讓你更好、更快寫網頁程式的工具包（Framework）</strong>。它把全世界前幾頂尖的工程師寫好的 CSS
+                    樣式打包起來，讓你只需要套用他們設定好的名稱，就能直接使用這些漂亮的樣式，大幅度簡化了自己從頭寫 CSS 程式的時間。
+                </p>
+            </div>
+        </section>
+
+        <!-- 2. 原版 CSS 與 Bootstrap 的比較 -->
+        <section>
+            <h2 class="text-3xl font-bold section-title">寫法的差異：CSS 對決 Bootstrap</h2>
+            <p class="text-lg text-gray-600 mb-6">來看看如果我們要寫一個「藍色背景、白色文字、有圓角且滑鼠移過去會有變化的按鈕」，兩種寫法有多大的差別：</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- 原版 CSS -->
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                    <div class="bg-red-50 px-6 py-4 border-b border-red-100 flex items-center">
+                        <span class="w-3 h-3 rounded-full bg-red-400 mr-2"></span>
+                        <h3 class="font-bold text-red-800">原版的 CSS 寫法</h3>
+                    </div>
+                    <div class="p-6">
+                        <pre class="code-block text-sm text-gray-800 mb-4">
+<span class="text-green-600">&lt;!-- HTML 部分 --&gt;</span>
+&lt;button class="my-custom-btn"&gt;點擊我&lt;/button&gt;
+
+<span class="text-green-600">&lt;!-- CSS 部分 --&gt;</span>
+.my-custom-btn {
+    background-color: #0d6efd;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.my-custom-btn:hover {
+    background-color: #0b5ed7;
+}
+</pre>
+                        <div class="mt-4 flex justify-center">
+                            <button
+                                style="background-color: #0d6efd; color: white; padding: 10px 20px; border: none; border-radius: 5px; font-size: 16px; cursor: pointer;">點擊我</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bootstrap -->
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                    <div class="bg-blue-50 px-6 py-4 border-b border-blue-100 flex items-center">
+                        <span class="w-3 h-3 rounded-full bg-blue-400 mr-2"></span>
+                        <h3 class="font-bold text-blue-800">Bootstrap 的寫法</h3>
+                    </div>
+                    <div class="p-6">
+                        <pre class="code-block text-sm text-gray-800 mb-4 h-[252px]">
+<span class="text-green-600">&lt;!-- HTML 部分 --&gt;</span>
+<span class="text-green-600">&lt;!-- 只需要加上 btn 和 btn-primary --&gt;</span>
+<span class="text-green-600">&lt;!-- 完全不需要自己寫 CSS！ --&gt;</span>
+
+&lt;button class="btn btn-primary"&gt;
+    點擊我
+&lt;/button&gt;
+
+
+
+
+
+
+
+
+</pre>
+                        <div class="mt-4 flex justify-center">
+                            <button
+                                class="bg-blue-600 hover:bg-blue-700 text-white py-[10px] px-[20px] rounded-[5px] text-[16px] transition-colors">點擊我</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <p class="mt-6 text-center text-lg text-gray-700 bg-blue-50 py-3 rounded-lg">
+                💡 <strong>結論：</strong>Bootstrap 讓你免去了撰寫大量 CSS 的麻煩，直接透過 Class 呼叫樣式！
+            </p>
+        </section>
+
+        <!-- 3. 如何引入 Bootstrap -->
+        <section>
+            <h2 class="text-3xl font-bold section-title">如何開始使用 Bootstrap？</h2>
+
+            <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
+                <p class="text-lg text-gray-700 mb-6 font-medium">
+                    想要了解所有功能，第一步永遠是打開 <a href="https://getbootstrap.com/" target="_blank"
+                        class="text-blue-600 font-bold hover:text-blue-800 hover:underline transition-colors">Bootstrap
+                        官方網站</a> 查看完整技術文件。
+                </p>
+
+                <h3 class="text-xl font-bold text-gray-900 mb-4 border-b pb-2">引入方式主要有兩種：</h3>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-6">
+                    <!-- CDN 介紹 -->
+                    <div class="relative bg-blue-50 p-6 rounded-xl border border-blue-100">
+                        <div
+                            class="absolute -top-3 -left-3 w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold shadow-sm">
+                            1</div>
+                        <h4 class="text-lg font-bold text-blue-900 mb-2">CDN (內容傳遞網路)</h4>
+                        <span
+                            class="inline-block bg-blue-200 text-blue-800 text-xs px-2 py-1 rounded mb-3 font-bold">我們這次上課的作法</span>
+                        <p class="text-gray-700 text-sm leading-relaxed mb-4">
+                            這是一種最簡單、快速的方式。你不需要下載任何檔案到自己的電腦，只要把 Bootstrap 提供的網址（URL）貼到 HTML 的 <code>&lt;head&gt;</code>
+                            標籤裡面就可以了。
+                        </p>
+                        <p class="text-gray-700 text-sm leading-relaxed">
+                            <strong>運作原理：</strong>當使用者打開網頁時，瀏覽器會根據那段網址，自動去遠端的伺服器抓取 Bootstrap 的 CSS 和 JS
+                            檔案。這很適合初學者和簡單的靜態網頁。
+                        </p>
+                    </div>
+
+                    <!-- NPM 介紹 -->
+                    <div class="relative bg-orange-50 p-6 rounded-xl border border-orange-100">
+                        <div
+                            class="absolute -top-3 -left-3 w-8 h-8 bg-orange-500 text-white rounded-full flex items-center justify-center font-bold shadow-sm">
+                            2</div>
+                        <h4 class="text-lg font-bold text-orange-900 mb-2">npm install</h4>
+                        <span
+                            class="inline-block bg-orange-200 text-orange-800 text-xs px-2 py-1 rounded mb-3 font-bold">未來學
+                            Vue 框架時常見的作法</span>
+                        <p class="text-gray-700 text-sm leading-relaxed mb-4">
+                            <code>npm</code> (Node Package Manager) 是 Node.js 的套件管理工具。透過終端機輸入指令
+                            <code>npm install bootstrap</code>，會把 Bootstrap 真正地「下載」到專案的 <code>node_modules</code> 資料夾中。
+                        </p>
+                        <p class="text-gray-700 text-sm leading-relaxed">
+                            <strong>運作原理：</strong>因為檔案在本地端，我們可以在未來的 Vue 開發中自由地使用 JavaScript 模組系統 (import)
+                            匯入它以進行客製化。不過這個現在太複雜了，我們接下來的課再學！
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. 基本寫法與 Components -->
+        <section>
+            <h2 class="text-3xl font-bold section-title">核心概念：一切都在 Class 裡面</h2>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div class="lg:col-span-1 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                    <h3 class="text-xl font-bold text-gray-900 mb-4">基本寫法邏輯</h3>
+                    <p class="text-gray-700 mb-4">
+                        使用 Bootstrap 幾乎就是在背單字。它的基本寫法就是把所有的設定都寫在 HTML 標籤的 <code>class="..."</code> 屬性裡面。
+                    </p>
+                    <ul class="space-y-3 text-gray-600">
+                        <li class="flex items-start">
+                            <svg class="w-5 h-5 text-blue-500 mt-0.5 mr-2" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <code>text-center</code> (文字置中)
+                        </li>
+                        <li class="flex items-start">
+                            <svg class="w-5 h-5 text-blue-500 mt-0.5 mr-2" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <code>mt-3</code> (Margin Top 距離上面 3 單位)
+                        </li>
+                        <li class="flex items-start">
+                            <svg class="w-5 h-5 text-blue-500 mt-0.5 mr-2" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <code>d-flex</code> (顯示為 Flex 排版)
+                        </li>
+                    </ul>
+                </div>
+
+                <div
+                    class="lg:col-span-2 bg-gradient-to-br from-blue-50 to-indigo-50 p-8 rounded-2xl shadow-sm border border-blue-100">
+                    <h3 class="text-xl font-bold text-gray-900 mb-4">超豐富的 Components (組件)</h3>
+                    <p class="text-gray-700 mb-6">
+                        除了基礎的排版，Bootstrap 最強大的地方在於它提供了非常多做好的「組件」。你不需要從頭刻一個導覽列或彈出視窗，複製貼上即可！
+                    </p>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
+                        <div
+                            class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition cursor-pointer">
+                            <div class="text-blue-500 mb-2 font-bold text-2xl">🗂️</div>
+                            <div class="font-medium text-sm">卡片 (Cards)</div>
+                        </div>
+                        <div
+                            class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition cursor-pointer">
+                            <div class="text-blue-500 mb-2 font-bold text-2xl">🧭</div>
+                            <div class="font-medium text-sm">導覽列 (Navbar)</div>
+                        </div>
+                        <div
+                            class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition cursor-pointer">
+                            <div class="text-blue-500 mb-2 font-bold text-2xl">💬</div>
+                            <div class="font-medium text-sm">對話框 (Modal)</div>
+                        </div>
+                        <div
+                            class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition cursor-pointer">
+                            <div class="text-blue-500 mb-2 font-bold text-2xl">⚠️</div>
+                            <div class="font-medium text-sm">警告框 (Alert)</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. Container 與網格系統 (Grid System) -->
+        <section>
+            <h2 class="text-3xl font-bold section-title">網頁的骨架：Container 與 Grid System</h2>
+            <div class="space-y-8">
+                <!-- Container -->
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
+                    <h3 class="text-2xl font-bold text-gray-900 mb-4 flex items-center">
+                        <span
+                            class="bg-indigo-100 text-indigo-700 w-8 h-8 rounded-md flex items-center justify-center mr-3 text-lg">1</span>
+                        Container (容器)
+                    </h3>
+                    <p class="text-gray-700 text-lg mb-4">
+                        <code>container</code> 這是排版時最常使用的第一個 class。它最大的好處是在<strong
+                            class="text-indigo-600">左右兩邊自動留白</strong>，把網頁內容居中。
+                    </p>
+                    <ul class="list-disc list-inside text-gray-600 space-y-2 mb-6">
+                        <li><strong>美觀性</strong>：內容不會緊貼著左右螢幕邊緣，看起來舒服很多。</li>
+                        <li><strong>實用性</strong>：許多網站（如部落格或論壇）兩側的留白部分，正好可以用來放置 <strong>Google 廣告</strong> 或其他側邊欄資訊。</li>
+                    </ul>
+                    <div
+                        class="bg-gray-200 h-24 rounded flex items-center justify-center relative border-2 border-dashed border-gray-400">
+                        <div
+                            class="w-full md:w-2/3 h-full bg-indigo-200 flex items-center justify-center border-l-2 border-r-2 border-indigo-400">
+                            <span class="font-bold text-indigo-800">.container (內容顯示區塊)</span>
+                        </div>
+                        <div class="absolute left-4 text-gray-500 font-bold hidden md:block">留白區</div>
+                        <div class="absolute right-4 text-gray-500 font-bold hidden md:block">留白區</div>
+                    </div>
+                </div>
+
+                <!-- Row & Columns -->
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
+                    <h3 class="text-2xl font-bold text-gray-900 mb-4 flex items-center">
+                        <span
+                            class="bg-indigo-100 text-indigo-700 w-8 h-8 rounded-md flex items-center justify-center mr-3 text-lg">2</span>
+                        網格系統 (Row & Column)
+                    </h3>
+                    <p class="text-gray-700 text-lg mb-4">
+                        在 Bootstrap 裡面，它的佈局是由「行 (<code class="bg-gray-100 px-1 rounded">row</code>)」與「列 (<code
+                            class="bg-gray-100 px-1 rounded">col</code>)」組成的。你要先有 <code>row</code>，裡面才能放
+                        <code>col</code>。
+                    </p>
+                    <p class="text-gray-700 text-lg mb-6">
+                        最核心的觀念：<strong>Bootstrap 將這一整列 (row)，平均切割成了 12 等分 (columns)</strong>。
+                    </p>
+
+                    <!-- 12 格小圖示 -->
+                    <div class="space-y-4">
+                        <div class="text-sm font-bold text-gray-500">一列 12 個等分 (12 個 col-1)</div>
+                        <div class="flex bg-gray-100 border border-gray-300 rounded p-1">
+                            <div
+                                class="flex-1 bg-blue-200 border border-blue-400 text-center py-2 text-xs font-bold text-blue-800">
+                                1</div>
+                            <div
+                                class="flex-1 bg-blue-200 border border-blue-400 text-center py-2 text-xs font-bold text-blue-800">
+                                2</div>
+                            <div
+                                class="flex-1 bg-blue-200 border border-blue-400 text-center py-2 text-xs font-bold text-blue-800">
+                                3</div>
+                            <div
+                                class="flex-1 bg-blue-200 border border-blue-400 text-center py-2 text-xs font-bold text-blue-800">
+                                4</div>
+                            <div
+                                class="flex-1 bg-blue-200 border border-blue-400 text-center py-2 text-xs font-bold text-blue-800">
+                                5</div>
+                            <div
+                                class="flex-1 bg-blue-200 border border-blue-400 text-center py-2 text-xs font-bold text-blue-800">
+                                6</div>
+                            <div
+                                class="flex-1 bg-blue-200 border border-blue-400 text-center py-2 text-xs font-bold text-blue-800">
+                                7</div>
+                            <div
+                                class="flex-1 bg-blue-200 border border-blue-400 text-center py-2 text-xs font-bold text-blue-800">
+                                8</div>
+                            <div
+                                class="flex-1 bg-blue-200 border border-blue-400 text-center py-2 text-xs font-bold text-blue-800">
+                                9</div>
+                            <div
+                                class="flex-1 bg-blue-200 border border-blue-400 text-center py-2 text-xs font-bold text-blue-800">
+                                10</div>
+                            <div
+                                class="flex-1 bg-blue-200 border border-blue-400 text-center py-2 text-xs font-bold text-blue-800">
+                                11</div>
+                            <div
+                                class="flex-1 bg-blue-200 border border-blue-400 text-center py-2 text-xs font-bold text-blue-800">
+                                12</div>
+                        </div>
+
+                        <div class="text-sm font-bold text-gray-500 mt-6">自由搭配 (加起來等於 12)</div>
+                        <!-- 一排 2 個：col-6 示範 -->
+                        <div class="flex bg-gray-100 border border-gray-300 rounded p-1 mb-2">
+                            <div
+                                class="w-1/2 bg-green-200 border border-green-400 text-center py-4 font-bold text-green-800">
+                                col-6</div>
+                            <div
+                                class="w-1/2 bg-green-200 border border-green-400 text-center py-4 font-bold text-green-800">
+                                col-6</div>
+                        </div>
+
+                        <!-- col-4 + col-8 示範 -->
+                        <div class="flex bg-gray-100 border border-gray-300 rounded p-1">
+                            <div
+                                class="w-1/3 bg-orange-200 border border-orange-400 text-center py-4 font-bold text-orange-800">
+                                col-4</div>
+                            <div class="w-2/3 bg-red-200 border border-red-400 text-center py-4 font-bold text-red-800">
+                                col-8</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. 響應式設計 Breakpoints 與 Mobile First -->
+        <section>
+            <h2 class="text-3xl font-bold section-title">響應式設計與 Mobile First</h2>
+
+            <div class="space-y-8">
+                <!-- Mobile First 概念介紹 -->
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-blue-100 overflow-hidden relative">
+                    <!-- 裝飾用背景圓圈 -->
+                    <div class="absolute -top-10 -right-10 w-32 h-32 bg-blue-50 rounded-full mix-blend-multiply opacity-50"></div>
+                    <div class="absolute -bottom-10 -left-10 w-32 h-32 bg-indigo-50 rounded-full mix-blend-multiply opacity-50"></div>
+
+                    <h3 class="text-2xl font-bold text-gray-900 mb-6 flex items-center relative z-10">
+                        <div class="bg-blue-100 text-blue-600 p-2 rounded-lg mr-3 shadow-sm">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                        </div>
+                        <span class="bg-clip-text text-transparent bg-gradient-to-r from-blue-700 to-indigo-700">Mobile First (手機優先)</span>
+                    </h3>
+                    
+                    <div class="relative z-10 space-y-6">
+                        <p class="text-lg text-gray-700 leading-relaxed bg-blue-50/50 p-4 rounded-xl border-l-4 border-blue-400">
+                            如果你仔細看 Bootstrap 的寫法，會發現一個有趣的邏輯：<strong>預設的樣式都是給手機看的，當螢幕變大時（透過 sm, md, lg），才去加上新的樣式。</strong>
+                            這就是現代網頁開發的核心觀念——<strong class="text-blue-700">Mobile First (手機優先設計)</strong>。
+                        </p>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="bg-white p-5 rounded-xl border border-gray-100 shadow-sm hover:border-blue-200 transition-colors">
+                                <h4 class="font-bold text-gray-900 mb-2 flex items-center">
+                                    <span class="w-2 h-2 rounded-full bg-green-500 mr-2"></span>效能最好
+                                </h4>
+                                <p class="text-gray-600 text-sm leading-relaxed">手機的網路和運算能力通常比電腦差。如果一開始先載入電腦版的肥大程式碼再隱藏起來（以前的作法），對手機來說負擔太大。</p>
+                            </div>
+                            <div class="bg-white p-5 rounded-xl border border-gray-100 shadow-sm hover:border-blue-200 transition-colors">
+                                <h4 class="font-bold text-gray-900 mb-2 flex items-center">
+                                    <span class="w-2 h-2 rounded-full bg-blue-500 mr-2"></span>邏輯更順
+                                </h4>
+                                <p class="text-gray-600 text-sm leading-relaxed">從小螢幕（內容最精簡）往大螢幕（可以展開更多側邊欄和特效）去設計「加法」，比從大螢幕刪減東西（減法設計）來得容易。</p>
+                            </div>
+                        </div>
+                        
+                        <div class="text-sm text-gray-500 flex items-start bg-gray-50 p-4 rounded-lg mt-4">
+                            <span class="mr-2 text-yellow-500">💡</span>
+                            <p><strong>歷史小知識：：</strong>大約在 2010~2012 年間，智慧型手機開始大爆發，行動裝置的網路流量逐漸超越桌機。也是在那時，Mobile First 成為了業界的標準。Bootstrap 就是這個理念的忠實擁護者。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Breakpoints -->
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-indigo-100">
+                    <h3 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+                        <div class="bg-indigo-100 text-indigo-600 p-2 rounded-lg mr-3 shadow-sm">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path></svg>
+                        </div>
+                        Bootstrap 的魔法斷點 (Breakpoints)
+                    </h3>
+                    <p class="text-lg text-gray-700 mb-6 leading-relaxed">
+                        在現今的時代，網頁在手機、平板、電腦上看都要長得不一樣。這也就是俗稱的 <strong>RWD (響應式網頁設計)</strong>。
+                        Bootstrap 為了克服這件事，提供了幾個好用的「斷點 (Breakpoints)」。
+                    </p>
+                    
+                    <!-- 斷點表格 -->
+                    <div class="overflow-x-auto mb-8 rounded-xl border border-gray-200 shadow-sm">
+                        <table class="w-full text-left text-sm text-gray-700">
+                            <thead class="text-xs uppercase bg-gray-50 text-gray-600 border-b border-gray-200">
+                                <tr>
+                                    <th scope="col" class="px-6 py-4 font-bold">縮寫 (斷點名稱)</th>
+                                    <th scope="col" class="px-6 py-4 font-bold">對應裝置</th>
+                                    <th scope="col" class="px-6 py-4 font-bold">最小寬度條件</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-100">
+                                <tr class="bg-blue-50/30 hover:bg-blue-50 transition-colors">
+                                    <td class="px-6 py-4 font-medium">(無縮寫, 預設)</td>
+                                    <td class="px-6 py-4 text-gray-600">超小螢幕 (手機直立)</td>
+                                    <td class="px-6 py-4 font-bold text-blue-600">&lt; 576px (Mobile First 預設)</td>
+                                </tr>
+                                <tr class="hover:bg-gray-50 transition-colors">
+                                    <td class="px-6 py-4 font-bold text-indigo-600 text-base">sm</td>
+                                    <td class="px-6 py-4 text-gray-600">小螢幕 (手機橫放)</td>
+                                    <td class="px-6 py-4 font-mono text-gray-500">&ge; 576px</td>
+                                </tr>
+                                <tr class="hover:bg-gray-50 transition-colors">
+                                    <td class="px-6 py-4 font-bold text-indigo-600 text-base">md</td>
+                                    <td class="px-6 py-4 text-gray-600">中螢幕 (平板電腦)</td>
+                                    <td class="px-6 py-4 font-mono text-gray-500">&ge; 768px</td>
+                                </tr>
+                                <tr class="hover:bg-gray-50 transition-colors">
+                                    <td class="px-6 py-4 font-bold text-indigo-600 text-base">lg</td>
+                                    <td class="px-6 py-4 text-gray-600">大螢幕 (桌上型電腦)</td>
+                                    <td class="px-6 py-4 font-mono text-gray-500">&ge; 992px</td>
+                                </tr>
+                                <tr class="hover:bg-gray-50 transition-colors">
+                                    <td class="px-6 py-4 font-bold text-indigo-600 text-base">xl / xxl</td>
+                                    <td class="px-6 py-4 text-gray-600">超大螢幕</td>
+                                    <td class="px-6 py-4 font-mono text-gray-500">&ge; 1200px / 1400px</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- 範例說明區塊 -->
+                    <div class="bg-gray-900 p-6 rounded-xl border-l-4 border-indigo-500 shadow-md">
+                        <div class="font-bold text-indigo-300 mb-3 flex items-center">
+                            <span class="block w-2 h-2 bg-indigo-400 rounded-full mr-2"></span>
+                            運用 Mobile First 思考： d-none d-md-flex
+                        </div>
+                        <code class="text-white block mb-4 bg-black/30 p-3 rounded text-sm font-mono border border-gray-700">
+                            &lt;div class="<span class="text-pink-400">d-none</span> <span class="text-emerald-400">d-md-flex</span>"&gt; ... &lt;/div&gt;
+                        </code>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm mt-3 border-t border-gray-700 pt-4">
+                            <div>
+                                <strong class="text-pink-400 mb-1 block">1. 因為是 Mobile First：</strong> 
+                                <span class="text-gray-300 leading-relaxed">最前方的 <code class="text-pink-300 bg-pink-900/30 px-1 rounded">d-none</code> 會優先作用在手機上，所以這塊區域在手機版會直接消失。</span>
+                            </div>
+                            <div>
+                                <strong class="text-emerald-400 mb-1 block">2. 針對大螢幕加上樣式：</strong> 
+                                <span class="text-gray-300 leading-relaxed">當螢幕寬度超過 768px (平板以上) 時，我們才加上附加的 <code class="text-emerald-300 bg-emerald-900/30 px-1 rounded">d-md-flex</code>，讓它變成 flex 顯示！</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 7. 傳統網頁的常見架構 (Website Architecture) -->
+        <section>
+            <h2 class="text-3xl font-bold section-title">拆解網頁：傳統網頁的常見架構</h2>
+            <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
+                <p class="text-lg text-gray-700 mb-8 leading-relaxed">
+                    在我們準備動手寫程式之前，先來認識一個標準網頁通常具有的「架構（區塊）」。這會幫助你在寫 HTML 時，知道現在自己正在刻哪一個部分，這也是業界在溝通時常用的專有名詞。
+                </p>
+                
+                <div class="space-y-4 max-w-4xl mx-auto font-sans">
+                    <!-- Navbar -->
+                    <div class="bg-white border-2 border-indigo-200 rounded-xl p-4 text-center shadow-sm hover:shadow-md transition-shadow relative">
+                        <div class="absolute top-2 left-4 text-xs font-bold text-indigo-400 uppercase tracking-widest">Navbar</div>
+                        <h4 class="text-xl font-bold text-indigo-900 mt-2">導覽列</h4>
+                        <p class="text-sm text-gray-500 mt-1">選單、Logo、會員登入。通常永遠固定在最上方。</p>
+                    </div>
+
+                    <!-- Hero Section -->
+                    <div class="bg-blue-50 border-2 border-blue-200 rounded-xl p-16 text-center shadow-sm hover:shadow-md transition-shadow relative overflow-hidden">
+                        <!-- 裝飾 -->
+                        <div class="absolute -top-10 -right-10 w-32 h-32 bg-blue-100 rounded-full opacity-50"></div>
+                        <div class="absolute top-2 left-4 text-xs font-bold text-blue-400 uppercase tracking-widest">Hero Section</div>
+                        <h4 class="text-3xl font-extrabold text-blue-900 mt-2 relative z-10">主視覺區</h4>
+                        <p class="text-base text-blue-700 mt-3 max-w-lg mx-auto relative z-10">通常有一張很美的大圖片、產品大標題，以及「了解更多」的按鈕。這是吸引使用者眼球的第一張牌。</p>
+                    </div>
+
+                    <!-- Content -->
+                    <div class="flex flex-col md:flex-row gap-4">
+                        <div class="flex-1 bg-white border-2 border-emerald-200 rounded-xl p-10 text-center shadow-sm hover:shadow-md transition-shadow relative">
+                            <div class="absolute top-2 left-4 text-xs font-bold text-emerald-400 uppercase tracking-widest">Content</div>
+                            <h4 class="text-lg font-bold text-emerald-900 mt-2">內容區 (特色介紹)</h4>
+                            <p class="text-sm text-emerald-600 mt-2">產品的三大賣點</p>
+                        </div>
+                        <div class="flex-1 bg-white border-2 border-emerald-200 rounded-xl p-10 text-center shadow-sm hover:shadow-md transition-shadow relative">
+                            <div class="absolute top-2 left-4 text-xs font-bold text-emerald-400 uppercase tracking-widest">Content</div>
+                            <h4 class="text-lg font-bold text-emerald-900 mt-2">內容區 (展示區塊)</h4>
+                            <p class="text-sm text-emerald-600 mt-2">滿滿的圖文排版</p>
+                        </div>
+                    </div>
+
+                    <!-- CTA -->
+                    <div class="bg-amber-50 border-2 border-amber-200 rounded-xl p-10 text-center shadow-sm hover:shadow-md transition-shadow relative">
+                        <div class="absolute top-2 left-4 text-xs font-bold text-amber-500 uppercase tracking-widest">CTA (Call to Action)</div>
+                        <h4 class="text-2xl font-bold text-amber-900 mt-2">行動呼籲區塊</h4>
+                        <p class="text-base text-amber-700 mt-2">「心動不如馬上行動，立刻註冊即可享八折優惠！」</p>
+                        <button class="mt-4 bg-amber-500 text-white px-6 py-2 rounded-lg font-bold shadow-md">立刻購買</button>
+                    </div>
+
+                    <!-- Footer -->
+                    <div class="bg-gray-800 border-2 border-gray-700 rounded-xl p-8 text-center shadow-sm relative text-white">
+                        <div class="absolute top-2 left-4 text-xs font-bold text-gray-400 uppercase tracking-widest">Footer</div>
+                        <h4 class="text-lg font-bold text-gray-300 mt-2">頁尾</h4>
+                        <p class="text-sm text-gray-400 mt-2">版權聲明、隱私權政策、聯絡我們、FB/IG 連結。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 8. Bootstrap 對決 Tailwind CSS：框架的演進 -->
+        <section>
+            <h2 class="text-3xl font-bold section-title">框架的演進：Bootstrap 對決 Tailwind CSS</h2>
+            <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
+                <p class="text-lg text-gray-700 mb-6 leading-relaxed">
+                    雖然這堂課我們教的是 Bootstrap，但你可能也聽過另一個現在非常火紅的框架：<strong>Tailwind CSS</strong> (這個講義本身的排版就是用 Tailwind 寫的！)。讓我們來聊聊它們的差異，以及為什麼現在業界越來越偏好 Tailwind。
+                </p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- Bootstrap -->
+                    <div class="bg-blue-50/50 p-6 rounded-xl border border-blue-100 relative">
+                        <div class="absolute -top-3 -right-3 text-4xl opacity-50">📦</div>
+                        <h4 class="text-xl font-bold text-blue-900 mb-3 border-b border-blue-200 pb-2">Bootstrap (框架感重)</h4>
+                        <ul class="space-y-3 text-gray-700">
+                            <li class="flex items-start">
+                                <span class="text-red-500 mr-2 font-bold">✗</span>
+                                <strong>框架感太重</strong>：它提供的是「已經做好的組件」(像是整個卡片、整個按鈕)。這導致你如果不想用它預設的醜醜藍色，要修改起來非常痛苦，必須寫很多額外的 CSS 去覆蓋它。
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-red-500 mr-2 font-bold">✗</span>
+                                <strong>客製化困難</strong>：怎麼改看起來都還是有「Bootstrap 的味道」。
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-green-500 mr-2 font-bold">✓</span>
+                                <strong>優勢</strong>：不用思考設計，直接套用就有基礎功能，非常適合後台系統。
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Tailwind CSS -->
+                    <div class="bg-teal-50/50 p-6 rounded-xl border border-teal-100 relative">
+                        <div class="absolute -top-3 -right-3 text-4xl opacity-50">🎨</div>
+                        <h4 class="text-xl font-bold text-teal-900 mb-3 border-b border-teal-200 pb-2">Tailwind CSS (現代、美觀)</h4>
+                        <ul class="space-y-3 text-gray-700">
+                            <li class="flex items-start">
+                                <span class="text-green-500 mr-2 font-bold">✓</span>
+                                <strong>原子化 CSS</strong>：它不給你做好的「卡片」，而是給你 <code>p-4</code>(內距)、<code>bg-white</code>(白背景)、<code>rounded-lg</code>(圓角) 這樣的「積木」。
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-green-500 mr-2 font-bold">✓</span>
+                                <strong>高度客製化與美觀</strong>：因為是用積木拼出來的，所以你可以完全根據自己的美感打造出現代、精緻的 UI，不會受到框架的限制。這也是為什麼現在新創公司與現代網頁幾乎都轉換到了 Tailwind。
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 9. AI 時代下的網頁開發 -->
+        <section class="mb-20">
+            <h2 class="text-3xl font-bold section-title">未來趨勢：Vibe Coding 的時代</h2>
+            <div class="bg-white p-8 rounded-2xl shadow-sm border border-purple-100 relative overflow-hidden">
+                <!-- 裝飾背景元件 -->
+                <div class="absolute -top-10 -right-10 w-64 h-64 bg-purple-50 rounded-full mix-blend-multiply opacity-50"></div>
+                <div class="absolute -bottom-10 -left-10 w-64 h-64 bg-indigo-50 rounded-full mix-blend-multiply opacity-50"></div>
+
+                <div class="relative z-10">
+                    <h3 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+                        <span class="bg-purple-100 text-purple-600 p-2 rounded-lg mr-3 shadow-sm">🤖</span>
+                        傳統寫程式 (Classical Coding) 已成過去？
+                    </h3>
+                    
+                    <p class="text-lg text-gray-700 mb-6 leading-relaxed">
+                        我們今天學了很多 CSS、Bootstrap 或是未來會學的框架。但實話實說：在 <strong>Vibe Coding (依賴 AI 生成來寫程式)</strong> 的強勢來襲下，整個開發的生態圈已經發生了巨大的改變。
+                    </p>
+
+                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-200 mb-6 relative">
+                        <div class="absolute top-0 left-0 w-1 h-full bg-purple-400 rounded-l-xl"></div>
+                        <h4 class="font-bold text-purple-800 mb-3 text-lg">🎓 頂尖學府的震撼彈：史丹佛大學 (Stanford)</h4>
+                        <p class="text-gray-700 leading-relaxed mb-4">
+                            史丹佛大學的電腦科學相關課程，已經將我們現在這種「自己親手一行一行敲打程式碼」的學習方式，重新命名為 <strong>"Classical Coding" (古典程式設計)</strong>。
+                        </p>
+                        <p class="text-gray-700 leading-relaxed">
+                            這意味著什麼？意味著單純敲打程式碼，已經像傳統的手工藝一樣，未來前端甚至大部分後端的「純勞力寫碼」工作，都能夠很大程度地被 AI (像是你之前提到的 AI 自動生成網站) 給取代。
+                        </p>
+                    </div>
+
+                    <h4 class="text-xl font-bold text-gray-900 mt-8 mb-4 flex items-center">
+                        <span class="text-yellow-500 mr-2">💡</span> 那麼，工程師的價值在哪裡？
+                    </h4>
+                    <p class="text-gray-700 mb-6 leading-relaxed">
+                        既然 AI 都能寫了，我們除了依賴它，在未來的市場中要如何凸顯自己的不可取代性？差異將會體現在以下幾個關鍵能力：
+                    </p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="bg-white p-5 rounded-xl border border-gray-100 shadow-sm hover:border-purple-200 transition-colors">
+                            <h5 class="font-bold text-gray-900 mb-2 flex items-center">
+                                <span class="text-pink-500 mr-2">✨</span> 美學與設計 (Aesthetics)
+                            </h5>
+                            <p class="text-gray-600 text-sm leading-relaxed">AI 可以寫出功能正常的網頁，但能做出讓人發出「哇」的靈魂設計與精緻排版，仍然需要人類的品味把關與藝術指導。</p>
+                        </div>
+                        <div class="bg-white p-5 rounded-xl border border-gray-100 shadow-sm hover:border-purple-200 transition-colors">
+                            <h5 class="font-bold text-gray-900 mb-2 flex items-center">
+                                <span class="text-blue-500 mr-2">🧠</span> 創意與行銷 (Creativity & Marketing)
+                            </h5>
+                            <p class="text-gray-600 text-sm leading-relaxed">網頁做出來是要給「人」用的。如何結合行銷邏輯、業務需求與創新點子，規劃出有價值的產品藍圖，這是 AI 無法無中生有的。</p>
+                        </div>
+                        <div class="bg-white p-5 rounded-xl border border-gray-100 shadow-sm hover:border-purple-200 transition-colors md:col-span-2">
+                            <h5 class="font-bold text-gray-900 mb-2 flex items-center">
+                                <span class="text-emerald-500 mr-2">⚙️</span> 核心底層邏輯 (Core Logic)
+                            </h5>
+                            <p class="text-gray-600 text-sm leading-relaxed">這也是為什麼我們還是要學這堂課！當 AI 產出的程式碼壞掉，或者發生複雜的安全與架構問題時，如果你不懂「底層原理 (像是 CSS 怎麼運作的、數學邏輯是什麼)」，你連怎麼問 AI、怎麼修復都不知道。<strong>我們學寫程式，是為了學會「看懂並駕馭 AI 寫的程式」。</strong></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-gray-400">© 2026 墨宇設計 - 張毓倫 第 3 堂課 教學大綱</p>
+        </div>
+    </footer>
+
+    <script>
+        $(document).ready(function () {
+            // 加入簡單的 jQuery 動畫效果示範
+            $('.section-title').hide().fadeIn(1000);
+        });
+    </script>
+</body>
+
+</html>

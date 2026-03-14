@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue.js 核心概念課程 - 第二堂課</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Vue 3 -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'Microsoft JhengHei', 'sans-serif'],
+                        display: ['Outfit', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #fdfdfd;
+            color: #1a1a1a;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+        }
+        .section-anchor {
+            scroll-margin-top: 100px;
+        }
+        .code-block {
+            background-color: #f8fafc;
+            border-left: 4px solid #0ea5e9;
+            font-family: 'Fira Code', 'Courier New', Courier, monospace;
+        }
+        .nav-link {
+            transition: all 0.3s ease;
+        }
+        .nav-link:hover {
+            color: #0ea5e9;
+            transform: translateX(5px);
+        }
+        .v-enter-active, .v-leave-active {
+            transition: opacity 0.5s ease;
+        }
+        .v-enter-from, .v-leave-to {
+            opacity: 0;
+        }
+    </style>
+</head>
+<body class="font-sans">
+    <div id="app" class="min-h-screen">
+        <!-- Navigation -->
+        <nav class="fixed top-0 w-full z-50 glass-card">
+            <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-brand-600 rounded-xl flex items-center justify-center shadow-lg shadow-brand-500/20">
+                        <span class="text-white font-display font-bold text-xl">V</span>
+                    </div>
+                    <h1 class="font-display font-bold text-xl tracking-tight">Vue.js <span class="text-brand-600">Master Class</span></h1>
+                </div>
+                <div class="hidden md:flex space-x-8 font-medium text-sm text-gray-600">
+                    <a href="#v-if" class="hover:text-brand-600 transition-colors">指令系統</a>
+                    <a href="#props" class="hover:text-brand-600 transition-colors">元件開發</a>
+                    <a href="#router" class="hover:text-brand-600 transition-colors">路由分析</a>
+                </div>
+            </div>
+        </nav>
+
+        <main class="max-w-7xl mx-auto px-6 pt-32 pb-20 flex flex-col md:flex-row gap-12">
+            <!-- Sidebar -->
+            <aside class="w-full md:w-64 space-y-8 shrink-0">
+                <div class="sticky top-32">
+                    <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">課程目錄</h3>
+                    <ul class="space-y-4">
+                        <li v-for="item in menuItems" :key="item.id">
+                            <a :href="'#' + item.id" class="nav-link flex items-center text-gray-600 hover:text-brand-600">
+                                <span class="w-2 h-2 bg-brand-500 rounded-full mr-3 opacity-0 group-hover:opacity-100 transition-opacity"></span>
+                                {{ item.label }}
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </aside>
+
+            <!-- Content Area -->
+            <div class="flex-1 space-y-24">
+                <!-- Introduction -->
+                <section id="intro" class="section-anchor">
+                    <div class="max-w-3xl">
+                        <span class="inline-block px-3 py-1 rounded-full bg-brand-50 text-brand-700 text-xs font-bold mb-6 italic">Lesson 02 - Intermediate Vue</span>
+                        <h2 class="text-4xl md:text-5xl font-display font-bold mb-6 leading-tight">掌握 Vue.js 的<br/><span class="text-brand-600">響應式指令與組件</span></h2>
+                        <p class="text-gray-500 text-lg leading-relaxed mb-8">
+                            在這一堂課中，我們將學習 Vue.js 中最重要的各種指令與組件基礎。這些工具能讓你輕易地操控 DOM，並以此構建出高性能、易維護的前端應用。
+                        </p>
+                    </div>
+                </section>
+
+                <!-- Props & Ref: The Foundation -->
+                <section id="props-ref" class="section-anchor">
+                    <div class="flex items-center space-x-4 mb-8">
+                        <div class="w-10 h-10 rounded-xl bg-pink-50 flex items-center justify-center text-pink-600 shadow-sm">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                        </div>
+                        <h3 class="text-3xl font-display font-bold">核心基石：Props & Ref</h3>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-10">
+                        <!-- Detailed Ref Explanation -->
+                        <div class="space-y-6">
+                            <div class="p-6 bg-slate-50 border border-slate-100 rounded-3xl">
+                                <h4 class="text-lg font-bold text-slate-800 mb-3 flex items-center">
+                                    <span class="w-2 h-6 bg-brand-500 rounded-full mr-2"></span>
+                                    為什麼需要 Ref？(響應式的秘密)
+                                </h4>
+                                <div class="space-y-4 text-sm text-slate-600 leading-relaxed">
+                                    <p>在普通 JavaScript 中，改變一個變數的值，瀏覽器是不會知道要更新畫面的。為了讓 Vue 「聽得到」數據的變化，我們必須使用 <code>ref()</code>。</p>
+                                    <div class="p-4 bg-white rounded-xl border border-slate-200">
+                                        <p class="font-bold text-slate-800 mb-1">🔍 原理解析：</p>
+                                        <ul class="list-disc pl-5 space-y-1 text-xs">
+                                            <li><strong>包裝紙 (Wrapper)：</strong> <code>ref</code> 會把你的值包進一個「物件」裡。</li>
+                                            <li><strong>.value 的由來：</strong> 因為它是物件，所以我們在 JS 裡必須透過 <code>xxx.value</code> 來存取。</li>
+                                            <li><strong>自動拆解：</strong> 在 HTML (Template) 裡，Vue 會自動幫你拆掉包裝，所以不用寫 <code>.value</code>。</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Props Explanation -->
+                        <div class="space-y-6 flex flex-col justify-center">
+                            <div class="p-6 bg-pink-50/50 border border-pink-100 rounded-3xl">
+                                <h4 class="text-lg font-bold text-pink-800 mb-3 flex items-center">
+                                    <span class="w-2 h-6 bg-pink-500 rounded-full mr-2"></span>
+                                    Props (組件的單向對話)
+                                </h4>
+                                <p class="text-sm text-pink-700 leading-relaxed">
+                                    想像父組件是「老闆」，子組件是「員工」。老闆透過 <code>Props</code> 下達指令。
+                                    <strong>原則：</strong> 員工只能「看」指令，不能隨便改老闆給的原始文件（單向數據流）。
+                                </p>
+                            </div>
+                            <div class="code-block p-4 rounded-xl text-xs">
+                                <pre><code>// Script: 宣告響應式變數
+const count = ref(0); 
+
+// Template: 自動讀取 (免 .value)
+&lt;button @click="count++"&gt;\{{ count }}&lt;/button&gt;</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- v-if vs v-show -->
+                <section id="conditional" class="section-anchor">
+                    <div class="flex items-center space-x-4 mb-8">
+                        <div class="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600 shadow-sm">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        </div>
+                        <h3 class="text-3xl font-display font-bold">條件渲染：v-if vs v-show</h3>
+                    </div>
+                    
+                    <div class="grid md:grid-cols-2 gap-12">
+                        <!-- v-if section -->
+                        <div id="v-if" class="space-y-4">
+                            <div class="flex items-center space-x-2 text-indigo-600 font-bold text-sm mb-2">
+                                <span class="w-2 h-2 bg-indigo-600 rounded-full"></span>
+                                <span>v-if (真實的銷毀)</span>
+                            </div>
+                            <p class="text-sm text-gray-500 leading-relaxed">
+                                當條件為假時，元件會被 **從 DOM 中徹底移除**。適合不常切換、或初始渲染開銷大的場景。
+                            </p>
+                            <div class="bg-indigo-50/30 p-6 rounded-2xl border border-indigo-100 flex flex-col items-center">
+                                <div class="h-12 flex items-center justify-center mb-4">
+                                    <transition mode="out-in">
+                                        <p v-if="demoIf" class="text-indigo-600 font-bold text-lg">✨ v-if 存在中</p>
+                                        <p v-else class="text-gray-300 italic text-sm">-- 節點已消失 --</p>
+                                    </transition>
+                                </div>
+                                <button @click="demoIf = !demoIf" class="px-6 py-2 bg-indigo-600 text-white rounded-full text-xs font-medium hover:bg-indigo-700 transition-all">
+                                    徹底切換節點
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- v-show section -->
+                        <div id="v-show" class="space-y-4">
+                            <div class="flex items-center space-x-2 text-blue-600 font-bold text-sm mb-2">
+                                <span class="w-2 h-2 bg-blue-600 rounded-full"></span>
+                                <span>v-show (CSS 切換)</span>
+                            </div>
+                            <p class="text-sm text-gray-500 leading-relaxed">
+                                元件始終被保留在 DOM 中，只是透過 CSS 的 <code>display: none</code> 來切換。適合 **頻繁切換** 的場景。
+                            </p>
+                            <div class="bg-blue-50/30 p-6 rounded-2xl border border-blue-100 flex flex-col items-center">
+                                <div class="h-12 flex items-center justify-center mb-4">
+                                    <p v-show="demoShow" class="text-blue-600 font-bold text-lg">👁️ v-show 顯示中</p>
+                                    <p v-show="!demoShow" class="text-gray-400 italic text-sm">-- 僅是隱藏 (display:none) --</p>
+                                </div>
+                                <button @click="demoShow = !demoShow" class="px-6 py-2 bg-blue-600 text-white rounded-full text-xs font-medium hover:bg-blue-700 transition-all">
+                                    切換顯示狀態
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- v-for -->
+                <section id="v-for" class="section-anchor">
+                    <div class="flex items-center space-x-4 mb-6">
+                        <div class="w-8 h-8 rounded-lg bg-orange-50 flex items-center justify-center text-orange-600">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>
+                        </div>
+                        <h3 class="text-2xl font-display font-bold">列表渲染：v-for</h3>
+                    </div>
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div class="space-y-4">
+                            <p class="text-gray-600">`v-for` 指令基於一個數組來渲染一個列表。語法格式為 `item in items`。</p>
+                            <div class="code-block p-4 rounded-lg text-sm" v-pre>
+                                <pre><code>&lt;ul&gt;
+  &lt;li v-for="user in users" :key="user.id"&gt;
+    {{ user.name }}
+  &lt;/li&gt;
+&lt;/ul&gt;</code></pre>
+                            </div>
+                        </div>
+                        <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+                            <h4 class="font-bold mb-4 text-sm text-gray-400">互動範例</h4>
+                            <div class="space-y-2 mb-4">
+                                <transition-group name="list" tag="div" class="space-y-2">
+                                    <div v-for="(item, index) in demoList" :key="item" class="p-3 bg-brand-50 rounded-lg text-brand-700 flex justify-between items-center">
+                                        <span>{{ item }}</span>
+                                        <button @click="removeItem(index)" class="text-red-400 hover:text-red-600">×</button>
+                                    </div>
+                                </transition-group>
+                            </div>
+                            <div class="flex gap-2">
+                                <input v-model="newItem" @keyup.enter="addItem" placeholder="新增項目..." class="flex-1 px-3 py-2 border rounded-lg text-sm outline-none focus:border-brand-500">
+                                <button @click="addItem" class="px-4 py-2 bg-brand-600 text-white rounded-lg text-sm">新增</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Data Binding: Single vs Dual -->
+                <section id="binding" class="section-anchor">
+                    <div class="flex items-center space-x-4 mb-8">
+                        <div class="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600 shadow-sm">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path></svg>
+                        </div>
+                        <h3 class="text-3xl font-display font-bold">數據綁定：單向 vs 雙向</h3>
+                    </div>
+
+                    <div class="space-y-12">
+                        <!-- v-bind (Single) -->
+                        <div id="v-bind" class="grid md:grid-cols-2 gap-8 items-center">
+                            <div class="space-y-4">
+                                <div class="inline-flex items-center px-3 py-1 rounded-full bg-yellow-100 text-yellow-700 text-[10px] font-bold uppercase tracking-wider">
+                                    單向綁定 v-bind ( : )
+                                </div>
+                                <h4 class="text-xl font-bold font-display">「佈告欄」模式 (Billboard)</h4>
+                                <p class="text-sm text-gray-500 leading-relaxed italic border-l-2 border-yellow-400 pl-4">
+                                    「我給你看什麼，你就顯示什麼。但你改不了我的原始檔。」
+                                </p>
+                                <ul class="list-disc pl-5 text-xs text-gray-500 space-y-1">
+                                    <li>更新腳本 (Script) -> 畫面 (UI) 跟著動。</li>
+                                    <li>修改畫面內容 -> 腳本原始數據完全不變。</li>
+                                </ul>
+                            </div>
+                            <div class="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm flex flex-col items-center">
+                                <div class="w-20 h-20 rounded-2xl transition-all duration-500 mb-6 flex items-center justify-center text-white font-bold"
+                                     :class="isBoxActive ? 'bg-brand-600 rotate-12 scale-110 shadow-xl shadow-brand-500/30' : 'bg-gray-200 rotate-0 scale-100'">
+                                     {{ isBoxActive ? 'ON' : 'OFF' }}
+                                </div>
+                                <button @click="isBoxActive = !isBoxActive" class="px-6 py-2 rounded-full bg-gray-900 text-white text-xs font-medium hover:bg-black transition-all active:scale-95">
+                                    更新處室公告 (Script 改 UI)
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- v-model (Dual) -->
+                        <div id="v-model" class="grid md:grid-cols-2 gap-8 items-center border-t border-gray-50 pt-12">
+                            <div class="space-y-4">
+                                <div class="inline-flex items-center px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-[10px] font-bold uppercase tracking-wider">
+                                    雙向綁定 v-model
+                                </div>
+                                <h4 class="text-xl font-bold font-display">「共享文件」模式 (Google Doc)</h4>
+                                <p class="text-sm text-gray-500 leading-relaxed italic border-l-2 border-emerald-400 pl-4">
+                                    「我們兩個共用一份資料，誰改都一樣。」
+                                </p>
+                                <ul class="list-disc pl-5 text-xs text-gray-500 space-y-1">
+                                    <li>腳本改了 -> 畫面跟著改。</li>
+                                    <li>畫面改了 (如輸入框) -> 腳本跟著變。</li>
+                                </ul>
+                            </div>
+                            <div class="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm space-y-4">
+                                <div class="p-4 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200">
+                                    <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest block mb-2">Google Doc 視窗 (UI)</span>
+                                    <input v-model="demoMessage" class="w-full p-3 bg-white border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-brand-500 shadow-sm text-sm" placeholder="在這裡編輯文件...">
+                                </div>
+                                <div class="p-4 bg-brand-50 rounded-2xl">
+                                    <span class="text-[10px] font-bold text-brand-400 uppercase tracking-widest block mb-2">腳本同步內容 (Script)</span>
+                                    <div class="text-lg font-display font-bold text-brand-600 break-words line-clamp-2">"{{ demoMessage || '(文件空白中)' }}"</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Computed Properties -->
+                <section id="computed" class="section-anchor">
+                    <div class="flex items-center space-x-4 mb-6">
+                        <div class="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                        </div>
+                        <h3 class="text-2xl font-display font-bold">效能核心：計算屬性 (Computed)</h3>
+                    </div>
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div class="space-y-4">
+                            <p class="text-gray-600 font-medium">為什麼它叫「智慧計算」？</p>
+                            <p class="text-sm text-gray-500">`computed` 具有 **Caching (緩存)** 機制。它會記住計算結果，只有在它依賴的數據（例如 money）變動時，才會重新計算。</p>
+                            
+                            <div class="code-block p-4 rounded-lg text-sm" v-pre>
+                                <pre><code class="language-javascript text-[11px] leading-tight">const money = ref(100);
+const level = computed(() => {
+  console.log("正在計算會員等級..."); 
+  return money.value > 1000 ? '金牌' : '普卡';
+});
+
+// Q1: 目前 console 是空的 (沒人讀取，不計算)
+// Q2: 執行讀取
+console.log(level.value); // 印出 "正在計算會員等級..."
+// Q3: 數據沒變，再讀一次
+console.log(level.value); // 完全沒動靜！(直接拿快取)
+// Q4: 數據變了，但沒人讀取
+money.value = 5000;      // 還是沒動靜！(懶加載)
+// Q5: 終於有人要看結果了
+console.log(level.value); // 才會印出第二次 "正在計算..."</code></pre>
+                            </div>
+                        </div>
+
+                        <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+                            <h4 class="font-bold mb-4 text-sm text-gray-400">互動運算機</h4>
+                            <div class="space-y-4">
+                                <div class="flex justify-between items-center p-3 bg-blue-50/50 rounded-lg">
+                                    <span class="text-xs font-bold text-blue-600">錢包餘額 (money)</span>
+                                    <div class="flex items-center space-x-2">
+                                        <button @click="price -= 100" class="w-6 h-6 border rounded bg-white">-</button>
+                                        <input type="number" v-model="price" class="w-16 text-right bg-transparent font-bold outline-none">
+                                        <button @click="price += 100" class="w-6 h-6 border rounded bg-white">+</button>
+                                    </div>
+                                </div>
+                                <div class="pt-4 border-t border-dashed">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <span class="text-sm font-semibold text-gray-700">會員等級：</span>
+                                        <span class="px-3 py-1 rounded-full text-xs font-bold" 
+                                              :class="totalPrice > 1000 ? 'bg-yellow-100 text-yellow-700' : 'bg-gray-100 text-gray-600'">
+                                            {{ totalPrice > 1000 ? '👑 金牌會員' : '👤 普卡會員' }}
+                                        </span>
+                                    </div>
+                                    <p class="text-[10px] text-gray-400 italic leading-tight">
+                                        ⚠️ 注意：打開瀏覽器 Console (F12) 觀察。只有當金額跨越 1000 元或首次加載時，才會觸發運算 log。
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+
+
+                <!-- Advanced Topics: Brief Mention -->
+                <section id="advanced" class="section-anchor">
+                    <div class="flex items-center space-x-4 mb-6">
+                        <div class="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center text-gray-600">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        </div>
+                        <h3 class="text-2xl font-display font-bold text-gray-400">其他進階工具 (稍作了解)</h3>
+                    </div>
+                    <div class="grid md:grid-cols-3 gap-6 opacity-60">
+                        <div class="p-6 bg-white border border-gray-100 rounded-2xl">
+                            <h4 class="font-bold text-gray-800 text-sm mb-2">Watchers</h4>
+                            <p class="text-xs text-gray-500">偵聽數據變更並執行特定的異步動作。</p>
+                        </div>
+                        <div class="p-6 bg-white border border-gray-100 rounded-2xl">
+                            <h4 class="font-bold text-gray-800 text-sm mb-2">Emits</h4>
+                            <p class="text-xs text-gray-500">子組件向父組件發送信號進行溝通。</p>
+                        </div>
+                        <div class="p-6 bg-white border border-gray-100 rounded-2xl">
+                            <h4 class="font-bold text-gray-800 text-sm mb-2">Lifecycle Hooks</h4>
+                            <p class="text-xs text-gray-500">掌握組件從誕生到銷毀的生命週期時機。</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Vue Router vs Non-Router -->
+                <section id="router" class="section-anchor">
+                    <div class="p-10 rounded-[2rem] bg-gray-900 text-white relative overflow-hidden">
+                        <div class="relative z-10">
+                            <h3 class="text-3xl font-display font-bold mb-8 text-center text-brand-500">Vue Router 完全解析</h3>
+                            <div class="grid md:grid-cols-2 gap-12">
+                                <div class="space-y-4">
+                                    <div class="flex items-center space-x-2 text-brand-400 font-bold mb-2">
+                                        <div class="p-1 rounded bg-brand-400/20">❌</div>
+                                        <span>無 Router (手動切換)</span>
+                                    </div>
+                                    <ul class="text-sm text-gray-400 space-y-3 list-disc pl-5 leading-relaxed">
+                                        <li>使用 `v-if` 或 `is` component 來切換視圖。</li>
+                                        <li>瀏覽器 URL 不會改變，無法使用「上一頁/下一頁」。</li>
+                                        <li>難以分享特定頁面的網址。</li>
+                                        <li><span class="text-white">適合：</span>小型單一組件、浮窗、或不需要深度鏈接的工具。</li>
+                                    </ul>
+                                </div>
+                                <div class="space-y-4">
+                                    <div class="flex items-center space-x-2 text-green-400 font-bold mb-2">
+                                        <div class="p-1 rounded bg-green-400/20">✅</div>
+                                        <span>有 Vue Router</span>
+                                    </div>
+                                    <ul class="text-sm text-gray-400 space-y-3 list-disc pl-5 leading-relaxed">
+                                        <li>真正的單頁面應用 (SPA) 體驗。</li>
+                                        <li>URL 自動同步，導航完全由 Vue 掌控。</li>
+                                        <li>支持嵌套路由、路由守衛、動態參數。</li>
+                                        <li><span class="text-white">適合：</span>中大型應用、CMS、部落格、任何需要導航的網站。</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Decorative glow -->
+                        <div class="absolute -top-24 -right-24 w-96 h-96 bg-brand-600/20 rounded-full blur-[120px]"></div>
+                        <div class="absolute -bottom-24 -left-24 w-64 h-64 bg-purple-600/10 rounded-full blur-[100px]"></div>
+                    </div>
+                </section>
+            </div>
+        </main>
+
+        <footer class="border-t border-gray-100 py-12">
+            <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center text-gray-400 text-sm">
+                <p>&copy; 2026 Vue.js 基礎教學 - 余亦凡 第二堂課</p>
+                <div class="flex space-x-6 mt-4 md:mt-0">
+                    <a href="#" class="hover:text-brand-600">GitHub</a>
+                    <a href="#" class="hover:text-brand-600">文件中心</a>
+                    <a href="#" class="hover:text-brand-600">進階課程 &rarr;</a>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- App Logic -->
+    <script>
+        const { createApp, ref, computed, watch, onMounted, transition, transitionGroup } = Vue;
+
+        const app = createApp({
+            setup() {
+                // v-if & v-show demo
+                const demoIf = ref(true);
+                const demoShow = ref(true);
+
+                // v-for demo
+                const demoList = ref(['Vue.js', 'React', 'Angular', 'Svelte']);
+                const newItem = ref('');
+                const addItem = () => {
+                    if (newItem.value.trim()) {
+                        demoList.value.push(newItem.value);
+                        newItem.value = '';
+                    }
+                };
+                const removeItem = (index) => {
+                    demoList.value.splice(index, 1);
+                };
+
+                // v-model demo
+                const demoMessage = ref('');
+
+                // Computed demo
+                const price = ref(100);
+                const quantity = ref(2);
+                const totalPrice = computed(() => price.value * quantity.value);
+
+                // v-bind demo
+                const isBoxActive = ref(false);
+
+                // Sidebar items
+                const menuItems = [
+                    { id: 'intro', label: '課程簡介' },
+                    { id: 'props-ref', label: '核心基石 Props & Ref' },
+                    { id: 'conditional', label: '條件渲染 v-if / v-show' },
+                    { id: 'v-for', label: '列表渲染 v-for' },
+                    { id: 'binding', label: '數據綁定 1-Way vs 2-Way' },
+                    { id: 'computed', label: '效能計算 Computed' },
+                    { id: 'advanced', label: '進階工具概要' },
+                    { id: 'router', label: '路由深度對照' },
+                ];
+
+                return {
+                    demoIf, demoShow,
+                    demoList, newItem, addItem, removeItem,
+                    demoMessage,
+                    price, quantity, totalPrice,
+                    isBoxActive,
+                    menuItems
+                };
+            }
+        });
+
+        // Register a global child component for Props/Emits demo if needed
+        app.mount('#app');
+
+        // Combined jQuery to show it can still be used for simple scroll or logic
+        $(document).ready(function() {
+            // Smooth scroll anchor link (Handled by browser mostly, but jQuery can add extra spice)
+            $('a[href^="#"]').on('click', function(e) {
+                console.log("jQuery detected navigation to:", $(this).attr('href'));
+            });
+        });
+    </script>
+
+    <style>
+        /* Animation Classes */
+        .list-enter-active, .list-leave-active {
+            transition: all 0.5s ease;
+        }
+        .list-enter-from, .list-leave-to {
+            opacity: 0;
+            transform: translateX(30px);
+        }
+        
+        /* Fade transition for v-if demo */
+        .v-enter-active, .v-leave-active {
+            transition: all 0.3s ease;
+        }
+        .v-enter-from, .v-leave-to {
+            opacity: 0;
+            transform: scale(0.95);
+        }
+    </style>
+</body>
+</html>
