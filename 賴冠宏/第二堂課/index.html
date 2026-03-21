@@ -1,0 +1,1634 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第二次上課課本 - 網頁設計概念</title>
+
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="專為網頁設計課程打造的互動式課本，涵蓋網站類別、設計重點與接案心法。">
+    <meta name="keywords" content="網頁設計, UI/UX, 接案, 課程課本, HTML, CSS, JavaScript">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap"
+        rel="stylesheet">
+
+    <!-- jQuery CDN -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        body {
+            font-family: 'Outfit', 'Noto Sans TC', sans-serif;
+            background-color: #fcfcfc;
+            color: #1a1a1a;
+            scroll-behavior: smooth;
+        }
+
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .premium-card {
+            background: white;
+            border-radius: 24px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(0, 0, 0, 0.03);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.01);
+        }
+
+        .premium-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02);
+            border-color: rgba(0, 0, 0, 0.08);
+        }
+
+        .modal-overlay {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(8px);
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 100;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        .modal-content {
+            background: white;
+            max-width: 800px;
+            margin: 2rem auto;
+            border-radius: 32px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+            position: relative;
+            transform: scale(0.95);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            opacity: 0;
+        }
+
+        .modal-overlay.active {
+            display: block;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        .accent-gradient {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .section-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #e5e7eb;
+            transition: all 0.3s ease;
+        }
+
+        .section-dot.active {
+            background: #6366f1;
+            transform: scale(1.5);
+        }
+
+        .lesson-step::before {
+            content: '';
+            position: absolute;
+            left: -24px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #f3f4f6;
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+
+        /* Flowchart Shapes */
+        .shape-oval {
+            border-radius: 9999px;
+            padding: 1rem 2rem;
+            border: 2px solid #6366f1;
+            background: #f5f3ff;
+            color: #4338ca;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .shape-rect {
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 2px solid #10b981;
+            background: #ecfdf5;
+            color: #047857;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .shape-diamond {
+            width: 120px;
+            height: 120px;
+            background: #fffbeb;
+            border: 2px solid #f59e0b;
+            color: #b45309;
+            transform: rotate(45deg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 20px auto;
+            position: relative;
+        }
+
+        .shape-diamond span {
+            transform: rotate(-45deg);
+            font-weight: 600;
+            text-align: center;
+            line-height: 1.2;
+            padding: 4px;
+        }
+
+        .flow-line {
+            position: relative;
+            height: 40px;
+            width: 2px;
+            background: #cbd5e1;
+            margin: 0 auto;
+        }
+
+        .flow-line::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: -4px;
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-top: 8px solid #cbd5e1;
+        }
+
+        .flow-line-horizontal {
+            width: 60px;
+            height: 2px;
+            background: #cbd5e1;
+            position: relative;
+        }
+
+        .flow-line-horizontal::after {
+            content: '';
+            position: absolute;
+            right: -5px;
+            top: -4px;
+            border-top: 5px solid transparent;
+            border-bottom: 5px solid transparent;
+            border-left: 8px solid #cbd5e1;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Sidebar Styles */
+        :root {
+            --sidebar-width: 320px;
+        }
+
+        .sidebar {
+            width: var(--sidebar-width);
+            height: 100vh;
+            position: fixed;
+            left: calc(-1 * var(--sidebar-width));
+            top: 0;
+            background: white;
+            z-index: 100;
+            box-shadow: 20px 0 50px rgba(0, 0, 0, 0.05);
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            border-right: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .sidebar.active {
+            transform: translateX(var(--sidebar-width));
+        }
+
+        .main-content {
+            transition: padding-left 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .sidebar-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(4px);
+            z-index: 90;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+
+        .sidebar-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .nav-link-sidebar {
+            display: flex;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            margin: 0.5rem 1rem;
+            border-radius: 16px;
+            color: #6b7280;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link-sidebar:hover {
+            background: #f5f3ff;
+            color: #6366f1;
+            padding-left: 2rem;
+        }
+
+        .nav-link-sidebar.active {
+            background: #6366f1;
+            color: white;
+            box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.3);
+        }
+
+        .toggle-btn {
+            position: fixed;
+            top: 1.5rem;
+            left: 1.5rem;
+            z-index: 110;
+            width: 3.5rem;
+            height: 3.5rem;
+            background: white;
+            border-radius: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .toggle-btn:hover {
+            transform: scale(1.05);
+            color: #6366f1;
+        }
+
+        @media (max-width: 1024px) {
+            .main-content.sidebar-open {
+                padding-left: 0 !important;
+            }
+        }
+    </style>
+</head>
+
+<body class="antialiased">
+
+    <!-- Sidebar Toggle -->
+    <div class="toggle-btn" onclick="toggleSidebar()">
+        <i data-lucide="menu" id="toggle-icon" class="w-6 h-6 transition-transform"></i>
+    </div>
+
+    <!-- Sidebar TOC -->
+    <aside class="sidebar flex flex-col pt-24" id="sidebar">
+        <div class="px-8 pb-8 border-b border-gray-50 mb-6">
+            <div class="flex items-center space-x-3 mb-2">
+                <div class="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center text-white">
+                    <i data-lucide="book-open" class="w-5 h-5"></i>
+                </div>
+                <span class="text-lg font-bold">課程課本</span>
+            </div>
+            <p class="text-xs text-gray-400 font-medium tracking-widest uppercase">TABLE OF CONTENTS</p>
+        </div>
+
+        <nav class="flex-1 overflow-y-auto px-4 custom-scrollbar">
+            <a href="#intro" onclick="closeSidebar()" class="nav-link-sidebar group">
+                <i data-lucide="info" class="w-5 h-5 mr-3 opacity-50 group-hover:opacity-100"></i>
+                <span>前言</span>
+            </a>
+            <a href="#fans-theory" onclick="closeSidebar()" class="nav-link-sidebar group">
+                <i data-lucide="heart" class="w-5 h-5 mr-3 opacity-50 group-hover:opacity-100"></i>
+                <span>鐵粉定律</span>
+            </a>
+            <a href="#cases" onclick="closeSidebar()" class="nav-link-sidebar group">
+                <i data-lucide="briefcase" class="w-5 h-5 mr-3 opacity-50 group-hover:opacity-100"></i>
+                <span>案子類型</span>
+            </a>
+            <a href="#process" onclick="closeSidebar()" class="nav-link-sidebar group">
+                <i data-lucide="zap" class="w-5 h-5 mr-3 opacity-50 group-hover:opacity-100"></i>
+                <span>思考流程</span>
+            </a>
+            <a href="#categories" onclick="closeSidebar()" class="nav-link-sidebar group">
+                <i data-lucide="grid" class="w-5 h-5 mr-3 opacity-50 group-hover:opacity-100"></i>
+                <span>網站類別</span>
+            </a>
+            <a href="#architecture" onclick="closeSidebar()" class="nav-link-sidebar group">
+                <i data-lucide="layers" class="w-5 h-5 mr-3 opacity-50 group-hover:opacity-100"></i>
+                <span>架構佈局</span>
+            </a>
+            <a href="#flowchart-standards" onclick="closeSidebar()" class="nav-link-sidebar group">
+                <i data-lucide="git-branch" class="w-5 h-5 mr-3 opacity-50 group-hover:opacity-100"></i>
+                <span>流程標準</span>
+            </a>
+        </nav>
+
+        <div class="p-6 mt-auto">
+            <div class="p-4 bg-indigo-50 rounded-2xl">
+                <p class="text-[10px] font-bold text-indigo-400 mb-1">PRO TIP</p>
+                <p class="text-xs text-indigo-900 leading-relaxed font-medium">使用側邊欄快讀跳轉不同章節，這能提高你的學習效率。</p>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Overlay -->
+    <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+    <!-- Main Content Wrapper -->
+    <div class="main-content" id="main-content">
+
+        <!-- Hero Section -->
+        <section class="pt-40 pb-20 px-6">
+            <div class="max-w-4xl mx-auto text-center animate-fade-in">
+                <span
+                    class="inline-block px-4 py-1.5 rounded-full bg-indigo-50 text-indigo-600 text-sm font-bold mb-6">WELCOME
+                    TO THE COURSE</span>
+                <h1 class="text-5xl md:text-7xl font-bold mb-8 leading-tight">
+                    掌握網頁設計的<br><span class="accent-gradient">核心邏輯與接案藝術</span>
+                </h1>
+                <p class="text-xl text-gray-500 max-w-2xl mx-auto leading-relaxed">
+                    這是一份專為你準備的數位課本。在這裡，我們不只談技術，更談如何看透網站的本質，並將其轉化為商業價值。
+                </p>
+            </div>
+        </section>
+
+        <!-- Intro: LinkedIn -->
+        <section id="intro" class="py-20 px-6 bg-white overflow-hidden">
+            <div class="max-w-7xl mx-auto">
+                <div class="grid md:grid-cols-2 gap-16 items-center">
+                    <div class="relative">
+                        <div
+                            class="absolute -top-12 -left-12 w-64 h-64 bg-indigo-50 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob">
+                        </div>
+                        <div class="relative premium-card p-10 border-2 border-indigo-100/50">
+                            <div
+                                class="w-14 h-14 bg-indigo-100 rounded-2xl flex items-center justify-center text-indigo-600 mb-8">
+                                <i data-lucide="briefcase" class="w-8 h-8"></i>
+                            </div>
+                            <h2 class="text-3xl font-bold mb-6">接案的第一步：自媒體經營</h2>
+                            <p class="text-lg text-gray-600 leading-relaxed mb-8">
+                                除了傳統的社群平台，我強烈建議你開始經營 <span
+                                    class="font-bold text-indigo-600">LinkedIn</span>。在上面填寫完整的專業資料，這不僅是展示履歷，更是建立個人品牌的長期投資。
+                            </p>
+                            <div class="flex items-center space-x-4">
+                                <div class="flex -space-x-2">
+                                    <div class="w-8 h-8 rounded-full bg-gray-200 border-2 border-white"></div>
+                                    <div class="w-8 h-8 rounded-full bg-indigo-200 border-2 border-white"></div>
+                                    <div class="w-8 h-8 rounded-full bg-purple-200 border-2 border-white"></div>
+                                </div>
+                                <span class="text-sm text-gray-500 font-medium">已有 1,000+ 專業人士在此連結</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="space-y-8 animate-fade-in" style="animation-delay: 0.2s;">
+                        <h3 class="text-4xl font-bold leading-tight">主流社群：多元經營策略</h3>
+                        <p class="text-gray-500 leading-relaxed">
+                            除了 LinkedIn，不同的社群平台能接觸到不同類型的客戶。設計師應根據平台特性調整經營策略：
+                        </p>
+                        <div class="grid grid-cols-1 gap-6">
+                            <div
+                                class="flex items-center space-x-4 p-4 rounded-2xl bg-gradient-to-r from-pink-50 to-red-50 border border-pink-100">
+                                <div
+                                    class="w-12 h-12 bg-white rounded-xl flex items-center justify-center text-red-500 shadow-sm">
+                                    <i data-lucide="instagram" class="w-6 h-6"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-gray-900">小紅書 & IG</h4>
+                                    <p class="text-xs text-gray-500">視覺導向。適合放精美的作品集與設計心法。</p>
+                                </div>
+                            </div>
+                            <div
+                                class="flex items-center space-x-4 p-4 rounded-2xl bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-100">
+                                <div
+                                    class="w-12 h-12 bg-white rounded-xl flex items-center justify-center text-blue-600 shadow-sm">
+                                    <i data-lucide="facebook" class="w-6 h-6"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-gray-900">Facebook</h4>
+                                    <p class="text-xs text-gray-500">社團經營。適合與中小企業主直接交流與解決問題。</p>
+                                </div>
+                            </div>
+                            <div
+                                class="flex items-center space-x-4 p-4 rounded-2xl bg-gradient-to-r from-slate-50 to-gray-100 border border-gray-200">
+                                <div
+                                    class="w-12 h-12 bg-white rounded-xl flex items-center justify-center text-gray-600 shadow-sm">
+                                    <i data-lucide="globe" class="w-6 h-6"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-gray-900">個人網站</h4>
+                                    <p class="text-xs text-gray-500">專業終點站。所有社群流量最終應導向此處建立權威。</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 1000 True Fans Theory -->
+        <section id="fans-theory" class="py-32 px-6 bg-slate-900 text-white rounded-[60px] mx-6">
+            <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-16">
+                <div class="md:w-1/2">
+                    <span
+                        class="inline-block px-4 py-1.5 rounded-full bg-indigo-500/20 text-indigo-300 text-xs font-bold mb-6 tracking-widest uppercase">THEORY
+                        BY KEVIN KELLY</span>
+                    <h2 class="text-4xl font-bold mb-8 leading-tight">1,000 個鐵粉定律</h2>
+                    <p class="text-indigo-100/70 text-lg leading-relaxed mb-8">
+                        在接案市場中，你不需要成為坐擁百萬粉絲的網紅。你只需要找到 <strong>1,000 個鐵粉</strong>，就能支撐起一個非常成功的個人品牌與高收入事業。
+                    </p>
+                    <div class="space-y-6">
+                        <div
+                            class="flex items-start space-x-4 p-6 bg-white/5 rounded-2xl border border-white/10 hover:bg-white/10 transition-colors">
+                            <div class="w-12 h-12 bg-indigo-600 rounded-xl flex items-center justify-center shrink-0">
+                                <i data-lucide="heart" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-white mb-1">什麼是「鐵粉」？</h4>
+                                <p class="text-sm text-indigo-100/60">他們是願意購買你任何作品、訂閱你的付費知識、並向他人極力推薦你的專業的人。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div
+                    class="md:w-1/2 bg-white/5 p-12 rounded-[40px] border border-white/10 backdrop-blur-sm relative overflow-hidden group">
+                    <div class="absolute -top-12 -right-12 w-32 h-32 bg-indigo-500/20 rounded-full blur-3xl"></div>
+                    <h4 class="text-2xl font-bold mb-8 text-center">簡單的數學，強大的真相</h4>
+                    <div class="flex flex-col items-center justify-center space-y-4">
+                        <div class="text-center group-hover:scale-110 transition-transform">
+                            <span class="text-5xl font-black text-indigo-400">1,000</span>
+                            <span class="text-gray-400 ml-2 text-sm uppercase">Fans</span>
+                        </div>
+                        <i data-lucide="x" class="w-6 h-6 text-gray-600"></i>
+                        <div class="text-center group-hover:scale-110 transition-transform">
+                            <span class="text-gray-400 mr-2 text-sm uppercase">Annual Support</span>
+                            <span class="text-5xl font-black text-emerald-400">$100</span>
+                        </div>
+                        <div class="w-full h-px bg-white/10 my-4"></div>
+                        <div class="text-center">
+                            <span class="text-6xl font-black text-white">$100,000</span>
+                            <p class="text-gray-400 mt-2 tracking-widest uppercase text-xs">Annual Income (約 300 萬台幣)
+                            </p>
+                        </div>
+                    </div>
+                    <p class="mt-8 text-xs text-center text-gray-500 italic">
+                        「重點不在於觸及人數的『廣度』，而是在於專業連結的『深度』。」
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Case Types -->
+        <section id="cases" class="py-32 px-6 bg-white">
+            <div class="max-w-7xl mx-auto text-center">
+                <h2 class="text-4xl font-bold mb-16">UI/UX 接案的兩大類別</h2>
+                <div class="grid md:grid-cols-2 gap-12">
+                    <div
+                        class="p-12 rounded-[40px] bg-slate-50 border border-slate-100 hover:shadow-2xl hover:shadow-indigo-100 transition-all text-left group">
+                        <div
+                            class="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-sm mb-8 group-hover:scale-110 transition-transform">
+                            <i data-lucide="palette" class="w-8 h-8 text-indigo-600"></i>
+                        </div>
+                        <h3 class="text-3xl font-bold mb-6 text-gray-900">完全客製化</h3>
+                        <p class="text-lg text-gray-500 leading-relaxed">
+                            從零開始，打破常規。根據品牌的獨特需求進行深度定制，創造獨一無二的數位體驗。這類案件通常預算較高，設計空間也更大。
+                        </p>
+                    </div>
+                    <div
+                        class="p-12 rounded-[40px] bg-slate-50 border border-slate-100 hover:shadow-2xl hover:shadow-indigo-100 transition-all text-left group">
+                        <div
+                            class="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-sm mb-8 group-hover:scale-110 transition-transform">
+                            <i data-lucide="component" class="w-8 h-8 text-emerald-600"></i>
+                        </div>
+                        <h3 class="text-3xl font-bold mb-6 text-gray-900">傳統網站邏輯</h3>
+                        <p class="text-lg text-gray-500 leading-relaxed">
+                            基於成熟的使用者習慣與設計規範（如電商、部落格）。重點在於優化既有體驗，提升轉換率。對 UX 的嚴謹性要求更高。
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Thinking Process -->
+        <section id="process" class="py-32 px-6 bg-white overflow-hidden">
+            <div class="max-w-6xl mx-auto">
+                <div class="text-center mb-20 animate-on-scroll">
+                    <h2 class="text-4xl font-bold mb-4">設計思考流程</h2>
+                    <p class="text-gray-500">從靈感到實作，設計師的專業心法路徑</p>
+                    <div class="w-20 h-1.5 bg-indigo-600 mx-auto rounded-full mt-4"></div>
+                </div>
+
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <!-- Step 1 -->
+                    <div
+                        class="process-card group bg-slate-50 p-8 rounded-[40px] border border-slate-100 hover:bg-white hover:shadow-2xl hover:shadow-indigo-100 transition-all duration-500 relative">
+                        <div
+                            class="text-6xl font-black text-indigo-100 absolute top-4 right-8 group-hover:text-indigo-50 transition-colors">
+                            01</div>
+                        <div
+                            class="w-14 h-14 bg-indigo-600 rounded-2xl flex items-center justify-center text-white mb-8 shadow-lg shadow-indigo-100 group-hover:rotate-12 transition-transform">
+                            <i data-lucide="sparkles" class="w-7 h-7"></i>
+                        </div>
+                        <h4 class="text-2xl font-bold mb-3 text-gray-900">確認主題</h4>
+                        <p class="text-gray-500 text-sm mb-8 leading-relaxed italic">「這個網站的氣質是什麼？」</p>
+                        <button onclick="openModal('theme-detail')"
+                            class="flex items-center space-x-2 text-indigo-600 font-bold text-sm hover:translate-x-2 transition-transform">
+                            <span>了解詳細心法</span>
+                            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                        </button>
+                        <div
+                            class="absolute bottom-0 left-0 w-full h-1 bg-indigo-600 scale-x-0 group-hover:scale-x-100 transition-transform origin-left rounded-b-full">
+                        </div>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div
+                        class="process-card group bg-slate-50 p-8 rounded-[40px] border border-slate-100 hover:bg-white hover:shadow-2xl hover:shadow-purple-100 transition-all duration-500 relative">
+                        <div
+                            class="text-6xl font-black text-purple-100 absolute top-4 right-8 group-hover:text-purple-50 transition-colors">
+                            02</div>
+                        <div
+                            class="w-14 h-14 bg-purple-600 rounded-2xl flex items-center justify-center text-white mb-8 shadow-lg shadow-purple-100 group-hover:rotate-12 transition-transform">
+                            <i data-lucide="users" class="w-7 h-7"></i>
+                        </div>
+                        <h4 class="text-2xl font-bold mb-3 text-gray-900">需求與 TA</h4>
+                        <p class="text-gray-500 text-sm mb-8 leading-relaxed italic">「他們是誰？他們的使用習慣為何？」</p>
+                        <button onclick="openModal('ta-detail')"
+                            class="flex items-center space-x-2 text-purple-600 font-bold text-sm hover:translate-x-2 transition-transform">
+                            <span>了解詳細心法</span>
+                            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                        </button>
+                        <div
+                            class="absolute bottom-0 left-0 w-full h-1 bg-purple-600 scale-x-0 group-hover:scale-x-100 transition-transform origin-left rounded-b-full">
+                        </div>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div
+                        class="process-card group bg-slate-50 p-8 rounded-[40px] border border-slate-100 hover:bg-white hover:shadow-2xl hover:shadow-emerald-100 transition-all duration-500 relative">
+                        <div
+                            class="text-6xl font-black text-emerald-100 absolute top-4 right-8 group-hover:text-emerald-50 transition-colors">
+                            03</div>
+                        <div
+                            class="w-14 h-14 bg-emerald-600 rounded-2xl flex items-center justify-center text-white mb-8 shadow-lg shadow-emerald-100 group-hover:rotate-12 transition-transform">
+                            <i data-lucide="sitemap" class="w-7 h-7"></i>
+                        </div>
+                        <h4 class="text-2xl font-bold mb-3 text-gray-900">分析結構</h4>
+                        <p class="text-gray-500 text-sm mb-8 leading-relaxed italic">「確保網站骨架在美感之前先穩固。」</p>
+                        <button onclick="openModal('structure-detail')"
+                            class="flex items-center space-x-2 text-emerald-600 font-bold text-sm hover:translate-x-2 transition-transform">
+                            <span>了解詳細心法</span>
+                            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                        </button>
+                        <div
+                            class="absolute bottom-0 left-0 w-full h-1 bg-emerald-600 scale-x-0 group-hover:scale-x-100 transition-transform origin-left rounded-b-full">
+                        </div>
+                    </div>
+
+                    <!-- Step 4 -->
+                    <div
+                        class="process-card group bg-slate-50 p-8 rounded-[40px] border border-slate-100 hover:bg-white hover:shadow-2xl hover:shadow-amber-100 transition-all duration-500 relative">
+                        <div
+                            class="text-6xl font-black text-amber-100 absolute top-4 right-8 group-hover:text-amber-50 transition-colors">
+                            04</div>
+                        <div
+                            class="w-14 h-14 bg-amber-500 rounded-2xl flex items-center justify-center text-white mb-8 shadow-lg shadow-amber-100 group-hover:rotate-12 transition-transform">
+                            <i data-lucide="git-branch" class="w-7 h-7"></i>
+                        </div>
+                        <h4 class="text-2xl font-bold mb-3 text-gray-900">劃出流程圖</h4>
+                        <p class="text-gray-500 text-sm mb-8 leading-relaxed italic">「理清每一個交互步驟與路徑分支。」</p>
+                        <button onclick="openModal('flow-detail')"
+                            class="flex items-center space-x-2 text-amber-600 font-bold text-sm hover:translate-x-2 transition-transform">
+                            <span>了解詳細心法</span>
+                            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                        </button>
+                        <div
+                            class="absolute bottom-0 left-0 w-full h-1 bg-amber-500 scale-x-0 group-hover:scale-x-100 transition-transform origin-left rounded-b-full">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Why Categories Matter -->
+        <section class="py-20 px-6 bg-white overflow-hidden">
+            <div class="max-w-7xl mx-auto">
+                <div class="bg-indigo-600 rounded-[50px] p-12 md:p-20 text-white relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-32 -mt-32 blur-3xl"></div>
+                    <div class="relative z-10 grid md:grid-cols-2 gap-12 items-center">
+                        <div>
+                            <h3 class="text-4xl font-bold mb-6">在深入之前，<br>為什麼要先了解網站類別？</h3>
+                            <p class="text-indigo-100 text-lg leading-relaxed">
+                                這不是在背書，而是為了讓你在接案市場中具備真正的「戰略眼光」。
+                            </p>
+                        </div>
+                        <div class="grid grid-cols-1 gap-4">
+                            <div class="bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/10">
+                                <div class="flex items-center space-x-4">
+                                    <i data-lucide="clock" class="w-6 h-6 text-indigo-200"></i>
+                                    <span class="font-bold">精確安排時間：</span>
+                                </div>
+                                <p class="text-sm text-indigo-100 mt-2">知道難易度，才能做好專案的時間管理。</p>
+                            </div>
+                            <div class="bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/10">
+                                <div class="flex items-center space-x-4">
+                                    <i data-lucide="dollar-sign" class="w-6 h-6 text-indigo-200"></i>
+                                    <span class="font-bold">合理定價策略：</span>
+                                </div>
+                                <p class="text-sm text-indigo-100 mt-2">複雜度決定價格，讓你的專業有對應的價值。</p>
+                            </div>
+                            <div class="bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/10">
+                                <div class="flex items-center space-x-4">
+                                    <i data-lucide="box" class="w-6 h-6 text-indigo-200"></i>
+                                    <span class="font-bold">掌握結構核心：</span>
+                                </div>
+                                <p class="text-sm text-indigo-100 mt-2">了解不同類型的結構，設計時才不會亂了方寸。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Website Categories -->
+        <section id="categories" class="py-32 px-6 bg-gray-50">
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center mb-20">
+                    <h2 class="text-4xl font-bold mb-4">網頁類別分析</h2>
+                    <div class="w-20 h-1.5 bg-indigo-600 mx-auto rounded-full"></div>
+                </div>
+
+                <div class="grid md:grid-cols-3 gap-8">
+                    <!-- 1. 展示型網頁 -->
+                    <div class="premium-card p-8 group">
+                        <div class="flex justify-between items-start mb-12">
+                            <div
+                                class="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-600 transition-colors group-hover:bg-blue-600 group-hover:text-white">
+                                <i data-lucide="layout" class="w-8 h-8"></i>
+                            </div>
+                            <span
+                                class="text-4xl font-black text-gray-100 group-hover:text-blue-50 transition-colors">01</span>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-4">展示型網頁</h3>
+                        <p class="text-gray-500 mb-6 leading-relaxed">
+                            特性：主要是給人看的，像是一本精美的電子雜誌。
+                        </p>
+                        <div class="space-y-4 border-t border-gray-100 pt-6">
+                            <div>
+                                <span class="text-xs font-bold text-gray-400 tracking-widest uppercase">技術重點</span>
+                                <p class="text-gray-700 font-medium">強調視覺設計、排版、美感。</p>
+                            </div>
+                            <div>
+                                <span class="text-xs font-bold text-gray-400 tracking-widest uppercase">對應邏輯</span>
+                                <p class="text-gray-700 font-medium italic">幾乎沒有判斷式，頂多是「按鈕跳轉」。</p>
+                            </div>
+                            <div class="p-4 bg-blue-50/50 rounded-xl">
+                                <p class="text-sm text-blue-800"><span
+                                        class="font-bold block mb-1">對學生的意義：</span>這是最容易上手的接案類型，重點在於讓使用者「心動」。</p>
+                            </div>
+                            <button onclick="openModal('presentation')"
+                                class="w-full py-3 bg-gray-50 text-gray-700 rounded-xl font-bold hover:bg-blue-600 hover:text-white transition-all flex items-center justify-center space-x-2 group">
+                                <span>了解更多細節</span>
+                                <i data-lucide="arrow-right"
+                                    class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 2. 前端邏輯型網頁 -->
+                    <div class="premium-card p-8 group">
+                        <div class="flex justify-between items-start mb-12">
+                            <div
+                                class="w-16 h-16 bg-purple-50 rounded-2xl flex items-center justify-center text-purple-600 transition-colors group-hover:bg-purple-600 group-hover:text-white">
+                                <i data-zap" class="w-8 h-8"></i>
+                            </div>
+                            <span
+                                class="text-4xl font-black text-gray-100 group-hover:text-purple-50 transition-colors">02</span>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-4">前端邏輯型</h3>
+                        <p class="text-gray-500 mb-6 leading-relaxed">
+                            特性：像是一個隨身工具。在瀏覽器上完成運算。
+                        </p>
+                        <div class="space-y-4 border-t border-gray-100 pt-6">
+                            <div>
+                                <span class="text-xs font-bold text-gray-400 tracking-widest uppercase">技術重點</span>
+                                <p class="text-gray-700 font-medium">互動性、狀態管理（狀態聯動）。</p>
+                            </div>
+                            <div>
+                                <span class="text-xs font-bold text-gray-400 tracking-widest uppercase">對應邏輯</span>
+                                <p class="text-gray-700 font-medium italic">大量的 if-else 邏輯與運算。</p>
+                            </div>
+                            <div class="p-4 bg-purple-50/50 rounded-xl">
+                                <p class="text-sm text-purple-800"><span
+                                        class="font-bold block mb-1">對學生的意義：</span>考驗對「狀態」的想像力（例：計算錯誤時長怎樣？）。</p>
+                            </div>
+                            <button onclick="openModal('logic')"
+                                class="w-full py-3 bg-gray-50 text-gray-700 rounded-xl font-bold hover:bg-purple-600 hover:text-white transition-all flex items-center justify-center space-x-2 group">
+                                <span>了解更多細節</span>
+                                <i data-lucide="arrow-right"
+                                    class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 3. 全端/後端邏輯型網頁 -->
+                    <div class="premium-card p-8 group border-indigo-200">
+                        <div class="flex justify-between items-start mb-12">
+                            <div
+                                class="w-16 h-16 bg-orange-50 rounded-2xl flex items-center justify-center text-orange-600 transition-colors group-hover:bg-orange-600 group-hover:text-white">
+                                <i data-lucide="database" class="w-8 h-8"></i>
+                            </div>
+                            <span
+                                class="text-4xl font-black text-gray-100 group-hover:text-orange-50 transition-colors">03</span>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-4">全端/後端邏輯型</h3>
+                        <p class="text-gray-500 mb-6 leading-relaxed">
+                            特性：是一個「活」的系統。會存取並呈現動態資料。
+                        </p>
+                        <div class="space-y-4 border-t border-gray-100 pt-6">
+                            <div>
+                                <span class="text-xs font-bold text-gray-400 tracking-widest uppercase">技術重點</span>
+                                <p class="text-gray-700 font-medium">資料庫架構、權限管理、安全性。</p>
+                            </div>
+                            <div>
+                                <span class="text-xs font-bold text-gray-400 tracking-widest uppercase">對應邏輯</span>
+                                <p class="text-gray-700 font-medium italic">複雜條件判斷（例：庫存、折扣）。</p>
+                            </div>
+                            <div class="p-4 bg-orange-50/50 rounded-xl">
+                                <p class="text-sm text-orange-800"><span
+                                        class="font-bold block mb-1">對學生的意義：</span>這是難度最高也最值錢的類型。須考慮極端情況。</p>
+                            </div>
+                            <button onclick="openModal('fullstack')"
+                                class="w-full py-3 bg-gray-50 text-gray-700 rounded-xl font-bold hover:bg-orange-600 hover:text-white transition-all flex items-center justify-center space-x-2 group">
+                                <span>了解更多細節</span>
+                                <i data-lucide="arrow-right"
+                                    class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Architecture & Layout -->
+        <section id="architecture" class="py-32 px-6 bg-slate-50">
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center mb-20">
+                    <h2 class="text-4xl font-bold mb-4">網頁架構與佈局分析</h2>
+                    <p class="text-gray-500">從骨架開始，建立穩固的視覺層次</p>
+                    <div class="w-20 h-1.5 bg-indigo-600 mx-auto rounded-full mt-4"></div>
+                </div>
+
+                <div class="grid lg:grid-cols-3 gap-12">
+                    <!-- Standard Structure -->
+                    <div class="lg:col-span-2 space-y-12">
+                        <div class="premium-card p-10">
+                            <h3 class="text-2xl font-bold mb-8 flex items-center">
+                                <i data-lucide="layers" class="w-6 h-6 mr-3 text-indigo-600"></i>
+                                典型展示型網頁結構
+                            </h3>
+
+                            <!-- Visual Wireframe -->
+                            <div class="space-y-4 border border-indigo-100 p-6 rounded-2xl bg-white shadow-inner">
+                                <div
+                                    class="w-full h-12 bg-indigo-50 rounded-lg flex items-center px-4 justify-between border-dashed border-2 border-indigo-200">
+                                    <span class="text-[10px] font-bold text-indigo-300 uppercase">Navbar (導覽列)</span>
+                                    <div class="flex space-x-2">
+                                        <div class="w-8 h-2 bg-indigo-100 rounded"></div>
+                                        <div class="w-8 h-2 bg-indigo-100 rounded"></div>
+                                    </div>
+                                </div>
+
+                                <div
+                                    class="w-full h-40 bg-indigo-600 rounded-2xl flex items-center justify-center relative overflow-hidden">
+                                    <div
+                                        class="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-white via-transparent to-transparent">
+                                    </div>
+                                    <span class="text-white font-bold uppercase tracking-widest text-sm z-10">Hero
+                                        Section
+                                        (主視覺區)</span>
+                                </div>
+
+                                <div class="grid grid-cols-3 gap-4 h-32">
+                                    <div
+                                        class="bg-gray-50 rounded-xl border-dashed border-2 border-gray-200 flex items-center justify-center text-center p-2">
+                                        <span class="text-[9px] font-medium text-gray-400">Content A</span>
+                                    </div>
+                                    <div
+                                        class="bg-gray-50 rounded-xl border-dashed border-2 border-gray-200 flex items-center justify-center text-center p-2">
+                                        <span class="text-[9px] font-medium text-gray-400">Content B</span>
+                                    </div>
+                                    <div
+                                        class="bg-gray-50 rounded-xl border-dashed border-2 border-gray-200 flex items-center justify-center text-center p-2">
+                                        <span class="text-[9px] font-medium text-gray-400">Content C</span>
+                                    </div>
+                                </div>
+
+                                <div
+                                    class="w-full h-16 bg-gray-100 rounded-lg flex items-center justify-center border-dashed border-2 border-gray-200">
+                                    <span class="text-[10px] font-bold text-gray-400 uppercase">Footer (頁尾)</span>
+                                </div>
+                            </div>
+
+                            <div class="mt-10 grid md:grid-cols-2 gap-8">
+                                <div>
+                                    <h4 class="font-bold text-indigo-900 mb-2">重點元件解析</h4>
+                                    <ul class="space-y-3">
+                                        <li class="flex items-start">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-indigo-500 mt-2 mr-2"></span>
+                                            <p class="text-sm text-gray-600"><span
+                                                    class="font-bold">Navbar：</span>品牌識別標誌
+                                                (Logo) 與導航。使用者迷路時的首要避難所。</p>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-indigo-500 mt-2 mr-2"></span>
+                                            <p class="text-sm text-gray-600"><span class="font-bold">Hero
+                                                    Section：</span>第一眼印象，核心價值主張 (Headline)。決定使用者是否留下。</p>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="pt-8">
+                                    <ul class="space-y-3">
+                                        <li class="flex items-start">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-indigo-500 mt-2 mr-2"></span>
+                                            <p class="text-sm text-gray-600"><span class="font-bold">Body
+                                                    Section：</span>展示產品、服務 or 內容。這裡常用多欄位排版來增加視覺節奏。</p>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-indigo-500 mt-2 mr-2"></span>
+                                            <p class="text-sm text-gray-600"><span
+                                                    class="font-bold">Footer：</span>法律聲明、聯絡方式、社群連結。網頁的「收尾點」。</p>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- RWD Section -->
+                    <div class="space-y-8">
+                        <div class="premium-card p-8 border-indigo-200 bg-white shadow-xl">
+                            <div class="flex items-center justify-between mb-8">
+                                <h3 class="text-xl font-bold">RWD 響應式原理</h3>
+                                <div id="rwd-toggle" class="flex p-1 bg-gray-100 rounded-lg cursor-pointer">
+                                    <button
+                                        class="p-2 rounded-md transition-all px-4 text-xs font-bold bg-white shadow-sm"
+                                        data-mode="desktop">Desktop</button>
+                                    <button class="p-2 rounded-md transition-all px-4 text-xs font-bold text-gray-400"
+                                        data-mode="mobile">Mobile</button>
+                                </div>
+                            </div>
+
+                            <p class="text-sm text-gray-500 mb-8 leading-relaxed">
+                                根據螢幕寬度調整排版。當螢幕足夠寬時，我們傾向「左右佈局」來利用空間；當寬度變窄，佈局則會自動「由上往底」堆疊。
+                            </p>
+
+                            <!-- RWD Demo Area -->
+                            <div id="rwd-demo-container"
+                                class="border border-gray-100 rounded-2xl p-6 bg-gray-50 min-h-[300px] flex flex-col justify-center transition-all duration-500">
+                                <div id="rwd-box-container"
+                                    class="flex flex-row space-x-4 w-full transition-all duration-500">
+                                    <div
+                                        class="flex-1 bg-indigo-600 h-32 rounded-xl flex items-center justify-center text-white text-[10px] font-bold">
+                                        IMAGE</div>
+                                    <div class="flex-1 bg-white border border-indigo-100 h-32 rounded-xl p-4 space-y-2">
+                                        <div class="w-full h-2 bg-indigo-100 rounded"></div>
+                                        <div class="w-full h-2 bg-indigo-100 rounded"></div>
+                                        <div class="w-3/4 h-2 bg-indigo-100 rounded"></div>
+                                        <div class="w-1/2 h-6 bg-indigo-600 rounded-lg mt-4"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mt-8 pt-8 border-t border-gray-100">
+                                <h4 class="text-sm font-bold text-gray-400 uppercase tracking-widest mb-4">核心邏輯</h4>
+                                <div class="flex items-center space-x-3 text-indigo-600 font-bold italic">
+                                    <i data-lucide="monitor" class="w-5 h-5"></i>
+                                    <span>Desktop = 左右併排</span>
+                                </div>
+                                <div class="flex items-center space-x-3 text-purple-600 font-bold italic mt-2">
+                                    <i data-lucide="smartphone" class="w-5 h-5"></i>
+                                    <span>Mobile = 上下堆疊</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- APP Architecture Section -->
+                <div class="mt-20 premium-card p-10 border-indigo-100 bg-white">
+                    <div class="grid lg:grid-cols-2 gap-16 items-center">
+                        <div>
+                            <h3 class="text-3xl font-bold mb-6 flex items-center">
+                                <i data-lucide="smartphone" class="w-8 h-8 mr-4 text-indigo-600"></i>
+                                傳統 APP 設計架構
+                            </h3>
+                            <p class="text-gray-500 text-lg mb-8 leading-relaxed">
+                                APP 的設計與網頁不同，它更強調「單手操作」的便利性。我們通常將其拆解為頂部、底部與核心內容區。
+                            </p>
+                            <div class="space-y-6">
+                                <div class="p-6 bg-slate-50 rounded-2xl border-l-4 border-indigo-600">
+                                    <h4 class="font-bold text-gray-900 mb-2">Bottom Navbar (核心導航)</h4>
+                                    <p class="text-sm text-gray-500">通常包含 5
+                                        個按鈕，中間按鈕往往會「放大」代表核心功能（如：發文、掃描）。最右側則約定成俗地放置「個人頭像」。</p>
+                                </div>
+                                <div class="p-6 bg-slate-50 rounded-2xl border-l-4 border-slate-300">
+                                    <h4 class="font-bold text-gray-900 mb-2">Content Area (內容互動區)</h4>
+                                    <p class="text-sm text-gray-500">夾在上下導覽列之間，是使用者主要的資訊消費區。</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- APP Wireframe Mockup -->
+                        <div class="flex justify-center">
+                            <div
+                                class="w-72 h-[550px] bg-slate-900 rounded-[50px] border-[8px] border-slate-800 shadow-2xl relative overflow-hidden p-4 flex flex-col">
+                                <!-- Top Speaker Gap -->
+                                <div
+                                    class="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-6 bg-slate-800 rounded-b-2xl z-20">
+                                </div>
+
+                                <!-- APP Top Navbar -->
+                                <div
+                                    class="w-full h-12 bg-white/10 rounded-xl mb-4 flex items-center justify-between px-4 border border-white/5">
+                                    <i data-lucide="menu" class="w-4 h-4 text-white/40"></i>
+                                    <span class="text-[10px] text-white/60 font-medium">APP TITLE</span>
+                                    <i data-lucide="search" class="w-4 h-4 text-white/40"></i>
+                                </div>
+
+                                <!-- APP Content Interface -->
+                                <div
+                                    class="flex-1 bg-white/5 rounded-2xl p-4 mb-4 border border-white/5 overflow-hidden flex flex-col justify-center items-center text-center">
+                                    <div
+                                        class="w-16 h-16 bg-white/10 rounded-full mb-4 flex items-center justify-center">
+                                        <i data-lucide="image" class="w-6 h-6 text-white/20"></i>
+                                    </div>
+                                    <div class="w-24 h-2 bg-white/10 rounded mb-2"></div>
+                                    <div class="w-16 h-2 bg-white/10 rounded"></div>
+                                </div>
+
+                                <!-- APP Bottom Navbar -->
+                                <div
+                                    class="w-full h-14 bg-slate-800 rounded-2xl flex items-center justify-around px-2 relative">
+                                    <div class="group flex flex-col items-center">
+                                        <i data-lucide="home" class="w-5 h-5 text-indigo-400"></i>
+                                        <span class="text-[8px] mt-1 text-indigo-400">首頁</span>
+                                    </div>
+                                    <div class="group flex flex-col items-center">
+                                        <i data-lucide="search"
+                                            class="w-5 h-5 text-white/40 group-hover:text-white transition-colors"></i>
+                                        <span class="text-[8px] mt-1 text-white/40">搜尋</span>
+                                    </div>
+                                    <!-- Large Center Button -->
+                                    <div
+                                        class="w-12 h-12 bg-indigo-600 rounded-full -translate-y-4 flex items-center justify-center shadow-lg shadow-indigo-500/50 border-4 border-slate-800">
+                                        <i data-lucide="plus" class="w-6 h-6 text-white"></i>
+                                    </div>
+                                    <div class="group flex flex-col items-center">
+                                        <i data-lucide="bell"
+                                            class="w-5 h-5 text-white/40 group-hover:text-white transition-colors"></i>
+                                        <span class="text-[8px] mt-1 text-white/40">通知</span>
+                                    </div>
+                                    <div class="group flex flex-col items-center">
+                                        <div
+                                            class="w-5 h-5 rounded-full bg-slate-600 border border-white/20 overflow-hidden">
+                                            <i data-lucide="user" class="w-4 h-4 text-white/40 m-auto"></i>
+                                        </div>
+                                        <span class="text-[8px] mt-1 text-white/40">我的</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Flowchart Standards -->
+        <section id="flowchart-standards" class="py-32 px-6 bg-white">
+            <div class="max-w-7xl mx-auto">
+                <div class="grid lg:grid-cols-2 gap-20 items-center">
+                    <div>
+                        <h2 class="text-4xl font-bold mb-8">設計與邏輯的共通語言：<br><span class="accent-gradient">流程圖標準規範</span>
+                        </h2>
+                        <p class="text-gray-600 text-lg mb-12 leading-relaxed">
+                            在 UI/UX 設計中，我們最常用的四個標準形狀與 CS (Computer Science) 邏輯完全一致。掌握這些符號，能讓你與工程師溝通時更具專業感。
+                        </p>
+
+                        <div class="space-y-8">
+                            <div
+                                class="flex items-center space-x-6 p-6 rounded-2xl bg-gray-50 hover:bg-indigo-50 transition-colors group">
+                                <div class="w-32 flex justify-center">
+                                    <div
+                                        class="w-24 h-10 rounded-full border-2 border-indigo-600 bg-white flex items-center justify-center text-indigo-600 font-bold text-xs uppercase">
+                                        Terminal</div>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-xl mb-1">橢圓形 (Terminal)</h4>
+                                    <p class="text-gray-500 text-sm">代表流程的 <span class="text-indigo-600 font-bold">開始
+                                            (Start)</span> 與 <span class="text-indigo-600 font-bold">結束 (End)</span>。
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div
+                                class="flex items-center space-x-6 p-6 rounded-2xl bg-gray-50 hover:bg-green-50 transition-colors group">
+                                <div class="w-32 flex justify-center">
+                                    <div
+                                        class="w-20 h-14 rounded-lg border-2 border-green-600 bg-white flex items-center justify-center text-green-600 font-bold text-xs uppercase">
+                                        Process</div>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-xl mb-1">長方形 (Process)</h4>
+                                    <p class="text-gray-500 text-sm">代表 <span
+                                            class="text-green-600 font-bold">頁面或執行步驟</span>（例如：進入首頁、填寫表單）。</p>
+                                </div>
+                            </div>
+
+                            <div
+                                class="flex items-center space-x-6 p-6 rounded-2xl bg-gray-50 hover:bg-amber-50 transition-colors group">
+                                <div class="w-32 flex justify-center">
+                                    <div
+                                        class="w-14 h-14 border-2 border-amber-500 bg-white rotate-45 flex items-center justify-center">
+                                        <span
+                                            class="rotate-[-45deg] text-[10px] text-amber-600 font-bold uppercase">Decision</span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-xl mb-1">菱形 (Decision)</h4>
+                                    <p class="text-gray-500 text-sm">邏輯的核心，代表 <span
+                                            class="text-amber-600 font-bold">判斷點</span>。通常會伴隨兩個分支 (Yes/No)。</p>
+                                </div>
+                            </div>
+
+                            <div
+                                class="flex items-center space-x-6 p-6 rounded-2xl bg-gray-50 hover:bg-slate-100 transition-colors group">
+                                <div class="w-32 flex justify-center">
+                                    <i data-lucide="arrow-down"
+                                        class="w-10 h-10 text-slate-400 group-hover:translate-y-2 transition-transform"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-xl mb-1">箭頭 (Flowline)</h4>
+                                    <p class="text-gray-500 text-sm">代表 <span
+                                            class="text-slate-600 font-bold">使用者的操作動向</span> 與 資訊流向。</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Digital Demo: Interactive Flowchart -->
+                    <div class="premium-card p-12 bg-slate-50 border-slate-200">
+                        <h3 class="text-center font-bold text-slate-400 uppercase tracking-widest text-sm mb-12">
+                            流程圖實戰演示：計算機操作流</h3>
+
+                        <div class="flex flex-col items-center">
+                            <!-- Start -->
+                            <div class="shape-oval">START: 開啟 App</div>
+                            <div class="flow-line"></div>
+
+                            <!-- Page -->
+                            <div class="shape-rect">進入計算機主介面</div>
+                            <div class="flow-line"></div>
+
+                            <!-- Input -->
+                            <div class="shape-rect">輸入數字與運算符號</div>
+                            <div class="flow-line"></div>
+
+                            <!-- Decision -->
+                            <div class="shape-diamond">
+                                <span>按下 "="？</span>
+                            </div>
+
+                            <div class="flex items-start w-full justify-center">
+                                <div class="flex flex-col items-center mx-8">
+                                    <div class="flow-line"></div>
+                                    <span class="text-xs font-bold text-green-600 mb-2">YES</span>
+                                    <div class="shape-rect">執行運算並顯示結果</div>
+                                    <div class="flow-line"></div>
+                                    <div class="shape-oval">END</div>
+                                </div>
+
+                                <div class="flex flex-col items-center mx-8">
+                                    <div class="flow-line"></div>
+                                    <span class="text-xs font-bold text-red-500 mb-2">NO</span>
+                                    <div class="shape-rect bg-red-50 border-red-200 text-red-600">等待使用者輸入</div>
+                                    <div class="flex items-center mt-4">
+                                        <div class="w-16 h-[2px] bg-slate-300"></div>
+                                        <i data-lucide="corner-right-up" class="w-6 h-6 text-slate-300"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="py-20 bg-gray-50 border-t border-gray-100 px-6">
+            <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-8 md:mb-0">
+                    <p class="text-gray-400 text-sm">© 2026 第一次上課課本數位版</p>
+                </div>
+                <div class="flex space-x-6 text-gray-500 text-sm font-medium">
+                    <a href="#" class="hover:text-indigo-600">Privacy</a>
+                    <a href="#" class="hover:text-indigo-600">Terms</a>
+                    <a href="#" class="hover:text-indigo-600">Contact</a>
+                </div>
+            </div>
+        </footer>
+
+        <!-- Process Modals -->
+        <!-- 1. Theme Modal -->
+        <div id="modal-theme-detail" class="modal-overlay" onclick="closeModal()">
+            <div class="modal-content p-12" onclick="event.stopPropagation()">
+                <button onclick="closeModal()" class="absolute top-8 right-8 text-gray-400 hover:text-gray-600">
+                    <i data-lucide="x" class="w-8 h-8"></i>
+                </button>
+                <div class="flex items-center space-x-4 mb-8">
+                    <div class="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center text-indigo-600">
+                        <i data-lucide="sparkles" class="w-6 h-6"></i>
+                    </div>
+                    <h2 class="text-3xl font-bold">主題確認：情緒與品牌調性</h2>
+                </div>
+                <div class="grid md:grid-cols-2 gap-12 text-gray-600">
+                    <div class="space-y-6">
+                        <p class="text-lg leading-relaxed">
+                            設計師的第一步不是打開 Figma，而是定義「情緒 (Vibe)」。
+                        </p>
+                        <div class="bg-indigo-50 p-6 rounded-2xl">
+                            <h4 class="font-bold text-indigo-900 mb-2">Moodboard 建立</h4>
+                            <p class="text-sm">收集色彩、字體、攝影風格，轉化為「關鍵字」。</p>
+                        </div>
+                    </div>
+                    <div class="p-6 border border-gray-100 rounded-2xl">
+                        <h4 class="font-bold text-gray-900 mb-4 uppercase tracking-wider text-xs">乾貨：情感象限</h4>
+                        <ul class="space-y-3 text-sm">
+                            <li class="flex justify-between"><span>科技感</span><span
+                                    class="font-mono text-indigo-600">#Cool
+                                    #Sleek</span></li>
+                            <li class="flex justify-between border-t pt-3"><span>親和感</span><span
+                                    class="font-mono text-indigo-600">#Soft #Warm</span></li>
+                            <li class="flex justify-between border-t pt-3"><span>專業感</span><span
+                                    class="font-mono text-indigo-600">#Stable #Trust</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. TA Modal -->
+        <div id="modal-ta-detail" class="modal-overlay" onclick="closeModal()">
+            <div class="modal-content p-12" onclick="event.stopPropagation()">
+                <button onclick="closeModal()" class="absolute top-8 right-8 text-gray-400 hover:text-gray-600">
+                    <i data-lucide="x" class="w-8 h-8"></i>
+                </button>
+                <div class="flex items-center space-x-4 mb-8">
+                    <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center text-purple-600">
+                        <i data-lucide="users" class="w-6 h-6"></i>
+                    </div>
+                    <h2 class="text-3xl font-bold">需求分析：誰在用你的網站？</h2>
+                </div>
+                <div class="grid md:grid-cols-2 gap-12">
+                    <div class="space-y-6">
+                        <h4 class="text-xl font-bold text-gray-900">User Persona (使用者畫像)</h4>
+                        <p class="text-gray-500 leading-relaxed italic">
+                            「如果一個網站適合所有人，那它就不適合任何人。」
+                        </p>
+                        <div class="space-y-4">
+                            <div class="flex items-start space-x-3 text-sm">
+                                <i data-lucide="target" class="w-5 h-5 text-purple-600"></i>
+                                <p>年齡、職業、數位使用習慣（Mobile vs Desktop）。</p>
+                            </div>
+                            <div class="flex items-start space-x-3 text-sm">
+                                <i data-lucide="help-circle" class="w-5 h-5 text-purple-600"></i>
+                                <p>痛點：他們在找什麼？遇到什麼困擾？</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-slate-900 p-8 rounded-3xl text-white">
+                        <h4 class="text-purple-400 font-bold mb-4">乾貨：場景思考</h4>
+                        <p class="text-xs text-gray-400 leading-relaxed">
+                            想像使用者在什麼時間、什麼心情下打開網頁？
+                            <br><br>
+                            例：緊急救援 App 的 TA 是焦慮的，UI 應極度顯眼且低認知負荷；奢侈品官網的 TA 是尋求體驗的，UI 應留白且優雅。
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. Structure Modal -->
+        <div id="modal-structure-detail" class="modal-overlay" onclick="closeModal()">
+            <div class="modal-content p-12" onclick="event.stopPropagation()">
+                <button onclick="closeModal()" class="absolute top-8 right-8 text-gray-400 hover:text-gray-600">
+                    <i data-lucide="x" class="w-8 h-8"></i>
+                </button>
+                <div class="flex items-center space-x-4 mb-8 text-emerald-600">
+                    <div class="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center">
+                        <i data-lucide="sitemap" class="w-6 h-6"></i>
+                    </div>
+                    <h2 class="text-3xl font-bold text-gray-900">分析結構：資訊架構 (IA)</h2>
+                </div>
+                <div class="prose prose-slate max-w-none text-gray-600">
+                    <p class="text-lg mb-8">良好的 UI 是建立在穩定的資訊架構之上的。這就像是蓋房子前的設計圖。</p>
+                    <div class="grid md:grid-cols-3 gap-6">
+                        <div class="p-6 bg-emerald-50 rounded-2xl">
+                            <h5 class="font-bold mb-2">MoSCoW 分析法</h5>
+                            <p class="text-xs">區分 Must have (必備) 與 Nice to have (加分)，決定優先順序。</p>
+                        </div>
+                        <div class="p-6 bg-emerald-50 rounded-2xl">
+                            <h5 class="font-bold mb-2">Sitemap</h5>
+                            <p class="text-xs">建立網頁層級，確保使用者不迷路，SEO 表現更好。</p>
+                        </div>
+                        <div
+                            class="p-6 bg-emerald-50 rounded-2xl text-emerald-900 font-bold flex items-center justify-center text-center">
+                            乾貨：<br>先規律，<br>再美化。
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. Flowchart Modal -->
+        <div id="modal-flow-detail" class="modal-overlay" onclick="closeModal()">
+            <div class="modal-content p-12" onclick="event.stopPropagation()">
+                <button onclick="closeModal()" class="absolute top-8 right-8 text-gray-400 hover:text-gray-600">
+                    <i data-lucide="x" class="w-8 h-8"></i>
+                </button>
+                <div class="flex items-center space-x-4 mb-8">
+                    <div class="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center text-amber-600">
+                        <i data-lucide="git-branch" class="w-6 h-6"></i>
+                    </div>
+                    <h2 class="text-3xl font-bold">劃出流程圖：User Flow</h2>
+                </div>
+                <div class="space-y-8">
+                    <p class="text-gray-500 leading-relaxed italic border-l-4 border-amber-400 pl-6">
+                        「UI 是靜態的畫面，Flow 是動態的靈魂。」
+                    </p>
+                    <div class="grid md:grid-cols-2 gap-8 text-gray-600">
+                        <div>
+                            <h4 class="font-bold mb-4">核心價值</h4>
+                            <ul class="space-y-2 text-sm">
+                                <li>• 預埋使用者的「行為路徑」</li>
+                                <li>• 提早發現邏輯死角 (Edge Cases)</li>
+                                <li>• 與工程師對接的核心文件</li>
+                            </ul>
+                        </div>
+                        <div class="bg-amber-50 p-6 rounded-2xl text-xs space-y-2">
+                            <p class="font-bold text-amber-900">乾貨：Happy Path</p>
+                            <p>先畫出使用者達成目標的最短路徑（完美路徑），再開始發散支線（取消、報錯、斷網）。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Logic Modal (Calculator) -->
+        <div id="modal-logic" class="modal-overlay" onclick="closeModal()">
+            <div class="modal-content p-12" onclick="event.stopPropagation()">
+                <button onclick="closeModal()"
+                    class="absolute top-8 right-8 text-gray-400 hover:text-gray-600 transition-colors">
+                    <i data-lucide="x" class="w-8 h-8"></i>
+                </button>
+                <div class="flex items-center space-x-4 mb-8">
+                    <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center text-purple-600">
+                        <i data-lucide="zap" class="w-6 h-6"></i>
+                    </div>
+                    <h2 class="text-3xl font-bold">前端邏輯：即時反饋的力量</h2>
+                </div>
+                <div class="grid md:grid-cols-2 gap-12 items-center">
+                    <div>
+                        <p class="text-gray-600 mb-6 leading-relaxed">
+                            前端邏輯型網站的核心是「交互後的狀態變化」。這類網頁不一定需要後端資料庫，但需要設計師想像並定義所有「可能發生的邏輯路徑」。
+                        </p>
+                        <div class="space-y-4">
+                            <div class="bg-purple-50 p-4 rounded-xl border-l-4 border-purple-400">
+                                <p class="text-sm text-purple-900 font-medium italic">"Logic is where the UI comes
+                                    alive."
+                                </p>
+                            </div>
+                            <p class="text-sm text-gray-500">
+                                例：BMI 計算機。如果結果 > 24 $\rightarrow$ 顯示黃色文字；如果結果 > 27 $\rightarrow$ 顯示紅色警告。
+                            </p>
+                        </div>
+                    </div>
+                    <!-- Mini Calculator Demo -->
+                    <div class="bg-gray-900 p-8 rounded-[32px] shadow-2xl">
+                        <div id="calc-display"
+                            class="w-full bg-gray-800 text-right p-6 rounded-2xl text-white text-3xl font-mono mb-6 h-20 overflow-hidden flex items-center justify-end">
+                            0</div>
+                        <div class="grid grid-cols-4 gap-3">
+                            <button
+                                class="calc-btn p-4 bg-gray-700 text-white rounded-xl hover:bg-gray-600 transition-colors"
+                                onclick="appendCalc('7')">7</button>
+                            <button
+                                class="calc-btn p-4 bg-gray-700 text-white rounded-xl hover:bg-gray-600 transition-colors"
+                                onclick="appendCalc('8')">8</button>
+                            <button
+                                class="calc-btn p-4 bg-gray-700 text-white rounded-xl hover:bg-gray-600 transition-colors"
+                                onclick="appendCalc('9')">9</button>
+                            <button
+                                class="calc-btn p-4 bg-orange-500 text-white rounded-xl hover:bg-orange-400 transition-colors"
+                                onclick="appendCalc('/')">÷</button>
+                            <button
+                                class="calc-btn p-4 bg-gray-700 text-white rounded-xl hover:bg-gray-600 transition-colors"
+                                onclick="appendCalc('4')">4</button>
+                            <button
+                                class="calc-btn p-4 bg-gray-700 text-white rounded-xl hover:bg-gray-600 transition-colors"
+                                onclick="appendCalc('5')">5</button>
+                            <button
+                                class="calc-btn p-4 bg-gray-700 text-white rounded-xl hover:bg-gray-600 transition-colors"
+                                onclick="appendCalc('6')">6</button>
+                            <button
+                                class="calc-btn p-4 bg-orange-500 text-white rounded-xl hover:bg-orange-400 transition-colors"
+                                onclick="appendCalc('*')">×</button>
+                            <button
+                                class="calc-btn p-4 bg-gray-700 text-white rounded-xl hover:bg-gray-600 transition-colors"
+                                onclick="appendCalc('1')">1</button>
+                            <button
+                                class="calc-btn p-4 bg-gray-700 text-white rounded-xl hover:bg-gray-600 transition-colors"
+                                onclick="appendCalc('2')">2</button>
+                            <button
+                                class="calc-btn p-4 bg-gray-700 text-white rounded-xl hover:bg-gray-600 transition-colors"
+                                onclick="appendCalc('3')">3</button>
+                            <button
+                                class="calc-btn p-4 bg-orange-500 text-white rounded-xl hover:bg-orange-400 transition-colors"
+                                onclick="appendCalc('-')">-</button>
+                            <button
+                                class="calc-btn p-4 bg-gray-600 text-white rounded-xl hover:bg-gray-500 transition-colors"
+                                onclick="clearCalc()">C</button>
+                            <button
+                                class="calc-btn p-4 bg-gray-700 text-white rounded-xl hover:bg-gray-600 transition-colors"
+                                onclick="appendCalc('0')">0</button>
+                            <button
+                                class="calc-btn p-4 bg-indigo-500 text-white rounded-xl col-span-2 hover:bg-indigo-400 transition-colors"
+                                onclick="runCalc()">=</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Fullstack Modal (Flowchart) -->
+        <div id="modal-fullstack" class="modal-overlay" onclick="closeModal()">
+            <div class="modal-content p-12" onclick="event.stopPropagation()">
+                <button onclick="closeModal()"
+                    class="absolute top-8 right-8 text-gray-400 hover:text-gray-600 transition-colors">
+                    <i data-lucide="x" class="w-8 h-8"></i>
+                </button>
+                <div class="flex items-center space-x-4 mb-8">
+                    <div class="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center text-orange-600">
+                        <i data-lucide="database" class="w-6 h-6"></i>
+                    </div>
+                    <h2 class="text-3xl font-bold">為什麼需要後端？全端邏輯解析</h2>
+                </div>
+
+                <p class="text-gray-600 mb-12">
+                    當網站需要「儲存記住你」、「多人同步」、「安全性」時，後端開發就進場了。UI 設計師在此階段必須了解資料是如何流動的。
+                </p>
+
+                <!-- Visual Flowchart -->
+                <div
+                    class="flex flex-col md:flex-row items-center justify-between space-y-8 md:space-y-0 md:space-x-4 p-8 bg-gray-50 rounded-3xl border border-gray-100">
+                    <div class="flex flex-col items-center">
+                        <div
+                            class="w-20 h-20 bg-white rounded-full shadow-lg flex items-center justify-center text-indigo-600 border border-indigo-50">
+                            <i data-lucide="user" class="w-10 h-10"></i>
+                        </div>
+                        <span class="mt-4 font-bold text-gray-700">使用者 (UI)</span>
+                    </div>
+                    <i data-lucide="arrow-right-circle" class="hidden md:block w-8 h-8 text-indigo-200"></i>
+                    <div class="flex flex-col items-center">
+                        <div
+                            class="w-20 h-20 bg-indigo-600 rounded-2xl shadow-xl flex items-center justify-center text-white">
+                            <i data-lucide="shield-check" class="w-10 h-10"></i>
+                        </div>
+                        <span class="mt-4 font-bold text-gray-700 text-center">後端驗證<br><span
+                                class="text-xs font-normal text-gray-400">(安全性/邏輯)</span></span>
+                    </div>
+                    <i data-lucide="arrow-right-circle" class="hidden md:block w-8 h-8 text-indigo-200"></i>
+                    <div class="flex flex-col items-center">
+                        <div
+                            class="w-20 h-20 bg-white rounded-2xl shadow-lg flex items-center justify-center text-orange-500 border border-orange-50">
+                            <i data-lucide="server" class="w-10 h-10"></i>
+                        </div>
+                        <span class="mt-4 font-bold text-gray-700">資料庫 (Storage)</span>
+                    </div>
+                </div>
+
+                <div class="mt-12 grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="p-6 bg-white border border-gray-100 rounded-2xl">
+                        <h4 class="font-bold mb-4 flex items-center"><i data-lucide="info"
+                                class="w-5 h-5 mr-2 text-blue-500"></i>核心價值</h4>
+                        <p class="text-sm text-gray-500 leading-relaxed">
+                            支援權限管理（例如：你是誰，能看到什麼）。像是蝦皮，兩個人登入看到的推薦商品絕對不一樣。
+                        </p>
+                    </div>
+                    <div class="p-6 bg-white border border-gray-100 rounded-2xl">
+                        <h4 class="font-bold mb-4 flex items-center"><i data-lucide="trending-up"
+                                class="w-5 h-5 mr-2 text-orange-500"></i>開發難度</h4>
+                        <p class="text-sm text-gray-500 leading-relaxed">
+                            最高的商業價值，因為它掌握了商業邏輯與用戶資產。這也是最考驗設計師對「各種極端情況」考慮的地方。
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scripts -->
+        <script>
+            $(document).ready(function () {
+                // Initialize Lucide Icons
+                lucide.createIcons();
+
+                // GSAP Scroll Animations
+                gsap.registerPlugin(ScrollTrigger);
+
+                // Scroll Reveal for Cards
+                gsap.utils.toArray('.process-card, .premium-card').forEach((card, i) => {
+                    gsap.from(card, {
+                        scrollTrigger: {
+                            trigger: card,
+                            start: "top 90%",
+                            toggleActions: "play none none none"
+                        },
+                        y: 50,
+                        opacity: 0,
+                        duration: 1,
+                        delay: i % 4 * 0.1,
+                        ease: "power3.out"
+                    });
+                });
+
+                // Heading Reveal
+                gsap.from(".animate-on-scroll", {
+                    scrollTrigger: {
+                        trigger: ".animate-on-scroll",
+                        start: "top 85%"
+                    },
+                    y: 30,
+                    opacity: 0,
+                    duration: 0.8,
+                    ease: "power2.out"
+                });
+
+                // Smooth Scroll for Sidebar Links
+                $('.nav-link-sidebar').on('click', function (event) {
+                    var target = $(this.getAttribute('href'));
+                    if (target.length) {
+                        event.preventDefault();
+                        $('html, body').stop().animate({
+                            scrollTop: target.offset().top - 40
+                        }, 800);
+
+                        // Update active state
+                        $('.nav-link-sidebar').removeClass('active');
+                        $(this).addClass('active');
+                    }
+                });
+            });
+
+            // Sidebar Toggle Logic
+            let sidebarOpen = false;
+            function toggleSidebar() {
+                sidebarOpen = !sidebarOpen;
+                const sidebar = document.getElementById('sidebar');
+                const overlay = document.getElementById('sidebar-overlay');
+                const mainContent = document.getElementById('main-content');
+                const icon = document.getElementById('toggle-icon');
+
+                if (sidebarOpen) {
+                    sidebar.classList.add('active');
+                    overlay.classList.add('active');
+                    if (window.innerWidth > 1024) {
+                        mainContent.style.paddingLeft = '320px';
+                    }
+                    icon.style.transform = 'rotate(90deg)';
+                    lucide.createIcons({
+                        attrs: { id: 'toggle-icon' },
+                        name: 'x'
+                    });
+                } else {
+                    sidebar.classList.remove('active');
+                    overlay.classList.remove('active');
+                    mainContent.style.paddingLeft = '0';
+                    icon.style.transform = 'rotate(0deg)';
+                    lucide.createIcons({
+                        attrs: { id: 'toggle-icon' },
+                        name: 'menu'
+                    });
+                }
+            }
+
+            function closeSidebar() {
+                if (sidebarOpen) toggleSidebar();
+            }
+
+            // Modal Functions (Enhanced with GSAP)
+            function openModal(id) {
+                const modal = document.getElementById(`modal-${id}`);
+                $(modal).addClass('active').show();
+                $('body').css('overflow', 'hidden');
+
+                gsap.fromTo($(modal).find('.modal-content'),
+                    { scale: 0.9, opacity: 0, y: 30 },
+                    { scale: 1, opacity: 1, y: 0, duration: 0.5, ease: "back.out(1.7)" }
+                );
+            }
+
+            function closeModal() {
+                const activeModal = $('.modal-overlay.active');
+                if (activeModal.length) {
+                    gsap.to(activeModal.find('.modal-content'), {
+                        scale: 0.9,
+                        opacity: 0,
+                        y: 30,
+                        duration: 0.3,
+                        ease: "power2.in",
+                        onComplete: () => {
+                            activeModal.removeClass('active').hide();
+                            $('body').css('overflow', 'auto');
+                        }
+                    });
+                }
+            }
+
+            // Calculator Functions
+            let calcVal = '';
+            function appendCalc(val) {
+                calcVal += val;
+                $('#calc-display').text(calcVal);
+            }
+            function clearCalc() {
+                calcVal = '';
+                $('#calc-display').text('0');
+            }
+            function runCalc() {
+                try {
+                    const result = eval(calcVal);
+                    $('#calc-display').text(result);
+                    calcVal = result.toString();
+                } catch (e) {
+                    $('#calc-display').text('Error');
+                    calcVal = '';
+                }
+            }
+
+            // RWD Toggle Demo
+            $('#rwd-toggle button').click(function () {
+                const mode = $(this).data('mode');
+                $('#rwd-toggle button').removeClass('bg-white shadow-sm text-gray-900').addClass('text-gray-400');
+                $(this).removeClass('text-gray-400').addClass('bg-white shadow-sm text-gray-900');
+
+                if (mode === 'mobile') {
+                    gsap.to('#rwd-demo-container', { maxWidth: 300, duration: 0.5, ease: "power2.inOut" });
+                    $('#rwd-box-container').removeClass('flex-row space-x-4').addClass('flex-col space-y-4');
+                } else {
+                    gsap.to('#rwd-demo-container', { maxWidth: "100%", duration: 0.5, ease: "power2.inOut" });
+                    $('#rwd-box-container').removeClass('flex-col space-y-4').addClass('flex-row space-x-4');
+                }
+            });
+        </script>
+</body>
+
+</html>

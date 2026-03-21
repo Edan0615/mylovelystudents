@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UI/UX Wireframe 指南 </title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter & Noto Sans TC -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap"
+        rel="stylesheet">
+    <!-- jQuery CDN -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', 'Noto Sans TC', sans-serif;
+            background-color: #ffffff;
+            color: #1a1a1a;
+            scroll-behavior: smooth;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #1a1a1a 0%, #4a4a4a 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-link {
+            position: relative;
+            transition: color 0.3s ease;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -4px;
+            left: 0;
+            background-color: #1a1a1a;
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50/50">
+    <!-- Navbar -->
+    <nav class="fixed top-0 w-full z-50 bg-white/70 backdrop-blur-md border-b border-gray-100">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="text-2xl font-bold tracking-tight gradient-text">WIREFLOW.</div>
+            <div class="hidden md:flex space-x-8">
+                <a href="#definition" class="nav-link text-sm font-medium">定義</a>
+                <a href="#fidelity" class="nav-link text-sm font-medium">保真度</a>
+                <a href="#mockup" class="nav-link text-sm font-medium">Mockup</a>
+                <a href="#conclusion" class="nav-link text-sm font-medium">結論</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="pt-32 pb-20 px-6">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div class="fade-in">
+                <span
+                    class="inline-block px-3 py-1 bg-gray-100 text-gray-500 rounded-full text-xs font-semibold mb-6 uppercase tracking-wider">UI/UX
+                    Design Essentials</span>
+                <h1 class="text-5xl lg:text-7xl font-bold leading-tight mb-8">
+                    探索 <span class="gradient-text">Wireframe</span> 的核心概念
+                </h1>
+                <p class="text-xl text-gray-600 leading-relaxed max-w-xl mb-10">
+                    深入了解介面設計的藍圖——Wireframe。從低真度到高真度，掌握如何構建一個優質的使用者體驗骨架。
+                </p>
+                <div class="flex space-x-4">
+                    <a href="#fidelity"
+                        class="px-8 py-4 bg-black text-white rounded-xl font-medium hover:bg-gray-800 transition-colors shadow-lg shadow-black/10">開始學習</a>
+                </div>
+            </div>
+            <div class="relative fade-in">
+                <div
+                    class="aspect-square rounded-3xl bg-gradient-to-br from-gray-100 to-gray-200 overflow-hidden border border-gray-200 shadow-2xl">
+                    <img id="hero-img" src="img/hero.png" alt="Wireframe Concept" class="w-full h-full object-cover">
+                </div>
+                <!-- Decorative element -->
+                <div
+                    class="absolute -bottom-6 -right-6 w-32 h-32 bg-white rounded-2xl shadow-xl flex items-center justify-center border border-gray-50">
+                    <div class="w-16 h-1 bg-gray-200 rounded-full"></div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Definition Section -->
+    <section id="definition" class="py-24 bg-white border-y border-gray-100">
+        <div class="max-w-4xl mx-auto px-6 text-center">
+            <h2 class="text-3xl font-bold mb-8 fade-in">什麼是 Wireframe？</h2>
+            <div class="text-lg text-gray-600 space-y-6 fade-in leading-relaxed">
+                <p>
+                    Wireframe（線框圖）是網站或應用程式的低保真視覺指南。它主要用於規劃頁面的佈局、結構與內容安排，而不涉及具體的視覺細節（如顏色、圖片或字體）。
+                </p>
+                <p class="font-medium text-gray-900">
+                    簡單來說，它是產品的「骨架」。
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Fidelity Section -->
+    <section id="fidelity" class="py-24 overflow-hidden">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16 fade-in">
+                <h2 class="text-4xl font-bold mb-4">三種程度的保真度</h2>
+                <p class="text-gray-500">從草圖到精細原型的演進過程</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Low Fidelity -->
+                <div class="glass-card p-8 rounded-3xl fade-in">
+                    <div class="w-12 h-12 bg-gray-100 rounded-2xl flex items-center justify-center mb-6">
+                        <span class="text-xl font-bold">1</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">低真度 (Low-Fi)</h3>
+                    <p class="text-gray-600 mb-6 leading-relaxed">
+                        快速草圖或簡單的方框圖。主要用於快速測試構思和佈局。這也是我們通常提到 "Wireframe" 時所指的意思。
+                    </p>
+                    <ul class="text-sm text-gray-500 space-y-2">
+                        <li>• 黑白灰階</li>
+                        <li>• 只有基本形狀</li>
+                        <li>• 快速迭代</li>
+                    </ul>
+                </div>
+
+                <!-- Mid Fidelity -->
+                <div class="glass-card p-8 rounded-3xl fade-in" style="transition-delay: 100ms;">
+                    <div class="w-12 h-12 bg-gray-100 rounded-2xl flex items-center justify-center mb-6">
+                        <span class="text-xl font-bold">2</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">中真度 (Mid-Fi)</h3>
+                    <p class="text-gray-600 mb-6 leading-relaxed">
+                        包含更具體的 UI 元素和真實的文字內容。結構更清晰，比例更精確，但仍排除裝飾性細節。
+                    </p>
+                    <ul class="text-sm text-gray-500 space-y-2">
+                        <li>• 精確的比例</li>
+                        <li>• 真實的按鈕與圖標</li>
+                        <li>• 初步的交互流程</li>
+                    </ul>
+                </div>
+
+                <!-- High Fidelity -->
+                <div class="glass-card p-8 rounded-3xl fade-in" style="transition-delay: 200ms;">
+                    <div class="w-12 h-12 bg-gray-100 rounded-2xl flex items-center justify-center mb-6">
+                        <span class="text-xl font-bold">3</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">高真度 (High-Fi)</h3>
+                    <p class="text-gray-600 mb-6 leading-relaxed">
+                        極其接近最終產品。包含了精確的間距、排版與網格系統。常用於最終測試與開發交付。
+                    </p>
+                    <ul class="text-sm text-gray-500 space-y-2">
+                        <li>• 像素級精準</li>
+                        <li>• 完整的頁面流程</li>
+                        <li>• 無色彩或極簡色彩</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Mockup Section -->
+    <section id="mockup"
+        class="py-24 bg-gray-900 text-white rounded-[3rem] mx-4 lg:mx-10 my-12 overflow-hidden relative">
+        <div class="absolute top-0 right-0 w-1/2 h-full bg-white/5 skew-x-12 transform translate-x-32"></div>
+        <div class="max-w-7xl mx-auto px-6 relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            <div class="fade-in">
+                <h2 class="text-4xl font-bold mb-8">從 Wireframe 到 <span class="text-gray-400">Mockup</span></h2>
+                <div class="space-y-6 text-gray-300 text-lg leading-relaxed">
+                    <p>
+                        雖然 Wireframe、Mockup 和 Prototype 常常被混淆，但它們有著本質的區別。
+                    </p>
+                    <p>
+                        當你在 Wireframe 中加入 <span class="text-white font-semibold">色彩、圖片與具體的設計風格</span> 時，它就不再只是
+                        Wireframe，而是成為了 <span class="text-white font-semibold">Mockup</span>（視覺模型）。
+                    </p>
+                    <div class="p-6 bg-white/10 rounded-2xl border border-white/10 mt-8">
+                        <p class="text-sm font-medium italic">
+                            「Wireframe 關注功能與結構，Mockup 關注感覺與視覺，Prototype 關注動作與交互。」
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="fade-in">
+                <div class="grid grid-cols-2 gap-4">
+                    <div
+                        class="aspect-[4/5] bg-white/10 rounded-2xl border border-white/20 flex flex-col justify-center items-center p-6 text-center">
+                        <div class="w-full h-2 bg-white/20 rounded-full mb-3"></div>
+                        <div class="w-2/3 h-2 bg-white/20 rounded-full mb-8"></div>
+                        <div class="w-full aspect-square border-2 border-dashed border-white/20 rounded-lg"></div>
+                        <p class="mt-4 text-xs text-gray-400">Wireframe (骨架)</p>
+                    </div>
+                    <div
+                        class="aspect-[4/5] bg-white rounded-2xl p-6 flex flex-col justify-center items-center shadow-2xl">
+                        <div class="w-full h-2 bg-blue-500 rounded-full mb-3"></div>
+                        <div class="w-2/3 h-2 bg-gray-200 rounded-full mb-8"></div>
+                        <div id="mockup-img-placeholder"
+                            class="w-full aspect-square bg-gray-100 rounded-lg overflow-hidden flex items-center justify-center">
+                            <!-- Image will go here -->
+                            <img id="mockup-img" src="img/mockup.png" alt="Mockup Preview"
+                                class="w-full h-full object-cover">
+                        </div>
+                        <p class="mt-4 text-xs text-gray-500">Mockup (視覺)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Conclusion Section -->
+    <section id="conclusion" class="py-24">
+        <div class="max-w-3xl mx-auto px-6 text-center">
+            <div class="inline-block p-4 bg-gray-50 rounded-full mb-8 fade-in">
+                <svg class="w-12 h-12 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4">
+                    </path>
+                </svg>
+            </div>
+            <h2 class="text-3xl font-bold mb-6 fade-in">總結</h2>
+            <p class="text-xl text-gray-600 mb-12 fade-in leading-relaxed">
+                Wireframe 是設計過程中的核心工具，它幫助團隊在耗費資源進行細節設計之前，優先解決最重要的「結構」與「流程」問題。
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-left fade-in">
+                <div class="p-6 bg-white border border-gray-100 rounded-2xl shadow-sm">
+                    <h4 class="font-bold mb-2">💡 記住重點</h4>
+                    <p class="text-sm text-gray-500">通常提到 Wireframe，大多數指的都是「低真度」版本。</p>
+                </div>
+                <div class="p-6 bg-white border border-gray-100 rounded-2xl shadow-sm">
+                    <h4 class="font-bold mb-2">🎨 色彩關鍵</h4>
+                    <p class="text-sm text-gray-500">一旦填入顏色與細節，它就進化成了 Mockup。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 border-t border-gray-100 text-center text-gray-400 text-sm">
+        <p>© 2026 朱珮瑜 第二次上課課本 </p>
+    </footer>
+
+    <script>
+        $(document).ready(function () {
+            // Fade-in animation on scroll
+            function checkScroll() {
+                $('.fade-in').each(function () {
+                    const elementTop = $(this).offset().top;
+                    const elementBottom = elementTop + $(this).outerHeight();
+                    const viewportTop = $(window).scrollTop();
+                    const viewportBottom = viewportTop + $(window).height();
+
+                    if (elementBottom > viewportTop && elementTop < viewportBottom - 50) {
+                        $(this).addClass('visible');
+                    }
+                });
+            }
+
+            $(window).on('scroll load', checkScroll);
+
+            // Smooth scroll for nav links
+            $('a[href^="#"]').on('click', function (e) {
+                e.preventDefault();
+                const target = $(this.hash);
+                if (target.length) {
+                    $('html, body').animate({
+                        scrollTop: target.offset().top - 80
+                    }, 800);
+                }
+            });
+
+            // Initial trigger
+            checkScroll();
+        });
+    </script>
+</body>
+
+</html>
