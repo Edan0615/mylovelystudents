@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>伍聖安：UI/UX 響應式網頁設計全攻略 (V5 最終完整累計版)</title>
+
+    <!-- Frameworks -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@300;400;600;700&family=Noto+Sans+TC:wght@300;400;500;700&family=Bungee&family=JetBrains+Mono&display=swap"
+        rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --emerald: #10b981;
+            --rose: #f43f5e;
+            --amber: #f59e0b;
+            --bg: #f8fafc;
+        }
+
+        body {
+            font-family: 'Inter', 'Noto Sans TC', sans-serif;
+            background: var(--bg);
+            scroll-behavior: smooth;
+        }
+
+        .editorial-font {
+            font-family: 'Playfair Display', serif;
+        }
+
+        .neobrutal-font {
+            font-family: 'Bungee', cursive;
+        }
+
+        .mono-font {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Neo-Brutalism Classes */
+        .neobrutal-card {
+            border: 3px solid #000;
+            box-shadow: 8px 8px 0px 0px #000;
+            transition: all 0.2s;
+        }
+
+        .neobrutal-card:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 10px 10px 0px 0px #000;
+        }
+
+        /* Layout Container & Sidebar Transition */
+        #main-layout {
+            display: grid;
+            grid-template-columns: 1fr;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @media (min-width: 1024px) {
+            #main-layout {
+                grid-template-columns: 320px 1fr;
+            }
+        }
+
+        #main-layout.sidebar-collapsed {
+            grid-template-columns: 0px 1fr;
+        }
+
+        .sidebar {
+            height: calc(100vh - 4.5rem);
+            position: sticky;
+            top: 5rem;
+            overflow-y: auto;
+            scrollbar-width: none;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .sidebar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .sidebar-collapsed .sidebar {
+            opacity: 0;
+            transform: translateX(-50px);
+            pointer-events: none;
+            padding-right: 0 !important;
+            margin-right: 0 !important;
+        }
+
+        .main-content {
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Chapter Styles */
+        .chapter-box {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 3rem;
+            padding: 4rem;
+            overflow: hidden;
+        }
+
+        /* Breakpoint Visualizer */
+        .bp-bar {
+            height: 12px;
+            background: #e2e8f0;
+            border-radius: 99px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .bp-active-fill {
+            height: 100%;
+            background: var(--primary);
+            transition: width 0.5s ease;
+        }
+
+        /* V1 Project Mask */
+        .v1-hero-mask {
+            background: linear-gradient(135deg, rgba(30, 64, 175, 0.8) 0%, rgba(59, 130, 246, 0.3) 100%);
+        }
+
+        /* Table of Contents Active */
+        .toc-link.active {
+            background: #eef2ff;
+            color: var(--primary);
+            border-left: 4px solid var(--primary);
+            font-weight: 800;
+        }
+
+        /* Mobile Drawer (V1 Logic) */
+        #mobile-drawer {
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: translateX(100%);
+        }
+
+        #mobile-drawer.active {
+            transform: translateX(0);
+        }
+
+        .fade-up {
+            animation: fadeUp 0.8s ease-out forwards;
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body class="selection:bg-indigo-100">
+    <!-- Global Header -->
+    <nav class="sticky top-0 z-[110] bg-white/80 backdrop-blur-xl border-b border-slate-100 py-4">
+        <div class="container mx-auto px-6 flex justify-between items-center">
+            <div class="flex items-center space-x-4">
+                <!-- Sidebar Toggle Button -->
+                <button id="toggle-sidebar"
+                    class="hidden lg:flex w-10 h-10 items-center justify-center rounded-xl bg-slate-50 text-slate-400 hover:bg-indigo-50 hover:text-indigo-600 transition border border-slate-200">
+                    <i class="fa-solid fa-indent text-lg"></i>
+                </button>
+                <div class="bg-indigo-600 p-2.5 rounded-xl text-white shadow-lg shadow-indigo-100">
+                    <i class="fa-solid fa-layer-group"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-black tracking-tight leading-none uppercase">RWD 大師教材 <span
+                            class="text-indigo-600">V5.1</span></h1>
+                    <span class="text-[9px] text-slate-400 font-bold uppercase tracking-[0.2em]"> Cumulative
+                        Encyclopedia</span>
+                </div>
+            </div>
+            <div class="flex items-center space-x-6">
+                <!-- Live Monitoring -->
+                <div class="hidden lg:flex items-center space-x-2 bg-slate-50 px-4 py-2 rounded-full border">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span id="bp-indicator" class="text-[10px] font-bold text-slate-500 mono-font uppercase">Desktop
+                        View (LG)</span>
+                </div>
+                <button id="show-lecture"
+                    class="bg-indigo-600 text-white px-5 py-2.5 rounded-full text-xs font-black hover:bg-indigo-700 transition shadow-xl shadow-indigo-100">
+                    <i class="fa-solid fa-lightbulb mr-2"></i> 設計心法
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mx-auto px-6 py-12">
+        <div id="main-layout" class="gap-12">
+
+            <!-- Floating Sidebar -->
+            <aside class="hidden lg:block sidebar pr-4">
+                <div class="space-y-1">
+                    <p class="text-[10px] font-black text-slate-300 uppercase tracking-widest pl-4 mb-8">章節索引 / Chapters
+                    </p>
+
+                    <!-- NEW Section -->
+                    <div class="mb-10">
+                        <p class="text-[10px] font-black text-indigo-500 pl-4 mb-2">基礎核心：RWD 哲學</p>
+                        <a href="#toc-philosophy"
+                            class="toc-link active block px-4 py-3.5 rounded-2xl transition text-sm text-slate-500 mb-1">物理空間
+                            vs. 網頁空間</a>
+                        <a href="#toc-breakpoints"
+                            class="toc-link block px-4 py-3.5 rounded-2xl transition text-sm text-slate-500">斷點
+                            (Breakpoints) 详解</a>
+                    </div>
+
+                    <!-- Theory Section -->
+                    <div class="mb-10">
+                        <p class="text-[10px] font-black text-emerald-500 pl-4 mb-2">進階美學：UI 佈局</p>
+                        <a href="#toc-patterns"
+                            class="toc-link block px-4 py-3.5 rounded-2xl transition text-sm text-slate-500 mb-1">Navbar
+                            & Hero 三大模式</a>
+                        <a href="#toc-vibes"
+                            class="toc-link block px-4 py-3.5 rounded-2xl transition text-sm text-slate-500">風格實驗室
+                            (Neo-Brutal)</a>
+                    </div>
+
+                    <!-- Original Project Section (V1) -->
+                    <div class="mb-10">
+                        <p class="text-[10px] font-black text-rose-500 pl-4 mb-2">專案實作：SoulSync 重構</p>
+                        <a href="#toc-project"
+                            class="toc-link block px-4 py-3.5 rounded-2xl transition text-sm text-slate-500 mb-1">SoulSync
+                            展示與教學</a>
+                        <a href="#toc-rwd-cards"
+                            class="toc-link block px-4 py-3.5 rounded-2xl transition text-sm text-slate-100 bg-slate-900 font-bold p-4">RWD
+                            實作重點卡片 (一定要看)</a>
+                    </div>
+
+                    <div class="p-8 bg-indigo-50 rounded-[2.5rem] mt-10">
+                        <p class="text-xs text-indigo-900 leading-relaxed font-bold">
+                            「課程內容不斷增加，點擊章節即可快速跳轉。妳的進步，代碼看得到！」
+                        </p>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Main Content Area -->
+            <main class="main-content space-y-32">
+
+                <!-- 00 Philosophy -->
+                <section id="toc-philosophy" class="scroll-mt-32 space-y-12">
+                    <div class="flex items-center space-x-6">
+                        <div
+                            class="bg-indigo-100 text-indigo-600 w-14 h-14 rounded-3xl flex items-center justify-center text-2xl font-black">
+                            00</div>
+                        <h2 class="text-4xl font-black text-slate-900 leading-none">RWD 思考框架：<br> <span
+                                class="text-indigo-600">從物理空間到自適應。</span></h2>
+                    </div>
+                    <div class="chapter-box grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+                        <div class="space-y-8">
+                            <h4 class="text-xl font-bold uppercase tracking-widest text-slate-400 italic">5 坪 vs. 100
+                                坪的比喻</h4>
+                            <p class="text-lg text-slate-600 font-medium">
+                                在大螢幕（100坪）我們講求佈局的大氣；在手機（5坪）我們講求資訊的精煉。
+                            </p>
+                            <div class="flex space-x-4">
+                                <div class="p-6 bg-slate-50 border rounded-3xl flex-1 text-center">
+                                    <p class="text-[10px] font-bold text-slate-400 mb-2">DESKTOP</p>
+                                    <i class="fa-solid fa-couch text-2xl text-indigo-600 block mb-2"></i>
+                                    <span class="text-xs font-black">寬廣、大氣留白</span>
+                                </div>
+                                <div class="p-6 bg-slate-50 border rounded-3xl flex-1 text-center">
+                                    <p class="text-[10px] font-bold text-slate-400 mb-2">MOBILE</p>
+                                    <i class="fa-solid fa-chair text-2xl text-rose-600 block mb-2"></i>
+                                    <span class="text-xs font-black">緊湊、垂直堆疊</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-slate-900 p-10 rounded-[2.5rem] text-white space-y-6">
+                            <h5 class="text-sm font-bold mono-font text-emerald-400">// Media Query 基本語法</h5>
+                            <div class="mono-font text-sm leading-relaxed text-slate-400">
+                                <span class="text-rose-400">@media</span> (<span class="text-amber-300">max-width:
+                                    640px</span>) {<br>
+                                &nbsp;&nbsp;<span class="text-sky-300">.container</span> { <br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;flex-direction: <span
+                                    class="text-emerald-400">column</span>;<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;padding: <span class="text-emerald-400">1rem</span>;<br>
+                                &nbsp;&nbsp;}<br>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- NEW: Breakpoints Section -->
+                <section id="toc-breakpoints" class="scroll-mt-32 space-y-12">
+                    <div class="flex items-center space-x-6">
+                        <div
+                            class="bg-emerald-100 text-emerald-600 w-14 h-14 rounded-3xl flex items-center justify-center text-2xl font-black">
+                            01</div>
+                        <h2
+                            class="text-4xl font-black text-slate-900 leading-none underline decoration-emerald-500/30 underline-offset-8">
+                            斷點 (Breakpoints) 的世界觀。</h2>
+                    </div>
+
+                    <div class="chapter-box space-y-16">
+                        <div class="space-y-6">
+                            <p class="text-slate-500 leading-relaxed max-w-2xl">
+                                所謂的斷點，就是設計師決定的「關鍵寬度」。當瀏覽器跨過這條線，網頁排版就會發生翻天覆地的變化。
+                            </p>
+
+                            <!-- Visual BP Map -->
+                            <div class="space-y-8 py-8">
+                                <div
+                                    class="flex items-center justify-between text-[10px] font-black uppercase text-slate-400 mono-font">
+                                    <span>Mobile Base</span><span>640px (SM)</span><span>768px (MD)</span><span>1024px
+                                        (LG)</span><span>1280px (XL)</span>
+                                </div>
+                                <div class="bp-bar">
+                                    <div class="bp-active-fill" style="width: 65%;"></div>
+                                    <div class="absolute left-[640px] h-full w-[2px] bg-white opacity-40"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                            <div class="p-8 bg-slate-50 border-b-4 border-slate-200 rounded-3xl space-y-4">
+                                <span class="text-2xl font-black mono-font text-slate-300 italic">SM</span>
+                                <h6 class="font-bold text-xs uppercase tracking-widest text-emerald-600">小螢幕 (手機)</h6>
+                                <p class="text-[11px] text-slate-400">大於 640px 時啟動。通常用於將內容從單欄轉為兩欄。</p>
+                            </div>
+                            <div class="p-8 bg-indigo-50 border-b-4 border-indigo-200 rounded-3xl space-y-4">
+                                <span class="text-2xl font-black mono-font text-slate-300 italic">MD</span>
+                                <h6 class="font-bold text-xs uppercase tracking-widest text-indigo-600">中螢幕 (平板)</h6>
+                                <p class="text-[11px] text-slate-400">大於 768px 時啟動。這是大多數 Navigation 從漢堡選單轉為展開選單的時間點。</p>
+                            </div>
+                            <div class="p-8 bg-rose-50 border-b-4 border-rose-200 rounded-3xl space-y-4">
+                                <span class="text-2xl font-black mono-font text-slate-300 italic">LG</span>
+                                <h6 class="font-bold text-xs uppercase tracking-widest text-rose-600">大螢幕 (電腦)</h6>
+                                <p class="text-[11px] text-slate-400">大於 1024px 時啟動。這時網頁可以擁有豐富的三欄或四欄排版。</p>
+                            </div>
+                            <div class="p-8 bg-emerald-50 border-b-4 border-emerald-200 rounded-3xl space-y-4">
+                                <span class="text-2xl font-black mono-font text-slate-300 italic">XL</span>
+                                <h6 class="font-bold text-xs uppercase tracking-widest text-emerald-600">超大螢幕 (4K)</h6>
+                                <p class="text-[11px] text-slate-400">大於 1280px 時啟動。我們會限制網頁最大寬度
+                                    (Max-width)，避免文字長度太長難以閱讀。</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 02 UI Patterns -->
+                <section id="toc-patterns" class="scroll-mt-32 space-y-12">
+                    <h2 class="text-3xl font-black text-slate-900">組件模式與排版邏輯</h2>
+                    <div class="flex space-x-4 mb-4">
+                        <button data-nav="classic"
+                            class="nav-tab active px-6 py-2.5 rounded-full text-xs font-black border transition">經典
+                            A</button>
+                        <button data-nav="center"
+                            class="nav-tab px-6 py-2.5 rounded-full text-xs font-black border transition">置中 B</button>
+                        <button data-nav="app"
+                            class="nav-tab px-6 py-2.5 rounded-full text-xs font-black border transition">應用 C</button>
+                    </div>
+                    <div class="chapter-box bg-slate-100 flex items-center justify-center h-48">
+                        <div id="nav-preview" class="w-full bg-white shadow-2xl p-5 rounded-2xl fade-up"></div>
+                    </div>
+                </section>
+
+                <!-- Style Lab -->
+                <section id="toc-vibes"
+                    class="scroll-mt-32 py-24 bg-slate-900 rounded-[4rem] text-white p-12 md:p-24 overflow-hidden relative">
+                    <div class="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+                        <div class="space-y-12">
+                            <h2 class="text-5xl font-black leading-none">風格 <br> 的對撞。</h2>
+                            <div class="flex flex-col space-y-4">
+                                <button data-vibe="editorial"
+                                    class="vibe-btn w-full text-left p-6 border border-white/10 rounded-3xl hover:bg-white/5 transition flex justify-between items-center group">
+                                    <div class="space-y-1">
+                                        <span class="text-2xl font-bold editorial-font">Editorial Style</span>
+                                        <p class="text-[9px] text-slate-500 font-bold uppercase tracking-widest">Ref:
+                                            Pitchfork.com</p>
+                                    </div>
+                                    <i
+                                        class="fa-solid fa-chevron-right opacity-0 group-hover:opacity-100 transition text-indigo-400"></i>
+                                </button>
+                                <button data-vibe="minimal"
+                                    class="vibe-btn w-full text-left p-6 border border-white/10 rounded-3xl hover:bg-white/5 transition flex justify-between items-center group">
+                                    <div class="space-y-1">
+                                        <span class="text-xl font-black uppercase tracking-tighter">Minimalist</span>
+                                        <p class="text-[9px] text-slate-500 font-bold uppercase tracking-widest">Ref:
+                                            Apple.com</p>
+                                    </div>
+                                    <i
+                                        class="fa-solid fa-chevron-right opacity-0 group-hover:opacity-100 transition text-indigo-400"></i>
+                                </button>
+                                <button data-vibe="neobrutal"
+                                    class="vibe-btn w-full text-left p-6 border-emerald-500 bg-emerald-500/10 rounded-3xl hover:bg-emerald-500/20 transition flex justify-between items-center group">
+                                    <div class="space-y-1">
+                                        <span
+                                            class="text-2xl font-black neobrutal-font text-emerald-400">Neo-Brutalism</span>
+                                        <p class="text-[9px] text-emerald-500/50 font-bold uppercase tracking-widest">
+                                            Ref: Gumroad.com</p>
+                                    </div>
+                                    <span
+                                        class="bg-emerald-500 text-slate-900 text-[9px] font-bold px-2 py-1 rounded">TRENDING</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div id="vibe-preview-box"
+                            class="bg-white rounded-[3rem] p-12 text-slate-900 min-h-[500px] flex flex-col justify-center shadow-2xl transition-all duration-700">
+                            <div class="text-center space-y-6">
+                                <i class="fa-solid fa-eye text-6xl text-slate-100"></i>
+                                <p class="text-xs font-black text-slate-300 uppercase tracking-widest">點擊風格預覽</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Decor -->
+                    <div
+                        class="absolute inset-0 bg-indigo-600/5 blur-[150px] rounded-full translate-x-1/2 translate-y-1/2">
+                    </div>
+                </section>
+
+                <!-- PART 3: Project SoulSync (EVERYTHING KEPT) -->
+                <section id="toc-project" class="scroll-mt-32 space-y-12">
+                    <div class="flex items-center space-x-6">
+                        <div
+                            class="bg-rose-100 text-rose-600 w-14 h-14 rounded-3xl flex items-center justify-center text-2xl font-black">
+                            02</div>
+                        <h2 class="text-4xl font-black text-slate-900 leading-none">實務重構展示：SoulSync</h2>
+                    </div>
+
+                    <div class="chapter-box p-0 border-none shadow-2xl relative">
+                        <!-- Navigation V1 -->
+                        <div class="bg-white/95 backdrop-blur-md p-6 flex justify-between items-center border-b">
+                            <div class="flex items-center space-x-2"><i
+                                    class="fa-solid fa-heart-pulse text-blue-600"></i><span
+                                    class="font-bold">SoulSync</span></div>
+                            <button id="v1-menu-toggle" class="md:hidden text-slate-400 text-2xl"><i
+                                    class="fa-solid fa-bars-staggered"></i></button>
+                            <div
+                                class="hidden md:flex space-x-6 text-xs font-bold text-slate-400 uppercase tracking-widest">
+                                <span>About</span><span>Services</span><span>Reserve</span>
+                            </div>
+                        </div>
+                        <!-- Hero V1 -->
+                        <div class="relative h-[450px] flex items-center px-16 overflow-hidden">
+                            <img src="hero-bg.png" class="absolute inset-0 w-full h-full object-cover">
+                            <div class="absolute inset-0 v1-hero-mask"></div>
+                            <div class="relative z-10 text-white max-w-xl fade-up">
+                                <h3 class="text-6xl font-black mb-6 leading-[0.9]">重新定義 <br> 療癒與平衡。</h3>
+                                <p class="text-sm opacity-80 mb-10 leading-relaxed">
+                                    在繽紛的校園中為你尋找平靜。國北教大的專業心健陪伴，為你每一次的情緒轉折提供最溫柔的解答。</p>
+                                <button
+                                    class="bg-white text-blue-700 px-10 py-4 rounded-2xl font-black text-xs hover:scale-105 transition">開啟預約談話</button>
+                            </div>
+                        </div>
+                        <!-- Bento V1 -->
+                        <div class="p-16 bg-slate-50">
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                <div
+                                    class="md:col-span-2 bg-white rounded-[2.5rem] p-12 border border-slate-100 shadow-sm space-y-6">
+                                    <h4 class="text-3xl font-black">個別心理諮商</h4>
+                                    <p class="text-sm text-slate-500">專業心理師全程引導，在高度隱私的專屬空間中，與自我對話，找回初心。</p>
+                                </div>
+                                <div
+                                    class="bg-indigo-600 rounded-[2.5rem] p-12 text-white shadow-xl flex flex-col justify-between">
+                                    <h4 class="text-2xl font-bold">團體工作坊</h4>
+                                    <i class="fa-solid fa-users text-5xl opacity-20"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Mobile Drawer (Full Logic) -->
+                        <div id="mobile-drawer" class="absolute inset-0 bg-white z-[80] p-12 flex flex-col">
+                            <div class="flex justify-between mb-12">
+                                <span class="text-2xl font-bold">目錄選單</span>
+                                <button id="v1-close-drawer" class="text-3xl"><i class="fa-solid fa-xmark"></i></button>
+                            </div>
+                            <div class="flex flex-col space-y-10 text-4xl font-black tracking-tighter">
+                                <span class="text-blue-600">HOME.</span>
+                                <span>ABOUT.</span>
+                                <span>RESERVE.</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- THE CORE V1 RWD CARDS (MANDATORY TO KEEP) -->
+                <section id="toc-rwd-cards" class="scroll-mt-32 space-y-12">
+                    <div class="text-center">
+                        <span
+                            class="bg-slate-900 text-white px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-[0.3em]">Master
+                            Review</span>
+                        <h2 class="text-5xl font-black mt-6 tracking-tighter">本堂重點：RWD 實作重點卡片</h2>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                        <!-- Card 1: Padding Consistency -->
+                        <div class="neobrutal-card bg-white p-10 rounded-3xl border-slate-900 space-y-6">
+                            <div
+                                class="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-xl flex items-center justify-center text-xl shadow-inner">
+                                <i class="fa-solid fa-ruler-combined"></i>
+                            </div>
+                            <h5 class="text-xl font-black leading-tight text-slate-900 underline decoration-indigo-200">
+                                1. 間距的一致性</h5>
+                            <p class="text-[11px] text-slate-500 leading-relaxed font-medium">
+                                在圖片紅框指出的 Padding 不一致問題，解決關鍵在於統一使用 <code>max-w-7xl px-4 md:px-12</code> 作為基礎。
+                            </p>
+                        </div>
+
+                        <!-- Card 2: Mobile Simplification -->
+                        <div class="neobrutal-card bg-amber-50 p-10 rounded-3xl border-slate-900 space-y-6">
+                            <div
+                                class="w-12 h-12 bg-amber-400 text-slate-900 rounded-xl flex items-center justify-center text-xl">
+                                <i class="fa-solid fa-mobile-screen-button"></i>
+                            </div>
+                            <h5 class="text-xl font-black leading-tight text-slate-900 underline decoration-amber-300">
+                                2. 手機版內容簡化</h5>
+                            <p class="text-[11px] text-slate-500 leading-relaxed font-medium">
+                                如圖記指出，瑣碎資訊應在手機版「扁平化」。我們使用 <code>hidden md:block</code> 來對付臃腫的內容。
+                            </p>
+                        </div>
+
+                        <!-- Card 3: Grid Dynamic -->
+                        <div class="neobrutal-card bg-emerald-50 p-10 rounded-3xl border-slate-900 space-y-6">
+                            <div
+                                class="w-12 h-12 bg-emerald-400 text-slate-900 rounded-xl flex items-center justify-center text-xl">
+                                <i class="fa-solid fa-layer-group"></i>
+                            </div>
+                            <h5
+                                class="text-xl font-black leading-tight text-slate-900 underline decoration-emerald-300">
+                                3. 欄位數量的切換</h5>
+                            <p class="text-[11px] text-slate-500 leading-relaxed font-medium">
+                                手機版 1 欄，平板 2 欄，桌機 4 欄。這是現代 UI 的基礎律動。
+                            </p>
+                        </div>
+
+                        <!-- Card 4: Hamburger Logic -->
+                        <div
+                            class="neobrutal-card bg-indigo-600 p-10 rounded-3xl border-slate-900 text-white space-y-6">
+                            <div
+                                class="w-12 h-12 bg-white/20 text-white rounded-xl flex items-center justify-center text-xl">
+                                <i class="fa-solid fa-bars"></i>
+                            </div>
+                            <h5 class="text-xl font-black leading-tight underline decoration-white/20">4. 漢堡選單互動</h5>
+                            <p class="text-[11px] text-indigo-100 leading-relaxed font-medium">
+                                使用 jQuery 控制功能選單的 <code>toggleClass('active')</code>，是實作行動版 UI 的必經之路。
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Chapter Finale / Homework -->
+                <section
+                    class="bg-indigo-600 rounded-[3rem] p-12 text-white shadow-2xl relative overflow-hidden text-center">
+                    <div class="relative z-10 space-y-8">
+                        <i class="fa-solid fa-fire-flame-curved text-5xl text-amber-400 animate-bounce"></i>
+                        <h3 class="text-4xl font-black uppercase">Final Challenge</h3>
+                        <p class="text-indigo-100 max-w-xl mx-auto leading-relaxed mb-6">
+                            試著運用我們學到的 **Neo-Brutalism** 風格，在 SoulSync 重構區塊底下，增加一個具備巨大黑邊框與鮮豔綠色背景的特殊預約卡片，並設定其在手機版為 100%
+                            寬度！
+                        </p>
+                        <button
+                            class="bg-white text-indigo-900 px-12 py-5 rounded-full font-black text-xl hover:scale-110 transition shadow-2xl">
+                            開始作業！
+                        </button>
+                    </div>
+                </section>
+
+            </main>
+        </div>
+    </div>
+
+    <!-- Interactive Layer -->
+    <script>
+        $(document).ready(function () {
+
+            // Sidebar Toggle Logic
+            $('#toggle-sidebar').click(function () {
+                const $layout = $('#main-layout');
+                const $icon = $(this).find('i');
+
+                $layout.toggleClass('sidebar-collapsed');
+
+                // Switch icon based on state
+                if ($layout.hasClass('sidebar-collapsed')) {
+                    $icon.removeClass('fa-indent').addClass('fa-outdent');
+                    $(this).addClass('bg-indigo-600 text-white').removeClass('bg-slate-50 text-slate-400');
+                } else {
+                    $icon.removeClass('fa-outdent').addClass('fa-indent');
+                    $(this).removeClass('bg-indigo-600 text-white').addClass('bg-slate-50 text-slate-400');
+                }
+            });
+
+            // Breakpoint Monitoring
+            $(window).resize(function () {
+                const w = $(window).width();
+                let label = "DESKTOP VIEW (LG/XL)";
+                if (w < 640) label = "MOBILE VIEW (BASE)";
+                else if (w < 768) label = "TABLET VIEW (SM)";
+                else if (w < 1024) label = "LAPTOP VIEW (MD)";
+                $('#bp-indicator').text(label);
+            }).resize();
+
+            // V1 Project Interaction
+            $('#v1-menu-toggle').click(() => $('#mobile-drawer').addClass('active'));
+            $('#v1-close-drawer').click(() => $('#mobile-drawer').removeClass('active'));
+
+            // Navbar Switcher
+            const navs = {
+                classic: `<div class="flex justify-between items-center"><span class="font-bold">SoulSync</span><div class="space-x-4 text-[9px] font-bold text-slate-300"><span>News</span><span>Reserve</span></div><button class="bg-indigo-600 text-white px-4 py-1.5 rounded-full text-[9px] font-bold">Login</button></div>`,
+                center: `<div class="flex justify-center items-center relative"><span class="text-2xl font-black italic text-indigo-600 underline">IDENTITY.</span><div class="absolute right-0 text-[8px] font-bold uppercase text-slate-400">Contact</div></div>`,
+                app: `<div class="flex justify-between items-center"><span class="font-black text-xl">SS.</span><div class="bg-slate-100 rounded-full px-4 py-1 text-[8px] text-slate-400">Search doctor...</div><button class="bg-slate-900 text-white px-3 py-1 rounded text-[10px]">Portal</button></div>`
+            };
+            const updateNav = (t) => $('#nav-preview').fadeOut(200, function () { $(this).html(navs[t]).fadeIn(300); });
+            updateNav('classic');
+            $('.nav-tab').click(function () { $('.nav-tab').removeClass('active'); $(this).addClass('active'); updateNav($(this).data('nav')); });
+
+            // Vibe Switches
+            $('[data-vibe="editorial"]').click(function () {
+                $('#vibe-preview-box').html(`<div class="fade-up space-y-10"><div class="border-b-8 border-slate-900 pb-2"><h4 class="text-7xl font-black editorial-font leading-none">Inner <br> Peace.</h4></div><p class="text-xl font-bold">探索身心靈的極限與平衡。</p></div>`);
+            });
+            $('[data-vibe="minimal"]').click(function () {
+                $('#vibe-preview-box').html(`<div class="fade-up flex flex-col items-center justify-center space-y-12 h-full text-center py-20"><h4 class="text-5xl font-black uppercase tracking-tighter leading-none">Simple <br> Choice.</h4><button class="border-4 border-slate-900 px-12 py-5 text-xs font-black uppercase transition">Start Now</button></div>`);
+            });
+            $('[data-vibe="neobrutal"]').click(function () {
+                $('#vibe-preview-box').html(`<div class="fade-up space-y-8 py-10"><div class="neobrutal-card bg-emerald-400 p-8 rounded-xl"><h4 class="text-3xl neobrutal-font">BRUTAL <br> HEALING!</h4></div><div class="neobrutal-card bg-indigo-600 p-4 rounded-xl text-white font-black text-center">CTA BUTTON</div></div>`);
+            });
+
+            // Smooth Scroll Sidebar
+            $('.toc-link').on('click', function (e) {
+                e.preventDefault();
+                const target = $(this).attr('href');
+                $('.toc-link').removeClass('active'); $(this).addClass('active');
+                $('html, body').animate({ scrollTop: $(target).offset().top - 120 }, 600);
+            });
+
+            // Scrollspy
+            $(window).scroll(function () {
+                const scrollPos = $(document).scrollTop();
+                $('.scroll-mt-32').each(function () {
+                    if ($(this).offset().top <= scrollPos + 180) {
+                        const id = $(this).attr('id');
+                        $('.toc-link').removeClass('active');
+                        $(`a[href="#${id}"]`).addClass('active');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>
