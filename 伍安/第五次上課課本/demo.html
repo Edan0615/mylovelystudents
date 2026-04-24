@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bootstrap vs Tailwind 實戰對比 - </title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <style>
+        /* Custom styles to prevent conflicts where needed, 
+           but mostly relying on utilities */
+        .section-label {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            z-index: 100;
+        }
+
+        .bs-label {
+            background: #712cf9;
+            color: white;
+        }
+
+        .tw-label {
+            background: #06b6d4;
+            color: white;
+        }
+
+        /* Custom Tailwind config for the modern section */
+        @layer utilities {
+            .glass {
+                background: rgba(255, 255, 255, 0.7);
+                backdrop-filter: blur(10px);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-light">
+
+    <!-- Divider / Info -->
+    <div class="container-fluid bg-dark text-white py-2 text-center sticky-top" style="z-index: 1000;">
+        <span class="badge bg-secondary">Demo</span> 向上滾動查看 Bootstrap，向下滾動查看 Tailwind
+    </div>
+
+    <!-- ==========================================
+         SECTION 1: CLASSIC TEMPLATED BOOTSTRAP 5
+         ========================================== -->
+    <section class="position-relative bg-white border-bottom border-5 border-primary">
+        <span class="section-label bs-label">Classic Bootstrap 5 Template</span>
+
+        <!-- Standard BS Navbar -->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container">
+                <a class="navbar-brand" href="#">BOOTSTRAP-SITE</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#bsNavbar">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="bsNavbar">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item"><a class="nav-link active" href="#">Home</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#">Link</a></li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Dropdown</a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="#">Action</a></li>
+                                <li><a class="dropdown-item" href="#">Another action</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <form class="d-flex">
+                        <input class="form-control me-2" type="search" placeholder="Search">
+                        <button class="btn btn-outline-success" type="submit">Search</button>
+                    </form>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Classic Jumbotron Hero -->
+        <div class="container my-5">
+            <div class="p-5 mb-4 bg-light rounded-3 border">
+                <div class="container-fluid py-5">
+                    <h1 class="display-5 fw-bold">傳統組件化的範本</h1>
+                    <p class="col-md-8 fs-4 text-muted">
+                        這就是典型的 Bootstrap 風格。我們使用了標準的 Navbar、Jumbotron (大螢幕區塊) 與按鈕顏色。
+                        在 Bootstrap 中，你只需要套用 class 名稱，它就會給你一個「標準」的樣子。
+                    </p>
+                    <button class="btn btn-primary btn-lg" type="button">了解更多</button>
+                </div>
+            </div>
+
+            <!-- Standard BS Cards -->
+            <div class="row g-4 mb-5">
+                <div class="col-md-4">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-header bg-primary text-white">標準標題</div>
+                        <div class="card-body">
+                            <h5 class="card-title">組件 A</h5>
+                            <p class="card-text">這是一個標準的 Bootstrap 卡片組件。</p>
+                            <a href="#" class="btn btn-outline-primary">點擊</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-header bg-success text-white">成功狀態</div>
+                        <div class="card-body">
+                            <h5 class="card-title">組件 B</h5>
+                            <p class="card-text">透過套用特定的背景顏色 class 快速成型。</p>
+                            <a href="#" class="btn btn-success">點擊</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-header bg-dark text-white">深色主題</div>
+                        <div class="card-body">
+                            <h5 class="card-title">組件 C</h5>
+                            <p class="card-text">容易撞衫，但開發速度是它的絕對優勢。</p>
+                            <a href="#" class="btn btn-dark">點擊</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==========================================
+         SECTION 2: MODERN TAILWIND CSS
+         ========================================== -->
+    <section class="relative bg-white overflow-hidden">
+        <span class="section-label tw-label">Modern Tailwind CSS</span>
+
+        <!-- Tailwind Navbar (Modern Glass Style) -->
+        <div class="max-w-7xl mx-auto px-6 pt-6">
+            <nav
+                class="flex items-center justify-between px-6 py-4 bg-white/70 backdrop-blur-md border border-slate-200/50 rounded-2xl shadow-sm">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center text-white font-bold">
+                        T</div>
+                    <span class="text-xl font-extrabold tracking-tight text-slate-800">TW-CONCEPT</span>
+                </div>
+                <div class="hidden md:flex items-center gap-8">
+                    <a href="#"
+                        class="text-sm font-semibold text-slate-600 hover:text-indigo-600 transition-colors">首頁</a>
+                    <a href="#"
+                        class="text-sm font-semibold text-slate-600 hover:text-indigo-600 transition-colors">產品</a>
+                    <a href="#"
+                        class="text-sm font-semibold text-slate-600 hover:text-indigo-600 transition-colors">關於我們</a>
+                    <a href="#"
+                        class="px-5 py-2.5 bg-indigo-600 text-white text-sm font-bold rounded-xl hover:bg-indigo-700 hover:shadow-lg hover:shadow-indigo-200 transition-all">
+                        立即開始
+                    </a>
+                </div>
+                <button class="md:hidden p-2 text-slate-600">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6h16M4 12h16m-7 6h7"></path>
+                    </svg>
+                </button>
+            </nav>
+        </div>
+
+        <!-- Tailwind Hero (Modern Aesthetic) -->
+        <div class="max-w-7xl mx-auto px-6 py-20 lg:py-32 flex flex-col items-center text-center">
+
+            <div
+                class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 border border-indigo-100 mb-8">
+                <span class="w-2 h-2 rounded-full bg-indigo-500 animate-pulse"></span>
+                <span class="text-xs font-bold text-indigo-600 uppercase tracking-widest">Next Generation Styling</span>
+            </div>
+
+            <h1 class="text-5xl lg:text-7xl font-extrabold tracking-tight text-slate-900 mb-8 leading-tight">
+                現代美學的 <span
+                    class="bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">靈活掌控</span>
+            </h1>
+
+            <p class="text-lg lg:text-xl text-slate-500 max-w-2xl leading-relaxed mb-12">
+                Tailwind CSS 讓設計師重獲自由。沒有預設的組件樣式，每一格間距、每一層陰影都是透過「氛圍編程」精準控制，打造出獨一無二的品牌視覺。
+            </p>
+
+            <div class="flex flex-col sm:flex-row gap-4 mb-20 w-full justify-center">
+                <button
+                    class="px-8 py-4 bg-slate-900 text-white font-bold rounded-2xl hover:bg-slate-800 transition-all shadow-xl shadow-slate-200/50">
+                    主要動作
+                </button>
+                <button
+                    class="px-8 py-4 bg-white text-slate-600 font-bold rounded-2xl border border-slate-200 hover:bg-slate-50 transition-all">
+                    詳細資訊
+                </button>
+            </div>
+
+            <!-- Image with custom decorative elements -->
+            <div class="relative w-full max-w-4xl mx-auto">
+                <div class="absolute -top-12 -left-12 w-64 h-64 bg-indigo-200 rounded-full blur-[100px] opacity-60">
+                </div>
+                <div class="absolute -bottom-12 -right-12 w-64 h-64 bg-purple-200 rounded-full blur-[100px] opacity-60">
+                </div>
+
+                <div
+                    class="relative p-2 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-[2.5rem] shadow-2xl overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1200&q=80"
+                        class="w-full rounded-[2rem]" alt="Modern Dev">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer comparison info -->
+    <footer class="bg-gray-50 border-t border-gray-200 py-12">
+        <div class="container text-center">
+            <h4 class="fw-bold mb-4">發現差異了嗎？</h4>
+            <div class="row justify-content-center g-4">
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 shadow-sm rounded-4 p-4 text-start">
+                        <h5 class="fw-bold text-primary">Bootstrap</h5>
+                        <p class="text-muted small">容易上手、標準化、適合後端人員快速搭出可用的介面。但設計感較為大眾，修改成本較高。</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 shadow-sm rounded-4 p-4 text-start">
+                        <h5 class="fw-bold text-info">Tailwind</h5>
+                        <p class="text-muted small">靈活度極高、現代感強、適合重視美感與使用者體驗的設計工程師。沒有組件限制，只有想像限制。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            // Add some smooth scrolling or logic if needed
+            console.log("Demo page ready with jQuery loaded.");
+        });
+    </script>
+</body>
+
+</html>

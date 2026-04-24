@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>伍安：第五次上課課本 - 現代網頁開發全景</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- jQuery CDN -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&family=Noto+Sans+TC:wght@300;400;700;900&display=swap"
+        rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#6366f1',
+                        secondary: '#ec4899',
+                        accent: '#8b5cf6',
+                        light: {
+                            base: '#f8fafc',
+                            card: '#ffffff',
+                            border: '#e2e8f0'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'Noto Sans TC', 'sans-serif'],
+                    },
+                    animation: {
+                        'slow-spin': 'spin 12s linear infinite',
+                        'float': 'float 4s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #fcfcfd;
+            background-image:
+                radial-gradient(at 0% 0%, hsla(253, 16%, 7%, 0) 0, hsla(253, 16%, 7%, 0) 50%, hsla(220, 100%, 95%, 0.5) 100%),
+                radial-gradient(at 50% 0%, hsla(225, 39%, 30%, 0) 0, hsla(225, 39%, 30%, 0) 50%, hsla(280, 100%, 95%, 0.5) 100%);
+            color: #1e293b;
+            overflow-x: hidden;
+        }
+
+        .premium-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.05);
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .premium-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px -10px rgba(99, 102, 241, 0.15);
+            border-color: rgba(99, 102, 241, 0.3);
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #6366f1 0%, #ec4899 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .section-tag {
+            background: linear-gradient(90deg, #6366f1, #a855f7);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 99px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .code-block {
+            background: #0f172a;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 1rem;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.875rem;
+            position: relative;
+            overflow-x: auto;
+        }
+
+        .badge {
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        .badge-blue {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .badge-purple {
+            background: #f3e8ff;
+            color: #6b21a8;
+        }
+
+        .badge-rose {
+            background: #ffe4e6;
+            color: #9f1239;
+        }
+
+        ::selection {
+            background: #6366f1;
+            color: white;
+        }
+    </style>
+</head>
+
+<body class="font-sans antialiased">
+
+    <!-- Decorative Elements -->
+    <div class="fixed top-0 left-0 w-full h-full pointer-events-none z-[-1] overflow-hidden opacity-40">
+        <div class="absolute top-[10%] left-[5%] w-96 h-96 bg-blue-200 rounded-full blur-[100px]"></div>
+        <div class="absolute bottom-[10%] right-[5%] w-96 h-96 bg-purple-200 rounded-full blur-[100px]"></div>
+    </div>
+
+    <div class="max-w-6xl mx-auto px-6 py-16">
+        <!-- Header -->
+        <header class="text-center mb-24">
+            <div class="flex justify-center mb-6">
+                <span
+                    class="px-3 py-1 bg-indigo-50 text-indigo-600 rounded-full text-xs font-bold border border-indigo-100 uppercase tracking-widest">
+                    Digital Textbook Volume 05
+                </span>
+            </div>
+            <h1 class="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight leading-tight">
+                現代網頁開發的<br><span class="gradient-text">核心版圖與選擇</span>
+            </h1>
+            <p class="text-lg text-slate-500 max-w-2xl mx-auto font-normal leading-relaxed">
+                第五堂課：對齊專案規模、選擇正確工具。從 jQuery 的隨捷到 Vue 的深度架構，這是一場關於「場景選擇」的深度探索。
+            </p>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+
+            <!-- Vibe Coding & Stanford Philosophy -->
+            <section
+                class="lg:col-span-12 premium-card p-10 rounded-[2.5rem] bg-gradient-to-br from-indigo-50 to-white border-indigo-100">
+                <div class="flex flex-col md:flex-row gap-12 items-center">
+                    <div class="md:w-1/2">
+                        <span class="section-tag mb-6 inline-block">Philosophy</span>
+                        <h2 class="text-4xl font-extrabold mb-6 leading-tight">氛圍編程 (Vibe Coding)：<br>斯坦福大學的開發正規</h2>
+                        <p class="text-slate-600 leading-relaxed mb-6">
+                            根據 <strong>Stanford (斯坦福大學)</strong> 的最新觀點，傳統逐行寫程式的方式已經正式進入「<span
+                                class="text-indigo-600 font-bold uppercase">古典編程 (Classical Programming)</span>」時代。
+                            現代開發的核心在於 <span
+                                class="text-indigo-600 font-bold underline decoration-2">傳遞開發核心意向</span>，而非細節的苦工。
+                        </p>
+                        <div class="p-6 bg-white/50 rounded-2xl border border-indigo-100 italic text-slate-500 text-sm">
+                            「身為設計師，你不需要去死背語法，而是要學會如何向 AI 描述你想要的『感覺』、『功能』與『佈局』。就像編舞，你不需要親自跳每一段舞步，但你必須知道什麼樣的律動是美的。」
+                        </div>
+                    </div>
+                    <div class="md:w-1/2 grid grid-cols-2 gap-4">
+                        <div class="p-6 bg-white rounded-3xl shadow-sm border border-slate-100 text-center">
+                            <div class="text-3xl mb-2">🧠</div>
+                            <h4 class="font-bold text-slate-800">核心意念</h4>
+                            <p class="text-xs text-slate-400">專注於 Intent 而非行細節</p>
+                        </div>
+                        <div class="p-6 bg-white rounded-3xl shadow-sm border border-slate-100 text-center">
+                            <div class="text-3xl mb-2">🤖</div>
+                            <h4 class="font-bold text-slate-800">人機通靈</h4>
+                            <p class="text-xs text-slate-400">將審美轉化為 Prompt 邏輯</p>
+                        </div>
+                        <div class="p-6 bg-white rounded-3xl shadow-sm border border-slate-100 text-center">
+                            <div class="text-3xl mb-2">✨</div>
+                            <h4 class="font-bold text-slate-800">去語法化</h4>
+                            <p class="text-xs text-slate-400">擺脫繁雜程式語法束縛</p>
+                        </div>
+                        <div
+                            class="p-4 bg-indigo-600 rounded-3xl shadow-lg text-white text-center flex items-center justify-center font-bold">
+                            Vibe Coding<br>Ready.
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SPA Side Section -->
+            <section
+                class="lg:col-span-4 premium-card p-10 rounded-[2.5rem] flex flex-col justify-center bg-gradient-to-br from-white to-indigo-50/30">
+                <span class="section-tag w-fit mb-6">Introduction</span>
+                <h2 class="text-3xl font-extrabold mb-4 leading-tight">什麼是 SPA？<br>(Single Page Application)</h2>
+                <p class="text-slate-600 leading-relaxed mb-6">
+                    <strong>一頁式網頁應用</strong> 並非指內容只有一截，而是指網頁在載入後不再需要重新整理整頁。
+                </p>
+                <div class="space-y-4 text-sm">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center text-green-600">✓
+                        </div>
+                        <span>極致流暢的換頁體驗</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center text-green-600">✓
+                        </div>
+                        <span>像手機 App 一樣的互動感</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Large vs Small Projects -->
+            <section class="lg:col-span-8 premium-card p-10 rounded-[2.5rem]">
+                <div class="flex justify-between items-start mb-8">
+                    <div>
+                        <span class="section-tag mb-4 inline-block">Strategy</span>
+                        <h2 class="text-3xl font-extrabold">專案規模與框架選擇</h2>
+                    </div>
+                    <div class="text-indigo-600 animate-float">
+                        <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4">
+                            </path>
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="p-6 rounded-3xl bg-indigo-50/50 border border-indigo-100">
+                        <div class="flex items-center gap-2 mb-4">
+                            <span class="badge badge-blue">大型專案</span>
+                            <span class="font-bold text-indigo-900 text-xl">Vue.js / React</span>
+                        </div>
+                        <ul class="text-sm text-slate-600 space-y-3">
+                            <li>• <strong>組件化開發：</strong> 像樂高一樣搭建，易於維護。</li>
+                            <li>• <strong>數據響應式：</strong> 資料變動，畫面自動更新。</li>
+                            <li>• <strong>虛擬 DOM：</strong> 適合高性能的大規模運算。</li>
+                            <li class="pt-2 italic text-slate-400">※ 適合商城、管理系統、大型跨國網站。</li>
+                        </ul>
+                    </div>
+                    <div class="p-6 rounded-3xl bg-slate-50 border border-slate-200">
+                        <div class="flex items-center gap-2 mb-4">
+                            <span class="badge bg-slate-200 text-slate-600">中小型專案</span>
+                            <span class="font-bold text-slate-900 text-xl">jQuery / Vanilla JS</span>
+                        </div>
+                        <ul class="text-sm text-slate-600 space-y-3">
+                            <li>• <strong>開發速度極快：</strong> 引入即用，無需複雜安裝。</li>
+                            <li>• <strong>操作直觀：</strong> 直接控制 DOM 元素。</li>
+                            <li>• <strong>專注交互：</strong> 適合寫簡單的動畫與表單提交。</li>
+                            <li class="pt-2 italic text-slate-400">※ 適合行銷活動頁、形象網站、單頁 Prototype。</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Frontend vs Backend Landscape -->
+            <section class="lg:col-span-12 premium-card p-10 rounded-[2.5rem] bg-slate-50 border-slate-200">
+                <div class="flex items-center gap-4 mb-10">
+                    <span class="section-tag">Architecture</span>
+                    <h2 class="text-3xl font-extrabold">前端與後端：網頁的完整版圖</h2>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-10">
+                    <div class="flex gap-6">
+                        <div
+                            class="w-16 h-16 rounded-2xl bg-indigo-100 flex items-center justify-center text-3xl shrink-0">
+                            🎨</div>
+                        <div>
+                            <h4 class="text-xl font-bold text-indigo-900 mb-2">前端 (Frontend) -「門面」</h4>
+                            <p class="text-sm text-slate-500 leading-relaxed">
+                                負責所有用戶看得見、摸得到的部分。包含介面設計、動畫交互、排版布局。
+                                <br><span class="badge badge-blue mt-2">HTML</span> <span
+                                    class="badge badge-blue mt-2">CSS</span> <span
+                                    class="badge badge-blue mt-2">JavaScript</span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="flex gap-6">
+                        <div
+                            class="w-16 h-16 rounded-2xl bg-amber-100 flex items-center justify-center text-3xl shrink-0">
+                            🧠</div>
+                        <div>
+                            <h4 class="text-xl font-bold text-amber-900 mb-2">後端 (Backend) -「大腦」</h4>
+                            <p class="text-sm text-slate-500 leading-relaxed">
+                                負責處理資料、資料庫讀寫、會員權限與伺服器邏輯。是用戶看不見的引擎。
+                                <br><span class="badge bg-amber-50 text-amber-700 mt-2">PHP (Laravel)</span> <span
+                                    class="badge bg-amber-50 text-amber-700 mt-2">MySQL</span> <span
+                                    class="badge bg-amber-50 text-amber-700 mt-2">Server</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Library Showdown -->
+            <section class="lg:col-span-12 premium-card p-10 rounded-[2.5rem]">
+                <div class="text-center mb-12">
+                    <span class="section-tag mb-4 inline-block">The Battle</span>
+                    <h2 class="text-4xl font-extrabold">函式庫與框架的正面對決</h2>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-12">
+                    <!-- Tailwind vs Bootstrap -->
+                    <div>
+                        <h3 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                            <span
+                                class="w-10 h-10 bg-indigo-100 rounded-xl flex items-center justify-center text-lg">🎨</span>
+                            Tailwind vs Bootstrap
+                        </h3>
+                        <div class="space-y-6">
+                            <div class="relative pl-6 border-l-2 border-indigo-200">
+                                <h4 class="font-bold text-indigo-600 mb-1">Bootstrap (組件導向)</h4>
+                                <p class="text-sm text-slate-500">
+                                    提供現成的按鈕、導航欄樣式。快，但容易「撞衫」，且想修改細節時會被預設 CSS 絆住。
+                                </p>
+                            </div>
+                            <div class="relative pl-6 border-l-2 border-primary">
+                                <h4 class="font-bold text-primary mb-1">Tailwind CSS (原子化導向)</h4>
+                                <p class="text-sm text-slate-500">
+                                    不提供組件，只提供「樣式碎片」。你需要自己組合出的 components，完全自由，設計質感最上限極高。
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- jQuery vs Vanilla JS -->
+                    <div>
+                        <h3 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                            <span
+                                class="w-10 h-10 bg-pink-100 rounded-xl flex items-center justify-center text-lg">⚡</span>
+                            jQuery vs Vanilla JavaScript
+                        </h3>
+                        <div class="code-block group">
+                            <div class="flex justify-between mb-2">
+                                <span class="text-pink-400 font-bold">// jQuery 寫法 (超短!)</span>
+                            </div>
+                            <code class="text-xs">
+                                $('.btn').click(() => $('.box').fadeIn());
+                            </code>
+                            <div class="mt-4 flex justify-between mb-2">
+                                <span class="text-indigo-400 font-bold">// 原生 JS 寫法 (邏輯嚴謹)</span>
+                            </div>
+                            <code class="text-xs">
+                                document.querySelector('.btn').addEventListener('click', () => {<br>
+                                &nbsp;&nbsp;const box = document.querySelector('.box');<br>
+                                &nbsp;&nbsp;box.style.display = 'block';<br>
+                                &nbsp;&nbsp;box.style.opacity = 1;<br>
+                                });
+                            </code>
+                        </div>
+                        <p class="mt-4 text-sm text-slate-500 italic">
+                            結論：jQuery 大幅降低了「選擇器」與「動畫」的複雜度，對初學者與小專案極度友善。
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Vibe Coding Prompt -->
+            <section
+                class="lg:col-span-12 premium-card p-10 rounded-[2.5rem] bg-slate-900 border-none shadow-2xl relative overflow-hidden group">
+                <div class="absolute top-0 right-0 w-64 h-64 bg-indigo-500/20 rounded-full blur-[100px] -mr-32 -mt-32">
+                </div>
+
+                <div class="relative z-10 flex flex-col md:flex-row items-center gap-10">
+                    <div class="md:w-1/2">
+                        <span
+                            class="px-3 py-1 bg-indigo-500/20 text-indigo-300 rounded-full text-[10px] font-bold uppercase tracking-widest mb-4 inline-block">
+                            AI Collaboration
+                        </span>
+                        <h2 class="text-4xl font-bold text-white mb-6">氛圍編程：<br>與 AI 通靈的密碼</h2>
+                        <p class="text-slate-400 leading-relaxed mb-8">
+                            既然有了 Antigravity 這樣強大的 AI，你不需要苦讀五年語法。你只需要將設計感透過「Prompt」傳遞出去。
+                        </p>
+                        <div class="space-y-4">
+                            <div class="flex items-center gap-4 text-slate-300">
+                                <span class="w-2 h-2 rounded-full bg-indigo-400"></span>
+                                <span>重視審美 (Aesthetics First)</span>
+                            </div>
+                            <div class="flex items-center gap-4 text-slate-300">
+                                <span class="w-2 h-2 rounded-full bg-indigo-400"></span>
+                                <span>描述意圖 (Describe Intent)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="md:w-1/2 w-full">
+                        <div class="bg-black/50 backdrop-blur-md rounded-3xl p-6 border border-white/10 relative">
+                            <button id="copyBtn"
+                                class="absolute top-4 right-4 bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-1.5 rounded-full text-xs font-bold transition-all transform hover:scale-105 active:scale-95 shadow-lg shadow-indigo-600/30">
+                                複製提示詞
+                            </button>
+                            <pre id="promptText"
+                                class="text-indigo-200 text-sm font-mono whitespace-pre-wrap leading-relaxed mt-4">
+                                我需要一個專案 [你的專案名稱]。
+                                1. 使用現代、頂級質感的「淺色模式」。
+                                2. 加入玻璃擬態與柔和陰影。
+                                3. 使用 HTML, bootstrap 5(CDN), jQuery(CDN)。
+                                4. 網頁切換要有 SPA 的感覺 (用 jQuery 處理)。
+                                5. 給我一個讓用戶「哇」一聲的設計。
+                            </pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-24 text-center">
+            <div class="w-16 h-1 bg-indigo-500 mx-auto mb-8 rounded-full"></div>
+            <p class="text-slate-400 font-medium">&copy; 2026 墨宇教育 · 伍安 數位課程教材</p>
+        </footer>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            // Copy functionality
+            $('#copyBtn').click(function () {
+                const text = $('#promptText').text().trim();
+                navigator.clipboard.writeText(text).then(() => {
+                    const originalText = $(this).text();
+                    $(this).text('複製成功！').addClass('bg-emerald-600').removeClass('bg-indigo-600');
+                    setTimeout(() => {
+                        $(this).text(originalText).addClass('bg-indigo-600').removeClass('bg-emerald-600');
+                    }, 2000);
+                });
+            });
+
+            // Entry animations
+            const observerOptions = {
+                threshold: 0.1
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        $(entry.target).animate({
+                            opacity: 1,
+                            marginTop: '0px'
+                        }, 800);
+                    }
+                });
+            }, observerOptions);
+
+            $('.premium-card').css({
+                opacity: 0,
+                marginTop: '40px',
+                transition: 'none' // Management through jQuery animate
+            }).each(function () {
+                observer.observe(this);
+            });
+
+            // Specific hover effect for SPA section
+            $('.premium-card').hover(
+                function () { $(this).find('.section-tag').addClass('scale-110'); },
+                function () { $(this).find('.section-tag').removeClass('scale-110'); }
+            );
+        });
+    </script>
+</body>
+
+</html>

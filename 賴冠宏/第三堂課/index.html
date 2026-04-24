@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UI/UX Wireframe 全指南 - 賴冠宏 第三次上課</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter & Noto Sans TC -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap"
+        rel="stylesheet">
+    <!-- jQuery CDN -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', 'Noto Sans TC', sans-serif;
+            background-color: #ffffff;
+            color: #1a1a1a;
+            scroll-behavior: smooth;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #1a1a1a 0%, #4a4a4a 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-link {
+            position: relative;
+            transition: color 0.3s ease;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -4px;
+            left: 0;
+            background-color: #1a1a1a;
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50/50">
+    <!-- Navbar -->
+    <nav class="fixed top-0 w-full z-50 bg-white/70 backdrop-blur-md border-b border-gray-100">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="text-2xl font-bold tracking-tight gradient-text">WIREFLOW.</div>
+            <div class="hidden md:flex space-x-6">
+                <a href="#definition" class="nav-link text-xs font-medium">定義</a>
+                <a href="#fidelity" class="nav-link text-xs font-medium">保真度</a>
+                <a href="#anatomy" class="nav-link text-xs font-medium">元件語言</a>
+                <a href="#process" class="nav-link text-xs font-medium">設計流程</a>
+                <a href="#principles" class="nav-link text-xs font-medium">四大原則</a>
+                <a href="#mockup" class="nav-link text-xs font-medium">Mockup</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="pt-32 pb-20 px-6">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div class="fade-in">
+                <span
+                    class="inline-block px-3 py-1 bg-gray-100 text-gray-500 rounded-full text-xs font-semibold mb-6 uppercase tracking-wider">UI/UX
+                    Design Essentials</span>
+                <h1 class="text-5xl lg:text-7xl font-bold leading-tight mb-8">
+                    探索 <span class="gradient-text">Wireframe</span> 的核心概念
+                </h1>
+                <p class="text-xl text-gray-600 leading-relaxed max-w-xl mb-10">
+                    深入了解介面設計的藍圖——Wireframe。從低真度到高真度，掌握如何構建一個優質的使用者體驗骨架。
+                </p>
+                <div class="flex space-x-4">
+                    <a href="#fidelity"
+                        class="px-8 py-4 bg-black text-white rounded-xl font-medium hover:bg-gray-800 transition-colors shadow-lg shadow-black/10">開始學習</a>
+                </div>
+            </div>
+            <div class="relative fade-in">
+                <div
+                    class="aspect-square rounded-3xl bg-gradient-to-br from-gray-100 to-gray-200 overflow-hidden border border-gray-200 shadow-2xl">
+                    <img id="hero-img" src="img/hero.png" alt="Wireframe Concept" class="w-full h-full object-cover">
+                </div>
+                <!-- Decorative element -->
+                <div
+                    class="absolute -bottom-6 -right-6 w-32 h-32 bg-white rounded-2xl shadow-xl flex items-center justify-center border border-gray-50">
+                    <div class="w-16 h-1 bg-gray-200 rounded-full"></div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Definition Section -->
+    <section id="definition" class="py-24 bg-white border-y border-gray-100">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div class="fade-in">
+                    <h2 class="text-4xl font-bold mb-8">為什麼要畫 Wireframe？</h2>
+                    <div class="text-lg text-gray-600 space-y-6 leading-relaxed">
+                        <p>
+                            Wireframe 不僅僅是草圖，它是產品開發中最重要的溝通橋樑。在我們開始挑選顏色或是修飾圖片之前，我們必須確保產品的「邏輯」是正確的。
+                        </p>
+                        <div class="space-y-4 pt-4">
+                            <div class="flex items-start">
+                                <div class="w-6 h-6 rounded-full bg-blue-50 flex-shrink-0 flex items-center justify-center mt-1">
+                                    <div class="w-2 h-2 rounded-full bg-blue-500"></div>
+                                </div>
+                                <p class="ml-4 text-gray-700"><strong>釐清資訊階層：</strong> 優先決定哪些資訊最重要，哪些次要。</p>
+                            </div>
+                            <div class="flex items-start">
+                                <div class="w-6 h-6 rounded-full bg-blue-50 flex-shrink-0 flex items-center justify-center mt-1">
+                                    <div class="w-2 h-2 rounded-full bg-blue-500"></div>
+                                </div>
+                                <p class="ml-4 text-gray-700"><strong>專注於易用性：</strong> 排除設計裝飾，純粹測試使用流程是否順暢。</p>
+                            </div>
+                            <div class="flex items-start">
+                                <div class="w-6 h-6 rounded-full bg-blue-50 flex-shrink-0 flex items-center justify-center mt-1">
+                                    <div class="w-2 h-2 rounded-full bg-blue-500"></div>
+                                </div>
+                                <p class="ml-4 text-gray-700"><strong>節省開發成本：</strong> 在程式碼寫下去之前，更改線框圖只需要幾秒鐘。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="fade-in bg-gray-50 p-8 rounded-3xl border border-gray-100">
+                    <h3 class="font-bold text-xl mb-6">如果你跳過 Wireframe...</h3>
+                    <div class="space-y-4">
+                        <div class="p-4 bg-orange-50 border border-orange-100 rounded-xl text-orange-800 text-sm">
+                            ⚠️ 可能在頁面做完後才發現核心功能按鈕放錯位置。
+                        </div>
+                        <div class="p-4 bg-orange-50 border border-orange-100 rounded-xl text-orange-800 text-sm">
+                            ⚠️ 設計師可能會為了「好看」而犧牲了「好操作」。
+                        </div>
+                        <div class="p-4 bg-orange-50 border border-orange-100 rounded-xl text-orange-800 text-sm">
+                            ⚠️ 團隊成員對於功能的位置有完全不同的認知。
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Anatomy Section -->
+    <section id="anatomy" class="py-24 bg-white">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16 fade-in">
+                <h2 class="text-4xl font-bold mb-4">Wireframe 的視覺語言</h2>
+                <p class="text-gray-500">標準化元件是為了讓所有人都能「一眼看懂」邏輯</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="p-8 border border-gray-100 rounded-3xl hover:border-gray-300 transition-colors fade-in">
+                    <div class="aspect-video bg-gray-100 border-2 border-dashed border-gray-300 rounded-xl mb-6 relative flex items-center justify-center overflow-hidden">
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <div class="w-full h-[2px] bg-gray-200 rotate-[22deg]"></div>
+                            <div class="w-full h-[2px] bg-gray-100 -rotate-[22deg]"></div>
+                        </div>
+                        <span class="text-gray-500 font-bold z-10">X</span>
+                    </div>
+                    <h4 class="font-bold mb-2">圖片預留位</h4>
+                    <p class="text-sm text-gray-500">一個帶有對角線的框框，代表這裡未來會放置圖片或影片。</p>
+                </div>
+                <div class="p-8 border border-gray-100 rounded-3xl hover:border-gray-300 transition-colors fade-in">
+                    <div class="space-y-2 mb-6 h-24 flex flex-col justify-center">
+                        <div class="w-full h-3 bg-gray-300 rounded-full"></div>
+                        <div class="w-3/4 h-2 bg-gray-200 rounded-full"></div>
+                        <div class="w-1/2 h-2 bg-gray-100 rounded-full"></div>
+                    </div>
+                    <h4 class="font-bold mb-2">Lorem Ipsum (假字)</h4>
+                    <p class="text-sm text-gray-500">使用灰線或是方塊文字代表內文，避免閱讀者分散注意力去讀文字內容。</p>
+                </div>
+                <div class="p-8 border border-gray-100 rounded-3xl hover:border-gray-300 transition-colors fade-in">
+                    <div class="mb-6 h-24 flex flex-col space-y-4 justify-center">
+                        <div class="w-32 h-10 border-2 border-gray-400 rounded-lg"></div>
+                        <div class="w-32 h-10 bg-gray-300 rounded-lg"></div>
+                    </div>
+                    <h4 class="font-bold mb-2">按鈕狀態</h4>
+                    <p class="text-sm text-gray-500">用線框代表幽靈按鈕（次要），填充代表主要按鈕，區分行動優先級。</p>
+                </div>
+                <div class="p-8 border border-gray-100 rounded-3xl hover:border-gray-300 transition-colors fade-in">
+                    <div class="mb-6 h-24 flex items-center justify-center">
+                        <div class="w-12 h-12 rounded-full border-2 border-dashed border-gray-400 flex items-center justify-center">
+                            <div class="w-6 h-6 bg-gray-300 rounded-sm"></div>
+                        </div>
+                    </div>
+                    <h4 class="font-bold mb-2">圖標佔位符</h4>
+                    <p class="text-sm text-gray-500">代表選單、設定或其他功能性圖標，通常以簡單幾何圖形表示。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Process Section -->
+    <section id="process" class="py-24 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                <div class="relative fade-in order-2 lg:order-1">
+                    <!-- Pure CSS Wireframe Illustration -->
+                    <div class="aspect-square bg-white rounded-[2.5rem] p-8 shadow-2xl border border-gray-100 flex flex-col">
+                        <div class="w-full h-12 border-b-2 border-gray-200 mb-8 flex items-center justify-between px-4">
+                            <div class="w-16 h-3 bg-gray-200 rounded-full"></div>
+                            <div class="flex space-x-2">
+                                <div class="w-4 h-4 rounded-full bg-gray-200"></div>
+                                <div class="w-4 h-4 rounded-full bg-gray-200"></div>
+                            </div>
+                        </div>
+                        <div class="flex-1 grid grid-cols-2 gap-6">
+                            <div class="bg-gray-100 rounded-2xl border-2 border-dashed border-gray-300 flex items-center justify-center relative overflow-hidden">
+                                <div class="absolute inset-0 flex items-center justify-center">
+                                    <div class="w-full h-[2px] bg-gray-200 rotate-45"></div>
+                                    <div class="w-full h-[2px] bg-gray-200 -rotate-45"></div>
+                                </div>
+                                <span class="text-gray-400 font-bold z-10">IMG</span>
+                            </div>
+                            <div class="space-y-4">
+                                <div class="w-full h-4 bg-gray-200 rounded-full"></div>
+                                <div class="w-full h-4 bg-gray-200 rounded-full"></div>
+                                <div class="w-3/4 h-4 bg-gray-100 rounded-full"></div>
+                                <div class="pt-4">
+                                    <div class="w-24 h-8 bg-gray-200 rounded-lg"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="h-20 mt-8 grid grid-cols-4 gap-4">
+                            <div class="bg-gray-100 rounded-xl"></div>
+                            <div class="bg-gray-100 rounded-xl"></div>
+                            <div class="bg-gray-100 rounded-xl"></div>
+                            <div class="bg-gray-100 rounded-xl"></div>
+                        </div>
+                    </div>
+                    <div class="absolute -top-6 -left-6 p-6 bg-white rounded-2xl shadow-xl border border-gray-100 fade-in">
+                        <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Best Practice</p>
+                        <p class="text-gray-900 font-medium">從「功能」開始，而非「外觀」</p>
+                    </div>
+                </div>
+                <div class="fade-in order-1 lg:order-2">
+                    <h2 class="text-4xl font-bold mb-8">如何實作：5 個步驟</h2>
+                    <div class="space-y-8">
+                        <div class="flex gap-6">
+                            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-black text-white flex items-center justify-center font-bold">1</div>
+                            <div>
+                                <h4 class="text-xl font-bold mb-2">列出需求清單</h4>
+                                <p class="text-gray-600">確定頁面需要哪些功能（例如：登入鈕、商品列表、篩選器）。</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-6">
+                            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-black text-white flex items-center justify-center font-bold">2</div>
+                            <div>
+                                <h4 class="text-xl font-bold mb-2">資訊架構 (IA)</h4>
+                                <p class="text-gray-600">決定哪些功能放上面（導覽列），哪些放中間（主內容），哪些放下面（頁尾）。</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-6">
+                            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-black text-white flex items-center justify-center font-bold">3</div>
+                            <div>
+                                <h4 class="text-xl font-bold mb-2">草圖 (Low-Fi)</h4>
+                                <p class="text-gray-600">先用紙筆或快速方框畫出多種佈局可能性，不要猶豫直接丟棄不合適的。</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-6">
+                            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-black text-white flex items-center justify-center font-bold">4</div>
+                            <div>
+                                <h4 class="text-xl font-bold mb-2">數位化與比例調整</h4>
+                                <p class="text-gray-600">在電腦上用標準間距（如 8px 網格）讓線框圖變得更精確，放入真實字數內容。</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-6">
+                            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-black text-white flex items-center justify-center font-bold">5</div>
+                            <div>
+                                <h4 class="text-xl font-bold mb-2">測試流暢度 (User Flow)</h4>
+                                <p class="text-gray-600">嘗試從 A 點走到 B 點，看看中間是否有斷層或不合理的跳轉。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Principles Section -->
+    <section id="principles" class="py-24 bg-white">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16 fade-in">
+                <h2 class="text-4xl font-bold mb-4">掌握專業線框圖的 4 大原則</h2>
+                <p class="text-gray-500">好的線框圖應該是「功能優先」而非「裝飾優先」</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="p-8 bg-gray-50 rounded-3xl fade-in">
+                    <h4 class="text-xl font-bold mb-4 flex items-center">
+                        <span class="w-2 h-8 bg-black mr-4"></span>視覺階層 (Visual Hierarchy)
+                    </h4>
+                    <p class="text-gray-600 leading-relaxed">
+                        透過元素的大小和粗細來決定使用者的專注順序。在 Wireframe 中，最重要的按鈕或標題應該比其他東西更顯眼。
+                    </p>
+                </div>
+                <div class="p-8 bg-gray-50 rounded-3xl fade-in">
+                    <h4 class="text-xl font-bold mb-4 flex items-center">
+                        <span class="w-2 h-8 bg-black mr-4"></span>內容間距 (White Space)
+                    </h4>
+                    <p class="text-gray-600 leading-relaxed">
+                        不要把畫面塞得太滿。留白可以幫助使用者區分不同的內容區塊，避免資訊過載。
+                    </p>
+                </div>
+                <div class="p-8 bg-gray-50 rounded-3xl fade-in">
+                    <h4 class="text-xl font-bold mb-4 flex items-center">
+                        <span class="w-2 h-8 bg-black mr-4"></span>一致性 (Consistency)
+                    </h4>
+                    <p class="text-gray-600 leading-relaxed">
+                        相同功能的按鈕規格應該一致。如果「下一步」在第一頁是長方形，那在第二頁也不應該變成圓形。
+                    </p>
+                </div>
+                <div class="p-8 bg-gray-50 rounded-3xl fade-in">
+                    <h4 class="text-xl font-bold mb-4 flex items-center">
+                        <span class="w-2 h-8 bg-black mr-4"></span>互動提示 (Affordance)
+                    </h4>
+                    <p class="text-gray-600 leading-relaxed">
+                        確保哪些東西是可以點擊的。例如：帶有下劃線的文字通常代表連結，有陰影的方塊代表按鈕。
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Mockup Section -->
+    <section id="mockup"
+        class="py-24 bg-gray-900 text-white rounded-[3rem] mx-4 lg:mx-10 my-12 overflow-hidden relative">
+        <div class="absolute top-0 right-0 w-1/2 h-full bg-white/5 skew-x-12 transform translate-x-32"></div>
+        <div class="max-w-7xl mx-auto px-6 relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            <div class="fade-in">
+                <h2 class="text-4xl font-bold mb-8">從 Wireframe 到 <span class="text-gray-400">Mockup</span></h2>
+                <div class="space-y-6 text-gray-300 text-lg leading-relaxed">
+                    <p>
+                        雖然 Wireframe、Mockup 和 Prototype 常常被混淆，但它們有著本質的區別。
+                    </p>
+                    <p>
+                        當你在 Wireframe 中加入 <span class="text-white font-semibold">色彩、圖片與具體的設計風格</span> 時，它就不再只是
+                        Wireframe，而是成為了 <span class="text-white font-semibold">Mockup</span>（視覺模型）。
+                    </p>
+                    <div class="p-6 bg-white/10 rounded-2xl border border-white/10 mt-8">
+                        <p class="text-sm font-medium italic">
+                            「Wireframe 關注功能與結構，Mockup 關注感覺與視覺，Prototype 關注動作與交互。」
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="fade-in">
+                <div class="grid grid-cols-2 gap-4">
+                    <div
+                        class="aspect-[4/5] bg-white/10 rounded-2xl border border-white/20 flex flex-col justify-center items-center p-6 text-center">
+                        <div class="w-full h-2 bg-white/20 rounded-full mb-3"></div>
+                        <div class="w-2/3 h-2 bg-white/20 rounded-full mb-8"></div>
+                        <div class="w-full aspect-square border-2 border-dashed border-white/20 rounded-lg"></div>
+                        <p class="mt-4 text-xs text-gray-400">Wireframe (骨架)</p>
+                    </div>
+                    <div
+                        class="aspect-[4/5] bg-white rounded-2xl p-6 flex flex-col justify-center items-center shadow-2xl">
+                        <div class="w-full h-2 bg-blue-500 rounded-full mb-3"></div>
+                        <div class="w-2/3 h-2 bg-gray-200 rounded-full mb-8"></div>
+                        <div id="mockup-img-placeholder"
+                            class="w-full aspect-square bg-gray-100 rounded-lg overflow-hidden flex items-center justify-center">
+                            <!-- Image will go here -->
+                            <img id="mockup-img" src="img/mockup.png" alt="Mockup Preview"
+                                class="w-full h-full object-cover">
+                        </div>
+                        <p class="mt-4 text-xs text-gray-500">Mockup (視覺)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Conclusion Section -->
+    <section id="conclusion" class="py-24">
+        <div class="max-w-3xl mx-auto px-6 text-center">
+            <div class="inline-block p-4 bg-gray-50 rounded-full mb-8 fade-in">
+                <svg class="w-12 h-12 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4">
+                    </path>
+                </svg>
+            </div>
+            <h2 class="text-3xl font-bold mb-6 fade-in">總結</h2>
+            <p class="text-xl text-gray-600 mb-12 fade-in leading-relaxed">
+                Wireframe 是設計過程中的核心工具，它幫助團隊在耗費資源進行細節設計之前，優先解決最重要的「結構」與「流程」問題。
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-left fade-in">
+                <div class="p-6 bg-white border border-gray-100 rounded-2xl shadow-sm">
+                    <h4 class="font-bold mb-2">💡 記住重點</h4>
+                    <p class="text-sm text-gray-500">通常提到 Wireframe，大多數指的都是「低真度」版本。</p>
+                </div>
+                <div class="p-6 bg-white border border-gray-100 rounded-2xl shadow-sm">
+                    <h4 class="font-bold mb-2">🎨 色彩關鍵</h4>
+                    <p class="text-sm text-gray-500">一旦填入顏色與細節，它就進化成了 Mockup。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 border-t border-gray-100 text-center text-gray-400 text-sm">
+        <p>© 2026 賴冠宏 第三次上課課本 </p>
+    </footer>
+
+    <script>
+        $(document).ready(function () {
+            // Fade-in animation on scroll
+            function checkScroll() {
+                $('.fade-in').each(function () {
+                    const elementTop = $(this).offset().top;
+                    const elementBottom = elementTop + $(this).outerHeight();
+                    const viewportTop = $(window).scrollTop();
+                    const viewportBottom = viewportTop + $(window).height();
+
+                    if (elementBottom > viewportTop && elementTop < viewportBottom - 50) {
+                        $(this).addClass('visible');
+                    }
+                });
+            }
+
+            $(window).on('scroll load', checkScroll);
+
+            // Smooth scroll for nav links
+            $('a[href^="#"]').on('click', function (e) {
+                e.preventDefault();
+                const target = $(this.hash);
+                if (target.length) {
+                    $('html, body').animate({
+                        scrollTop: target.offset().top - 80
+                    }, 800);
+                }
+            });
+
+            // Initial trigger
+            checkScroll();
+        });
+    </script>
+</body>
+
+</html>

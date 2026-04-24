@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="後端開發基礎教材 - 全方位解構邏輯、語言、資料庫設計與進階核心。">
+    <title>第五堂課：後端基礎全解析 | 墨宇教育</title>
+
+    <!-- Google Fonts: Inter & Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#6366f1',
+                        secondary: '#a855f7',
+                        accent: '#22d3ee',
+                        light: {
+                            base: '#f8fafc',
+                            surface: '#ffffff',
+                            elevated: '#f1f5f9'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                        display: ['Outfit', 'sans-serif'],
+                    },
+                    animation: {
+                        'gradient-x': 'gradient-x 15s ease infinite',
+                        'float': 'float 3s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        'gradient-x': {
+                            '0%, 100%': { 'background-position': '0% 50%' },
+                            '50%': { 'background-position': '100% 50%' },
+                        },
+                        'float': {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- JQuery CDN -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <style>
+        body { background-color: #f8fafc; color: #1e293b; overflow-x: hidden; }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            border-radius: 2rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .glass-card:hover {
+            border-color: rgba(99, 102, 241, 0.2);
+            box-shadow: 0 30px 60px -15px rgba(99, 102, 241, 0.1);
+            transform: translateY(-4px);
+        }
+        .sidebar-transition { transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        .gradient-text {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #22d3ee 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-size: 200% auto;
+            animation: gradient-x 5s ease infinite;
+        }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(0, 0, 0, 0.1); border-radius: 10px; }
+        #sidebar { width: 280px; }
+        #sidebar.collapsed { width: 80px; }
+        .sidebar-item-text { transition: opacity 0.3s ease; }
+        .collapsed .sidebar-item-text { opacity: 0; display: none; }
+        .icon-box {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, rgba(168, 85, 247, 0.05) 100%);
+            border: 1px solid rgba(99, 102, 241, 0.1);
+        }
+        .badge { padding: 4px 12px; border-radius: 999px; font-size: 0.75rem; font-weight: 600; }
+        .er-node {
+            background: white; border: 2px solid #e2e8f0; border-radius: 12px;
+            padding: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            width: 140px; font-weight: bold; text-align: center; position: relative;
+        }
+        .er-line { height: 2px; background: #cbd5e1; flex: 1; position: relative; }
+        .er-connector::after {
+            content: '1:N'; position: absolute; top: -20px; left: 50%;
+            transform: translateX(-50%); font-size: 10px; color: #94a3b8;
+        }
+    </style>
+</head>
+
+<body class="font-sans antialiased">
+    <div class="flex min-h-screen relative overflow-hidden">
+        <!-- Background Orbs -->
+        <div class="fixed top-[-5%] left-[-5%] w-[35%] h-[35%] bg-primary/5 blur-[100px] rounded-full -z-10 animate-pulse"></div>
+        <div class="fixed bottom-[-5%] right-[-5%] w-[35%] h-[35%] bg-secondary/5 blur-[100px] rounded-full -z-10"></div>
+
+        <!-- Sidebar -->
+        <aside id="sidebar" class="sidebar-transition h-screen sticky top-0 bg-white border-r border-slate-200 flex flex-col z-50">
+            <div class="p-6 flex items-center justify-between border-b border-slate-100">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-white shadow-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                        </svg>
+                    </div>
+                    <span class="font-bold text-xl sidebar-item-text font-display">墨宇 Backend</span>
+                </div>
+                <button id="toggleSidebar" class="p-2 hover:bg-slate-50 rounded-full text-slate-400">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                    </svg>
+                </button>
+            </div>
+            <nav class="flex-1 p-4 flex flex-col gap-2 overflow-y-auto custom-scrollbar">
+                <a href="#overview" class="flex items-center gap-4 p-3 rounded-xl hover:bg-slate-50 text-slate-500">
+                    <span class="font-medium sidebar-item-text">1. 課程概覽</span>
+                </a>
+                <a href="#languages" class="flex items-center gap-4 p-3 rounded-xl hover:bg-slate-50 text-slate-500">
+                    <span class="font-medium sidebar-item-text">2. 主流語言分析</span>
+                </a>
+                <a href="#db-deep-dive" class="flex items-center gap-4 p-3 rounded-xl hover:bg-slate-50 text-slate-500">
+                    <span class="font-medium sidebar-item-text">3. 資料庫深度解析</span>
+                </a>
+                <a href="#frameworks" class="flex items-center gap-4 p-3 rounded-xl hover:bg-slate-50 text-slate-500">
+                    <span class="font-medium sidebar-item-text">4. 框架解析</span>
+                </a>
+                <a href="#eloquent-orm" class="flex items-center gap-4 p-3 rounded-xl hover:bg-slate-50 text-slate-500">
+                    <span class="font-medium sidebar-item-text">5. Eloquent ORM</span>
+                </a>
+                <a href="#ecosystem" class="flex items-center gap-4 p-3 rounded-xl hover:bg-slate-50 text-slate-500">
+                    <span class="font-medium sidebar-item-text">6. 實時互動與生態系</span>
+                </a>
+                <a href="#crud-logic" class="flex items-center gap-4 p-3 rounded-xl hover:bg-slate-50 text-slate-500">
+                    <span class="font-medium sidebar-item-text">7. CRUD 與商務邏輯</span>
+                </a>
+                <a href="#crm-agile" class="flex items-center gap-4 p-3 rounded-xl hover:bg-slate-50 text-slate-500">
+                    <span class="font-medium sidebar-item-text">8. CRM 與敏捷開發</span>
+                </a>
+
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 h-screen overflow-y-auto custom-scrollbar p-6 lg:p-12">
+            
+            <!-- SECTION 1: HERO & INITIAL OVERVIEW (RESTORED & IMPROVED) -->
+            <header id="overview" class="mb-16">
+                <div>
+                    <span class="inline-block px-4 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-semibold mb-4 border border-primary/20">Lesson 05</span>
+                    <h1 class="text-5xl lg:text-7xl font-extrabold mb-6 tracking-tight leading-tight font-display">
+                        探索 <span class="gradient-text">後端世界</span> 的奧秘
+                    </h1>
+                    <p class="text-xl text-slate-500 max-w-3xl leading-relaxed">
+                        歡迎來到後端開發殿堂。在這裡，我們將深入探討應用程式的心臟：由「程式邏輯」與「資料庫」共同建構的數位世界。
+                    </p>
+                </div>
+            </header>
+
+            <div class="grid grid-cols-1 xl:grid-cols-2 gap-8 mb-24">
+                <!-- Logic Section -->
+                <section class="glass-card p-10 relative group border-primary/10">
+                    <div class="icon-box w-16 h-16 rounded-2xl flex items-center justify-center mb-8">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                        </svg>
+                    </div>
+                    <h2 class="text-3xl font-bold mb-6 flex items-center gap-3">
+                        <span class="w-2 h-8 bg-primary rounded-full"></span>
+                        後端程式邏輯
+                    </h2>
+                    <div class="space-y-6 text-lg text-slate-600 leading-relaxed">
+                        <p>後端邏輯就像是大腦，負責處理請求、運算數據，並確保安全。其核心包含：</p>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="p-4 rounded-xl bg-slate-50 border border-slate-100">
+                                <h4 class="font-bold text-primary mb-1">身份驗證</h4>
+                                <p class="text-xs text-slate-400">確保使用者權限安全。</p>
+                            </div>
+                            <div class="p-4 rounded-xl bg-slate-50 border border-slate-100">
+                                <h4 class="font-bold text-secondary mb-1">商務邏輯</h4>
+                                <p class="text-xs text-slate-400">實現產品核心功能。</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Database Section -->
+                <section class="glass-card p-10 relative group border-secondary/10">
+                    <div class="icon-box w-16 h-16 rounded-2xl flex items-center justify-center mb-8 border-secondary/20">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" />
+                        </svg>
+                    </div>
+                    <h2 class="text-3xl font-bold mb-6 flex items-center gap-3">
+                        <span class="w-2 h-8 bg-secondary rounded-full"></span>
+                        資料庫管理
+                    </h2>
+                    <div class="space-y-6 text-lg text-slate-600 leading-relaxed">
+                        <p>資料庫是記憶庫，負責長久且結構化地保存資料。分為兩大陣營：</p>
+                        <ul class="space-y-2 text-sm">
+                            <li class="flex items-center gap-2"><div class="w-1.5 h-1.5 rounded-full bg-secondary"></div> SQL：嚴謹、重視關聯（如 MySQL）。</li>
+                            <li class="flex items-center gap-2"><div class="w-1.5 h-1.5 rounded-full bg-accent"></div> NoSQL：靈活、不限格式（如 MongoDB）。</li>
+                        </ul>
+                    </div>
+                </section>
+            </div>
+
+            <!-- SECTION 2: LANGUAGES ANALYSIS -->
+            <section id="languages" class="mb-24">
+                <div class="flex items-center gap-4 mb-12">
+                    <h2 class="text-4xl font-bold font-display tracking-tight">後端語言選型解析</h2>
+                    <div class="flex-1 h-px bg-slate-200"></div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+                    <!-- Java -->
+                    <div class="glass-card p-8 hover:bg-orange-50/50">
+                        <div class="w-12 h-12 rounded-xl bg-orange-100 flex items-center justify-center mb-6">
+                            <img src="https://cdn-icons-png.flaticon.com/512/226/226777.png" class="w-6 h-6" alt="Java">
+                        </div>
+                        <h3 class="text-xl font-bold mb-3">Java (強型別)</h3>
+                        <p class="text-slate-500 text-sm leading-relaxed">企業級開發的首選。強調強型別與物件導向，適合大型微服務架構，但開發速度相對較慢。</p>
+                    </div>
+                    <!-- Python -->
+                    <div class="glass-card p-8 hover:bg-blue-50/50">
+                        <div class="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center mb-6">
+                            <img src="https://cdn-icons-png.flaticon.com/512/5968/5968350.png" class="w-6 h-6" alt="Python">
+                        </div>
+                        <h3 class="text-xl font-bold mb-3">Python (簡潔)</h3>
+                        <p class="text-slate-500 text-sm leading-relaxed">語法極簡，是 AI、大數據分析與快速原型開發的首選。適合重視開發效率的團隊。</p>
+                    </div>
+                    <!-- Node.js/Others -->
+                    <div class="glass-card p-8 hover:bg-green-50/50">
+                        <div class="w-12 h-12 rounded-xl bg-green-100 flex items-center justify-center mb-6">
+                            <img src="https://cdn-icons-png.flaticon.com/512/5968/5968322.png" class="w-6 h-6" alt="Node.js">
+                        </div>
+                        <h3 class="text-xl font-bold mb-3">Node.js (非阻塞)</h3>
+                        <p class="text-slate-500 text-sm leading-relaxed">非阻塞 I/O 模型。讓 JS 也能馳騁伺服器端，極速處理高併發網路應用。</p>
+                    </div>
+                </div>
+
+                <!-- PHP Deep Dive (Business Hero) -->
+                <div class="rounded-[3rem] bg-slate-900 text-white p-12 lg:p-16 relative overflow-hidden group shadow-2xl mb-24">
+                    <div class="absolute top-0 right-0 w-96 h-96 bg-primary/20 blur-[100px] rounded-full -translate-y-1/2 translate-x-1/2"></div>
+                    <div class="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-12">
+                        <div class="lg:col-span-5">
+                            <div class="w-20 h-20 rounded-[2rem] bg-indigo-600 flex items-center justify-center mb-10 shadow-glow">
+                                <img src="https://cdn-icons-png.flaticon.com/512/5968/5968332.png" class="w-12 h-12 invert" alt="PHP">
+                            </div>
+                            <h3 class="text-5xl font-extrabold mb-6 font-display">PHP: 為了商業而生</h3>
+                            <p class="text-slate-400 text-xl leading-relaxed mb-8">
+                                佔有率約 80%。它不是最新穎的，但卻是最實戰的。當 Java 正還在編譯時，PHP (Laravel) 已經上線盈利了。
+                            </p>
+                            <div class="space-y-4">
+                                <div class="flex items-center gap-3 text-accent font-bold"><div class="w-2 h-2 rounded-full bg-accent"></div>直譯式語言 (Interpreted)</div>
+                                <div class="flex items-center gap-3 text-accent font-bold"><div class="w-2 h-2 rounded-full bg-accent"></div>動態弱型別 (Weak-typed)</div>
+                                <div class="flex items-center gap-3 text-accent font-bold"><div class="w-2 h-2 rounded-full bg-accent"></div>開發速度之王</div>
+                            </div>
+                        </div>
+                        <div class="lg:col-span-7 grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div class="p-8 rounded-[2rem] bg-white/5 border border-white/10 hover:bg-white/10 transition-all">
+                                <h4 class="text-2xl font-bold mb-4 text-white">🔥 極致效率</h4>
+                                <p class="text-slate-400 leading-relaxed">修完存檔即刻生效。Laravel 套件豐富，讓中小型公司或工作室能在 1-2 天內實現產品上線。</p>
+                            </div>
+                            <div class="p-8 rounded-[2rem] bg-white/5 border border-white/10 hover:bg-white/10 transition-all">
+                                <h4 class="text-2xl font-bold mb-4 text-white">⚖️ 戰略取捨</h4>
+                                <p class="text-slate-400 leading-relaxed">雖然高併發效能稍弱，但在 95% 的台灣項目中，這並非首要痛點，開發速度與維護成本才是關鍵。</p>
+                            </div>
+                            <div class="md:col-span-2 p-8 rounded-[2rem] bg-gradient-to-r from-indigo-900/60 to-purple-900/60 border border-white/10 italic text-slate-300 text-lg leading-relaxed">
+                                「在商言商，沒有人在乎你用什麼語言寫，只在乎能不能做出來、快不快。PHP 解決了商業上的『快』與『活』。」
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 3: DATABASE DEEP DIVE (SQL VS NOSQL) -->
+            <section id="db-deep-dive" class="mb-24">
+                <div class="flex items-center gap-4 mb-12">
+                    <h2 class="text-4xl font-bold font-display tracking-tight text-slate-900">資料庫深度對決</h2>
+                    <div class="flex-1 h-px bg-slate-200"></div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-12 mb-16">
+                    <!-- ER Diagram Concept Explanation -->
+                    <div class="glass-card p-10 bg-slate-50/50">
+                        <h3 class="text-3xl font-bold mb-8">數據建模：什麼是 ER 圖？</h3>
+                        <p class="text-slate-600 leading-relaxed mb-8">
+                            **ER 圖 (Entity-Relationship Diagram)** 是設計資料庫時的靈魂藍圖。在動手寫代碼之前，我們必須先理清楚「資料之間到底有什麼關係」。
+                        </p>
+                        <div class="space-y-6">
+                            <div class="flex items-start gap-4">
+                                <div class="w-10 h-10 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold shrink-0 shadow-lg">E</div>
+                                <div>
+                                    <h5 class="font-bold text-slate-900">Entity (實體)</h5>
+                                    <p class="text-xs text-slate-500">系統中的「主詞」。例如：學生、老師、課程。在資料庫中，通常對應到一張「表」。</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-4">
+                                <div class="w-10 h-10 rounded-full bg-purple-600 text-white flex items-center justify-center font-bold shrink-0 shadow-lg">A</div>
+                                <div>
+                                    <h5 class="font-bold text-slate-900">Attribute (屬性)</h5>
+                                    <p class="text-xs text-slate-500">實體的「特徵」。例如學生的「姓名」、「生日」。對應到表中的「欄位」。</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-4">
+                                <div class="w-10 h-10 rounded-full bg-cyan-600 text-white flex items-center justify-center font-bold shrink-0 shadow-lg">R</div>
+                                <div>
+                                    <h5 class="font-bold text-slate-900">Relationship (關係)</h5>
+                                    <p class="text-xs text-slate-500">實體間的「動作」。例如學生「選修」課程。這是連結資料的核心邏輯。</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ER Relationship Visual -->
+                    <div class="glass-card p-10 flex flex-col justify-center items-center bg-white">
+                        <p class="text-[10px] font-bold text-slate-400 mb-10 uppercase tracking-widest">視覺化實例 (Conceptual Logic)</p>
+                        <div class="flex items-center gap-6">
+                            <!-- User Entity -->
+                            <div class="flex flex-col items-center gap-4">
+                                <div class="w-24 h-24 rounded-2xl bg-indigo-50 border-2 border-indigo-200 flex items-center justify-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                    </svg>
+                                </div>
+                                <span class="badge bg-indigo-600 text-white">實體: 使用者</span>
+                            </div>
+
+                            <!-- Relationship Arrow -->
+                            <div class="flex flex-col items-center gap-2">
+                                <span class="text-[10px] font-bold text-slate-400 italic">擁有 (has)</span>
+                                <div class="w-16 h-0.5 bg-slate-200 relative">
+                                    <div class="absolute right-0 -top-1 w-2 h-2 rounded-full bg-slate-400"></div>
+                                </div>
+                            </div>
+
+                            <!-- Order Entity -->
+                            <div class="flex flex-col items-center gap-4">
+                                <div class="w-24 h-24 rounded-2xl bg-purple-50 border-2 border-purple-200 flex items-center justify-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-purple-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                                    </svg>
+                                </div>
+                                <span class="badge bg-purple-600 text-white">實體: 訂單</span>
+                            </div>
+                        </div>
+                        <p class="mt-8 text-xs text-slate-400 text-center max-w-[200px]">
+                            這是一個簡單的 **1對多 (1:N)** 關係圖。一個使用者可以擁有多張訂單。
+                        </p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                    <!-- SQL Card -->
+                    <div class="glass-card p-10 flex flex-col items-start bg-indigo-50/10 border-indigo-100">
+                        <div class="flex items-center justify-between w-full mb-8">
+                            <div class="w-16 h-16 rounded-2xl bg-indigo-100 flex items-center justify-center text-primary">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" />
+                                </svg>
+                            </div>
+                            <span class="badge bg-primary/10 text-primary">SQL / Relational (MySQL)</span>
+                        </div>
+                        <h3 class="text-3xl font-bold mb-6">嚴謹關聯流 (SQL)</h3>
+                        <p class="text-slate-600 mb-8 leading-relaxed">資料以表格形式存儲，強調嚴格的結構 (Schema) 與關聯性。正如家族血脈，透過 ID 相連。</p>
+                        
+                        <!-- ER Diagram Representation -->
+                        <div class="w-full p-8 bg-white/80 rounded-[2rem] border border-slate-200 shadow-sm relative overflow-hidden group mb-6">
+                            <div class="flex items-center justify-between gap-4 relative z-10">
+                                <div class="er-node">父母 (Parents)</div>
+                                <div class="er-line er-connector"></div>
+                                <div class="er-node border-primary">小孩 (Children)</div>
+                            </div>
+                            <p class="mt-8 text-center text-sm font-medium text-slate-500 italic">「外鍵 (FK) 就像遺傳基因，串聯起整張資料網。」</p>
+                        </div>
+                    </div>
+
+                    <!-- NoSQL Card -->
+                    <div class="glass-card p-10 flex flex-col items-start bg-cyan-50/10 border-cyan-100">
+                        <div class="flex items-center justify-between w-full mb-8">
+                            <div class="w-16 h-16 rounded-2xl bg-cyan-100 flex items-center justify-center text-accent">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                </svg>
+                            </div>
+                            <span class="badge bg-accent/10 text-accent">NoSQL / Document (MongoDB)</span>
+                        </div>
+                        <h3 class="text-3xl font-bold mb-6">靈活文件流 (NoSQL)</h3>
+                        <p class="text-slate-600 mb-8 leading-relaxed">不限格式，以文件 (Document) 為中心。資料結構與程式中的 JSON 物件完美對應。</p>
+                        
+                        <!-- Code Block for JSON Spec -->
+                        <div class="w-full p-8 bg-slate-900 rounded-[2rem] shadow-xl">
+                            <pre class="text-xs font-mono text-cyan-400 leading-relaxed">
+{
+  "_id": "64f1e9a2b...",
+  "type": "USER_DATA",
+  "name": "張小明 (Sample)",
+  "skills": ["HTML", "PHP", "DB"],
+  "status": "active"
+}</pre>
+                            <p class="mt-4 text-[10px] text-slate-500 font-mono text-center">BSON / Document Format</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
+
+            <!-- SECTION 4: FRAMEWORKS & LARAVEL -->
+            <section id="frameworks" class="mb-24">
+                <div class="flex items-center gap-4 mb-12">
+                    <h2 class="text-4xl font-bold font-display tracking-tight text-slate-900">框架的力量 (Frameworks)</h2>
+                    <div class="flex-1 h-px bg-slate-200"></div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+                    <!-- Frontend -->
+                    <div class="p-8 rounded-3xl bg-slate-50 border border-slate-100 italic">
+                        <h4 class="font-bold text-slate-400 mb-4 uppercase tracking-widest text-xs">前端回顧</h4>
+                        <p class="text-sm text-slate-600 mb-4">我們學過 Bootstrap, Tailwind CSS, 以及現代的 Vue.js。它們簡化了 UI 的構建。</p>
+                        <div class="flex flex-wrap gap-2 opacity-50">
+                            <span class="badge bg-slate-200 text-slate-600">Tailwind</span>
+                            <span class="badge bg-slate-200 text-slate-600">Vue</span>
+                        </div>
+                    </div>
+                    <!-- Backend - Java -->
+                    <div class="p-8 rounded-3xl bg-slate-50 border border-slate-100">
+                        <h4 class="font-bold text-orange-500 mb-4 uppercase tracking-widest text-xs">Java 陣營</h4>
+                        <p class="text-sm text-slate-600 mb-4">Spring Boot 是 Java 界的霸主，提供強大的企業級支撐能力。</p>
+                        <span class="badge bg-orange-100 text-orange-600">Spring Boot</span>
+                    </div>
+                    <!-- Backend - PHP -->
+                    <div class="p-8 rounded-3xl bg-primary/5 border border-primary/20">
+                        <h4 class="font-bold text-primary mb-4 uppercase tracking-widest text-xs">PHP 陣營</h4>
+                        <p class="text-sm text-slate-600 mb-4">Laravel 與 CodeIgniter 是主流，其中 Laravel 更是優雅開發的典範。</p>
+                        <span class="badge bg-primary/20 text-primary">Laravel</span>
+                    </div>
+                </div>
+
+                <!-- Laravel & MVC Deep Dive -->
+                <div class="glass-card p-10 lg:p-14 border-primary/20 bg-gradient-to-br from-white to-indigo-50/30">
+                    <div class="flex flex-col lg:flex-row gap-16">
+                        <div class="lg:w-1/2">
+                            <h3 class="text-4xl font-black mb-8 font-display text-slate-900">Laravel 與 MVC 架構</h3>
+                            <div class="space-y-8">
+                                <p class="text-slate-600 leading-relaxed text-lg">
+                                    Laravel 核心採用 **MVC (Model-View-Controller)** 設計模式，讓代碼邏輯清晰分明：
+                                </p>
+                                <div class="space-y-4">
+                                    <div class="flex gap-4 p-4 bg-white rounded-2xl border border-slate-100 shadow-sm">
+                                        <div class="w-10 h-10 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold">M</div>
+                                        <div>
+                                            <h5 class="font-bold text-slate-900">Model (模型)</h5>
+                                            <p class="text-xs text-slate-500">處理資料邏輯，對接資料庫。</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex gap-4 p-4 bg-white rounded-2xl border border-slate-100 shadow-sm">
+                                        <div class="w-10 h-10 rounded-full bg-purple-600 text-white flex items-center justify-center font-bold">V</div>
+                                        <div>
+                                            <h5 class="font-bold text-slate-900">View (視圖)</h5>
+                                            <p class="text-xs text-slate-500">處理畫面，將資料呈現給使用者。</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex gap-4 p-4 bg-white rounded-2xl border border-slate-100 shadow-sm">
+                                        <div class="w-10 h-10 rounded-full bg-cyan-600 text-white flex items-center justify-center font-bold">C</div>
+                                        <div>
+                                            <h5 class="font-bold text-slate-900">Controller (控制器)</h5>
+                                            <p class="text-xs text-slate-500">大腦，接收並處理請求，轉發給適當的 Model 或 View。</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="lg:w-1/2 flex flex-col justify-center">
+                            <div class="p-8 rounded-[2.5rem] bg-slate-900 text-white shadow-2xl relative overflow-hidden">
+                                <div class="absolute top-0 right-0 p-4 opacity-10">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-32 h-32" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                    </svg>
+                                </div>
+                                <h4 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                                    <span class="w-8 h-8 rounded-lg bg-indigo-500 flex items-center justify-center text-xs">Artisan</span>
+                                    魔法指令與實戰效率
+                                </h4>
+                                <div class="space-y-6 text-slate-400 text-sm leading-relaxed">
+                                    <p>在 PHP/Laravel 中，我們使用 **Artisan** 指令集來操作世界：</p>
+                                    <div class="p-4 bg-black/40 rounded-xl font-mono text-indigo-400 text-xs">
+                                        php artisan make:model Student -m
+                                    </div>
+                                    <p>一行指令即可同時建立「Model」與資料庫「Migration」表單。這在以前可能需要數個小時的配置，現在只需一秒。</p>
+                                    
+                                    <div class="pt-6 border-t border-white/10">
+                                        <h5 class="text-white font-bold mb-3 flex items-center gap-2">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                            </svg>
+                                            5 秒鐘搞定登錄系統 (Auth)
+                                        </h5>
+                                        <p>在 Laravel 生態中，這只需安裝一個套件並跑幾行指令，**5 秒鐘** 即可交付一個成熟的會員系統。</p>
+                                    </div>
+
+                                    <!-- Auth Speed Comparison -->
+                                    <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
+                                                <div class="p-4 bg-white/5 border border-white/10 rounded-2xl">
+                                                    <p class="text-[10px] text-slate-400 mb-2 uppercase tracking-widest font-bold">傳統 PHP ( Tedious )</p>
+                                                    <div class="h-32 overflow-y-auto custom-scrollbar text-[9px] font-mono text-slate-500 bg-black/20 p-2 rounded-lg leading-relaxed">
+                                                        // 1. 連接資料庫<br>
+                                                        $conn = mysqli_connect(...);<br>
+                                                        // 2. 接收並消毒資料<br>
+                                                        $email = mysqli_real_escape_string($_POST['email']);<br>
+                                                        $pass = $_POST['password'];<br>
+                                                        // 3. 查詢用戶<br>
+                                                        $sql = "SELECT * FROM users WHERE email='$email'";<br>
+                                                        $result = mysqli_query($conn, $sql);<br>
+                                                        // 4. 驗證密碼雜湊<br>
+                                                        if(password_verify($pass, $row['hash'])) { ... }<br>
+                                                        // 5. 初始化 Session<br>
+                                                        session_start();<br>
+                                                        $_SESSION['uid'] = $row['id'];<br>
+                                                        // 6. 處理錯誤訊息並重導向...<br>
+                                                        // 且需手寫註冊、忘記密碼、Email驗證...<br>
+                                                        // ( 此處省略 200 行代碼 )
+                                                    </div>
+                                                </div>
+                                                <div class="p-4 bg-indigo-600/20 border border-indigo-500/30 rounded-2xl">
+                                                    <p class="text-[10px] text-indigo-400 mb-2 uppercase tracking-widest font-bold">Laravel ( Magic )</p>
+                                                    <div class="text-[9px] font-mono text-indigo-300 leading-relaxed">
+                                                        composer require laravel/breeze<br>
+                                                        php artisan breeze:install<br>
+                                                        php artisan migrate<br><br>
+                                                        // 搞定！註冊、登錄、驗證<br>
+                                                        // 全部自動生成完成。
+                                                    </div>
+                                                </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
+                <!-- Laravel Architecture Deep Dive -->
+                <div class="mt-16 grid grid-cols-1 xl:grid-cols-2 gap-12">
+                    <!-- Flow Diagram / Lifecycle -->
+                    <div class="glass-card p-10 bg-slate-50/50">
+                        <h4 class="text-2xl font-bold mb-8 flex items-center gap-3">
+                            <span class="w-2 h-8 bg-indigo-500 rounded-full"></span>
+                            請求生命週期與路由
+                        </h4>
+                        <div class="space-y-6">
+                            <div class="p-6 bg-white rounded-2xl border border-slate-100 shadow-sm relative group">
+                                <h5 class="font-bold mb-2 flex items-center gap-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A2 2 0 013 15.382V6.618a2 2 0 011.553-1.944L9 2m0 18l5.447-2.724A2 2 0 0016 15.382V6.618a2 2 0 00-1.553-1.944L9 2m0 18V2" />
+                                    </svg>
+                                    web.php：網站的地圖
+                                </h5>
+                                <p class="text-sm text-slate-500 mb-4">每個請求進入網站後，首先會對照 `web.php`。它定義了請求該交給哪個 Controller 處理。</p>
+                                <div class="p-4 bg-slate-900 rounded-xl font-mono text-[10px] text-cyan-400">
+                                    Route::get('/students', [StudentController::class, 'index']);
+                                </div>
+                            </div>
+                            
+                            <div class="p-6 bg-white rounded-2xl border border-slate-100 shadow-sm">
+                                <h5 class="font-bold mb-2 flex items-center gap-2 text-indigo-600">
+                                    MVC 精髓詳解
+                                </h5>
+                                <div class="space-y-4 text-sm text-slate-600">
+                                    <div class="flex items-start gap-4">
+                                        <span class="font-bold text-slate-900 shrink-0">View：</span>
+                                        <p>Laravel 使用 **Blade** 模板引擎。它讓你在 HTML 中寫迴圈與判斷式，極大簡化了螢幕呈現的開發。</p>
+                                    </div>
+                                    <div class="flex items-start gap-4">
+                                        <span class="font-bold text-slate-900 shrink-0">Model：</span>
+                                        <p>不僅是資料結構，更定義了「關係」（Eloquent ORM）。例如：一個學生「擁有」(hasMany) 多門課程。</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- RESTful & Services -->
+                    <div class="space-y-8">
+                        <!-- RESTful API -->
+                        <div class="glass-card p-10 bg-gradient-to-br from-indigo-50/50 to-white">
+                            <h4 class="text-2xl font-bold mb-6">RESTful API 規範</h4>
+                            <p class="text-sm text-slate-500 mb-6 leading-relaxed">我們通常遵循業界公認的 RESTful 規範來命名 API：</p>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-left text-xs">
+                                    <thead class="bg-slate-50 text-slate-400 font-bold">
+                                        <tr>
+                                            <th class="p-3">Method</th>
+                                            <th class="p-3">URI</th>
+                                            <th class="p-3">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-slate-100">
+                                        <tr><td class="p-3 text-green-600 font-bold">GET</td><td class="p-3 font-mono">/posts</td><td class="p-3">列表顯示</td></tr>
+                                        <tr><td class="p-3 text-blue-600 font-bold">POST</td><td class="p-3 font-mono">/posts</td><td class="p-3">新增資料</td></tr>
+                                        <tr><td class="p-3 text-orange-600 font-bold">PUT/PATCH</td><td class="p-3 font-mono">/posts/{id}</td><td class="p-3">修改資料</td></tr>
+                                        <tr><td class="p-3 text-red-600 font-bold">DELETE</td><td class="p-3 font-mono">/posts/{id}</td><td class="p-3">刪除資料</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Scaling: Services Layer -->
+                        <div class="glass-card p-10 bg-slate-900 text-white relative overflow-hidden">
+                            <div class="absolute inset-0 bg-primary/10 opacity-50 blur-[50px]"></div>
+                            <div class="relative z-10">
+                                <h4 class="text-2xl font-bold mb-4 flex items-center gap-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 00-1 1v1a2 2 0 11-4 0v-1a1 1 0 00-1-1H7a1 1 0 01-1-1v-3a1 1 0 011-1h1a2 2 0 100-4H7a1 1 0 01-1-1V7a1 1 0 011-1h3a1 1 0 001-1V4z" />
+                                    </svg>
+                                    優雅進階：Services Layer
+                                </h4>
+                                <p class="text-slate-400 text-sm leading-relaxed mb-6">
+                                    當 Controller 變得太「胖」(Fat Controller) 時，代碼會變得難以維護。我們會將複雜的**商務邏輯**抽離到另一個區塊：**Services**。
+                                </p>
+                                <div class="p-4 bg-white/5 border border-white/10 rounded-2xl italic text-xs text-slate-300">
+                                    「Controller 只負責分派工作，而 Services 則是真正動手做事的工廠。這樣，你的後端架構才能從 100 人使用穩定成長到 1,000,000 人。」
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- SECTION 5: ELOQUENT ORM VISUAL ANALYSIS -->
+            <section id="eloquent-orm" class="mb-24">
+                <div class="flex items-center gap-4 mb-12">
+                    <h2 class="text-4xl font-bold font-display tracking-tight text-slate-900">Eloquent ORM 視覺解析</h2>
+                    <div class="flex-1 h-px bg-slate-200"></div>
+                </div>
+
+                <div class="glass-card p-10 lg:p-14 bg-gradient-to-br from-indigo-50/20 to-white">
+                    <div class="flex flex-col xl:flex-row gap-16 items-center">
+                        <div class="xl:w-2/5">
+                            <h3 class="text-3xl font-bold mb-6">為什麼需要 ORM?</h3>
+                            <p class="text-slate-600 leading-relaxed mb-8">
+                                **Object-Relational Mapping (ORM)** 讓你用「操作物件」的方式來操作「資料庫」。不需要寫繁瑣的 SQL Join，代碼更加直觀。
+                            </p>
+                            
+                            <div class="space-y-6">
+                                <div class="flex items-start gap-4">
+                                    <div class="w-2 h-2 rounded-full bg-primary mt-2"></div>
+                                    <div>
+                                        <h5 class="font-bold text-slate-900">語法優雅</h5>
+                                        <p class="text-sm text-slate-500">`User::all()` 直接獲取所有用戶，不需寫 `SELECT * FROM...`。</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start gap-4">
+                                    <div class="w-2 h-2 rounded-full bg-secondary mt-2"></div>
+                                    <div>
+                                        <h5 class="font-bold text-slate-900">維護性高</h5>
+                                        <p class="text-sm text-slate-500">更改欄位名稱時，只需修改一處，全站生效。</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="xl:w-3/5 w-full">
+                            <div class="p-8 bg-slate-50 rounded-[2.5rem] border border-slate-100 relative overflow-hidden">
+                                <p class="text-xs font-bold text-slate-400 mb-8 uppercase tracking-widest text-center">關係圖解 (Relationship Diagram)</p>
+                                
+                                <div class="flex flex-col md:flex-row items-center justify-around gap-8">
+                                    <!-- User Model -->
+                                    <div class="flex flex-col items-center">
+                                        <div class="w-32 h-32 rounded-3xl bg-white border-2 border-indigo-500 shadow-xl flex items-center justify-center flex-col p-4 text-center">
+                                            <span class="text-[10px] text-indigo-500 font-bold">MODEL</span>
+                                            <span class="font-bold text-slate-800">User</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Connection -->
+                                    <div class="flex flex-col items-center gap-2">
+                                        <div class="px-3 py-1 bg-indigo-100 text-indigo-600 rounded-full text-[10px] font-bold">hasMany</div>
+                                        <div class="w-32 h-px bg-indigo-200 relative">
+                                            <div class="absolute right-0 -top-1 w-2 h-2 rounded-full bg-indigo-200"></div>
+                                            <div class="absolute right-2 -top-1 w-2 h-2 rounded-full bg-indigo-200"></div>
+                                        </div>
+                                        <div class="px-3 py-1 bg-purple-100 text-purple-600 rounded-full text-[10px] font-bold">belongsTo</div>
+                                    </div>
+
+                                    <!-- Post Model -->
+                                    <div class="flex flex-col items-center">
+                                        <div class="w-32 h-32 rounded-3xl bg-white border-2 border-purple-500 shadow-xl flex items-center justify-center flex-col p-4 text-center">
+                                            <span class="text-[10px] text-purple-500 font-bold">MODEL</span>
+                                            <span class="font-bold text-slate-800">Post</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mt-12 p-6 bg-slate-900 rounded-2xl font-mono text-[10px] text-cyan-400">
+                                    <span class="text-slate-500">// 方式一：Eloquent ORM (最推薦)</span><br>
+                                    $user->posts; <span class="text-slate-500">// 獲取該用戶名下所有文章</span><br><br>
+                                    <span class="text-slate-500">// 方式二：DB Facade (直接查詢)</span><br>
+                                    DB::table('users')->where('id', 1)->first();
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!-- SECTION 8: CRM 與敏捷開發 -->
+            <section id="crm-agile" class="mb-24">
+                <div class="flex items-center gap-4 mb-12">
+                    <h2 class="text-4xl font-bold font-display tracking-tight text-slate-900">CRM 系統與敏捷開發 (Agile)</h2>
+                    <div class="flex-1 h-px bg-slate-200"></div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+                    <!-- CRM Section -->
+                    <div class="glass-card p-10 bg-gradient-to-br from-white to-blue-50/30 border-blue-100">
+                        <div class="flex items-center gap-4 mb-8">
+                            <div class="w-14 h-14 rounded-2xl bg-blue-100 flex items-center justify-center text-blue-600">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a2 2 0 00-2-2h-3V1a1 1 0 00-1-1H7a1 1 0 00-1 1v15H3a2 2 0 00-2 2v2h5m11-14v4m-4-4v4m1 4h2.251a11.042 11.042 0 005.516 5.516l1.135 1.135a1 1 0 01-1.414 1.414l-1.135-1.135a11.042 11.042 0 01-5.516-5.516H10" />
+                                </svg>
+                            </div>
+                            <div>
+                                <h4 class="text-2xl font-bold text-slate-900">什麼是 CRM?</h4>
+                                <p class="text-xs text-blue-500 font-semibold uppercase tracking-widest leading-loose">Customer Relationship Management</p>
+                            </div>
+                        </div>
+                        <p class="text-slate-600 leading-relaxed text-sm mb-6">
+                            **CRM (客戶關係管理)** 是一套結合軟體與商業策略的系統。其核心價值在於「收集、分析並優化與客戶的所有互動」。
+                        </p>
+                        <ul class="space-y-3 text-xs text-slate-500">
+                            <li class="flex items-center gap-2"><div class="w-1 h-1 rounded-full bg-blue-400"></div> **資料集中化**：將客戶聯絡資訊、交易紀錄全部集中。</li>
+                            <li class="flex items-center gap-2"><div class="w-1 h-1 rounded-full bg-blue-400"></div> **服務追蹤**：記錄每一次客服或銷售對話，不遺漏任何商機。</li>
+                            <li class="flex items-center gap-2"><div class="w-1 h-1 rounded-full bg-blue-400"></div> **數據洞察**：分析哪些客戶產值最高，精準投放廣告。</li>
+                        </ul>
+                    </div>
+
+                    <!-- Agile Section -->
+                    <div class="glass-card p-10 bg-gradient-to-br from-white to-emerald-50/30 border-emerald-100">
+                        <div class="flex items-center gap-4 mb-8">
+                            <div class="w-14 h-14 rounded-2xl bg-emerald-100 flex items-center justify-center text-emerald-600">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                                </svg>
+                            </div>
+                            <div>
+                                <h4 class="text-2xl font-bold text-slate-900">敏捷開發 (Agile)</h4>
+                                <p class="text-xs text-emerald-500 font-semibold uppercase tracking-widest leading-loose">Iterative Software Development</p>
+                            </div>
+                        </div>
+                        <p class="text-slate-600 leading-relaxed text-sm mb-6">
+                            **敏捷開發** 是一種強調「靈活應變」與「快速回饋」的開發模式，捨棄了傳統耗時冗長的計畫。
+                        </p>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="p-4 rounded-2xl bg-white border border-emerald-50 shadow-sm">
+                                <h5 class="font-bold text-emerald-600 mb-2 text-xs">小步快跑</h5>
+                                <p class="text-[10px] text-slate-400">將大項目拆解成 1-2 週的「衝刺 (Sprint)」。</p>
+                            </div>
+                            <div class="p-4 rounded-2xl bg-white border border-emerald-50 shadow-sm">
+                                <h5 class="font-bold text-emerald-600 mb-2 text-xs">持續交付</h5>
+                                <p class="text-[10px] text-slate-400">每兩週就發布一個新版本，讓客戶測試。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 6: REAL-TIME & ECOSYSTEM -->
+            <section id="ecosystem" class="mb-24">
+                <div class="flex items-center gap-4 mb-12">
+                    <h2 class="text-4xl font-bold font-display tracking-tight text-slate-900">實時互動與生態系</h2>
+                    <div class="flex-1 h-px bg-slate-200"></div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
+                    <!-- Pusher & Broadcasting -->
+                    <div class="glass-card p-10 bg-indigo-900 text-white relative overflow-hidden">
+                        <div class="absolute top-0 right-0 p-8 opacity-10">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-32 h-32" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                            </svg>
+                        </div>
+                        <div class="relative z-10">
+                            <h4 class="text-2xl font-bold mb-6 flex items-center gap-2">
+                                <span class="p-2 rounded-lg bg-white/10 text-white">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-indigo-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.636 18.364a9 9 0 010-12.728m12.728 0a9 9 0 010 12.728m-9.9-2.829a5 5 0 010-7.07m7.072 0a5 5 0 010 7.07M13 12a1 1 0 11-2 0 1 1 0 012 0z" />
+                                    </svg>
+                                </span>
+                                Pusher 與實時廣播 (Broadcasting)
+                            </h4>
+                            <p class="text-sm text-slate-400 mb-6 leading-relaxed italic">
+                                「 讓後端主動跟前端說話。 」
+                            </p>
+                            <p class="text-xs text-slate-300 leading-relaxed mb-6">
+                                傳統的請求是「一問一答」 (Request-Response)，但透過 Laravel 與 **Pusher** 或 WebSockets，我們可以實現**實時廣播**。
+                                <br><br>
+                                當一個事件發生時（如：新訊息、訂單更新），後端會主動「推播」消息給所有監聽的使用者，實現即時聊天室、即時通知等高品質體驗。
+                            </p>
+                            <div class="p-4 bg-white/5 border border-white/10 rounded-xl font-mono text-[9px] text-cyan-400">
+                                broadcast(new NewMessage($message));
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Packages & OSS -->
+                    <div class="glass-card p-10 flex flex-col justify-center">
+                        <h4 class="text-2xl font-bold mb-4">開源生態與豐富套件</h4>
+                        <p class="text-sm text-slate-500 mb-8 leading-relaxed">
+                            Laravel 的強大不僅在於本體，更在於其龐大的開源社群。
+                        </p>
+                        <ul class="space-y-4">
+                            <li class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-primary">✓</div>
+                                <span class="text-xs text-slate-600 font-medium">成千上萬的 **Packages** (透過 Composer 安裝)</span>
+                            </li>
+                            <li class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-primary">✓</div>
+                                <span class="text-xs text-slate-600 font-medium">支付系統、社群登錄、圖片處理都有現成方案</span>
+                            </li>
+                            <li class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-primary">✓</div>
+                                <span class="text-xs text-slate-600 font-medium">「站在巨人的肩膀上開發」，這才是 Laravel 之所以快的底氣</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 7: CRUD 與商務邏輯 -->
+            <section id="crud-logic" class="mb-24">
+                <div class="flex items-center gap-4 mb-12">
+                    <h2 class="text-4xl font-bold font-display tracking-tight text-slate-900">從 CRUD 到商務邏輯</h2>
+                    <div class="flex-1 h-px bg-slate-200"></div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <!-- CRUD Card -->
+                    <div class="glass-card p-10 border-accent/10">
+                        <h4 class="text-2xl font-bold mb-6 flex items-center gap-2">
+                            <span class="p-2 rounded-lg bg-accent/10 text-accent">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                </svg>
+                            </span>
+                            CRUD：開發者的基本功
+                        </h4>
+                        <p class="text-sm text-slate-500 mb-8">這是所有後端工程師的敲門磚，包含了四種最基礎的操作：</p>
+                        <div class="grid grid-cols-2 gap-4 text-xs">
+                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 flex items-center justify-between">
+                                <span class="font-bold">Create</span><span class="text-slate-400">(新增)</span>
+                            </div>
+                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 flex items-center justify-between">
+                                <span class="font-bold">Read</span><span class="text-slate-400">(查詢)</span>
+                            </div>
+                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 flex items-center justify-between">
+                                <span class="font-bold">Update</span><span class="text-slate-400">(修改)</span>
+                            </div>
+                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 flex items-center justify-between">
+                                <span class="font-bold">Delete</span><span class="text-slate-400">(刪除)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Business Logic Card -->
+                    <div class="glass-card p-10 border-primary/10 bg-slate-900 text-white relative overflow-hidden">
+                        <div class="absolute inset-0 bg-primary/20 opacity-30 blur-[60px]"></div>
+                        <div class="relative z-10">
+                            <h4 class="text-2xl font-bold mb-6 flex items-center gap-2 text-white">
+                                <span class="p-2 rounded-lg bg-primary/20 text-primary">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                                    </svg>
+                                </span>
+                                Business Logic：專業的靈魂
+                            </h4>
+                            <p class="text-sm text-slate-400 leading-relaxed italic mb-8">
+                                「 CRUD 只是工具，商務邏輯才是靈魂。 」
+                            </p>
+                            <p class="text-xs text-slate-300 leading-relaxed">
+                                當你在找工作時，面試官不只看你是否會寫 CRUD。他們更看重你如何優雅地解決商業問題（如：如何在高併發流量中防止庫存被超賣、如何設計一套公平且高效的優惠券系統）。
+                                <br><br>
+                                我們在掌握了基礎工具後，接下來的課程重點將會放在如何處理這些複雜的**商務情境 (Business Logic)**。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Footer -->
+            <footer class="mt-32 pt-12 border-t border-slate-100 flex flex-col md:flex-row justify-between items-center gap-8 text-slate-400 text-sm">
+                <div class="flex items-center gap-4 font-display font-black text-slate-200 text-2xl">墨宇</div>
+                <div class="flex gap-12 font-medium">
+                    <a href="#" class="hover:text-primary transition-colors">教材庫</a>
+                    <a href="#" class="hover:text-primary transition-colors">討論區</a>
+                    <a href="#" class="hover:text-primary transition-colors">資源下載</a>
+                </div>
+            </footer>
+        </main>
+    </div>
+
+    <!-- Active Scripts -->
+    <script>
+        $(document).ready(function() {
+            // Sidebar Toggle
+            const $sidebar = $('#sidebar');
+            const $toggleBtn = $('#toggleSidebar');
+            $toggleBtn.on('click', function() {
+                $sidebar.toggleClass('collapsed');
+                $toggleBtn.find('svg').css('transform', $sidebar.hasClass('collapsed') ? 'rotate(180deg)' : 'rotate(0)');
+            });
+
+            // Smooth Scroll & Fade Animations
+            $('.glass-card, section h2, #overview h1, .rounded-[3rem]').each(function(index) {
+                $(this).css({ 'opacity': '0', 'transform': 'translateY(40px)' })
+                       .delay(100 * index)
+                       .animate({ 'opacity': '1' }, {
+                           duration: 1200,
+                           step: function(now, fx) {
+                               if (fx.prop === 'opacity') {
+                                   $(this).css('transform', `translateY(${40 * (1 - now)}px)`);
+                               }
+                           }
+                       });
+            });
+        });
+    </script>
+</body>
+
+</html>

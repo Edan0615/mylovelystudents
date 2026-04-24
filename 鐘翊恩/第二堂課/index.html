@@ -1,0 +1,1450 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>前端深入研究 - 前端基礎 | 墨宇・前端課程</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Inter & Outfit -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'Outfit', 'sans-serif', 'system-ui'],
+                        outfit: ['Outfit', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        },
+                        vibrant: {
+                            purple: '#8b5cf6',
+                            pink: '#ec4899',
+                            orange: '#f97316',
+                            emerald: '#10b981',
+                        }
+                    },
+                    backdropBlur: {
+                        xs: '2px',
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .hero-gradient {
+            background: radial-gradient(circle at top right, #38bdf8 0%, #818cf8 30%, #4f46e5 70%);
+        }
+
+        .code-container {
+            background: #1e293b;
+            color: #f8fafc;
+            border-radius: 0.75rem;
+            padding: 1rem;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.875rem;
+            position: relative;
+        }
+
+        .tag-badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.375rem;
+            font-weight: 600;
+            font-size: 0.75rem;
+            background: rgba(14, 165, 233, 0.1);
+            color: #0369a1;
+            margin-right: 0.5rem;
+        }
+
+        .section-card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .section-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        .demo-box {
+            border: 1px dashed #cbd5e1;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            background: #f8fafc;
+            margin-top: 1rem;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        .floating {
+            animation: floating 3s ease-in-out infinite;
+        }
+
+        @keyframes floating {
+            0% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+
+            100% {
+                transform: translateY(0px);
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-slate-50 font-sans text-slate-800 overflow-x-hidden">
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 right-0 z-50 glass-nav">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center gap-2">
+                    <div
+                        class="w-10 h-10 bg-brand-600 rounded-xl flex items-center justify-center text-white shadow-lg">
+                        <i class="fa-solid fa-code text-xl"></i>
+                    </div>
+                    <span
+                        class="text-xl font-outfit font-bold bg-gradient-to-r from-brand-600 to-brand-800 bg-clip-text text-transparent underline decoration-brand-200 decoration-2 underline-offset-4">
+                        前端基礎核心
+                    </span>
+                </div>
+            </div>
+        </div>
+    </nav>
+    </nav>
+
+    <!-- Hero Section -->
+    <header id="intro" class="relative pt-32 pb-20 md:pt-48 md:pb-40 overflow-hidden">
+        <div class="absolute inset-0 bg-hero-gradient -z-10 opacity-10"></div>
+        <div class="absolute top-40 -left-20 w-80 h-80 bg-vibrant-purple/20 rounded-full blur-[100px] animate-pulse">
+        </div>
+        <div class="absolute bottom-20 -right-20 w-96 h-96 bg-brand-400/20 rounded-full blur-[120px] animate-pulse"
+            style="animation-delay: 1s"></div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div
+                class="inline-flex items-center px-4 py-1.5 rounded-full bg-brand-50 border border-brand-100 text-brand-700 text-sm font-bold mb-6">
+                <span class="mr-2">Lesson 02</span> HTML 基礎標籤詳解
+            </div>
+            <h1 class="text-5xl md:text-7xl font-outfit font-black text-slate-900 mb-6 leading-tight">
+                掌握網頁的 <span
+                    class="bg-gradient-to-r from-brand-600 via-vibrant-purple to-vibrant-pink bg-clip-text text-transparent italic">前端基礎與核心</span>
+            </h1>
+            <p class="text-lg md:text-xl text-slate-600 max-w-2xl mx-auto mb-10 leading-relaxed font-light">
+                認識網頁最核心的組成元素：從標籤的開合邏輯到常用的排版組件，帶領你一步步建立屬於自己的首個網頁。
+            </p>
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <a href="#tags"
+                    class="group px-8 py-4 bg-slate-900 text-white rounded-2xl font-bold flex items-center gap-3 hover:bg-slate-800 transition-all shadow-xl hover:shadow-2xl">
+                    開始學習 <i class="fa-solid fa-arrow-down animate-bounce"></i>
+                </a>
+                <div class="text-sm text-slate-500 font-medium flex items-center gap-2">
+                    <span class="w-2 h-2 bg-emerald-500 rounded-full"></span>
+                    適合跨領域初學者
+                </div>
+            </div>
+        </div>
+
+
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-32">
+
+        <!-- Insertion Methods (CSS & JS) -->
+        <section id="insertion" class="mb-32">
+            <div class="flex items-center gap-4 mb-10">
+                <div class="h-px flex-grow bg-slate-200"></div>
+                <h2 class="text-2xl font-outfit font-bold text-slate-900 px-4">00. 核心串接：三種內建方法</h2>
+                <div class="h-px flex-grow bg-slate-200"></div>
+            </div>
+
+            <div class="grid lg:grid-cols-3 gap-8">
+                <!-- Method 1: Inline -->
+                <div
+                    class="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-xl relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:rotate-12 transition-transform">
+                        <i class="fa-solid fa-bolt text-5xl text-brand-600"></i>
+                    </div>
+                    <h3 class="text-xl font-black text-slate-900 mb-4 flex items-center gap-3">
+                        <span
+                            class="w-8 h-8 bg-brand-100 text-brand-600 rounded-lg flex items-center justify-center text-xs">01</span>
+                        行內式 (Inline)
+                    </h3>
+                    <p class="text-xs text-slate-500 mb-6 leading-relaxed">直接將樣式或腳本寫在 HTML 標籤的屬性中。適合快速測試或單一元素的微調。</p>
+                    <div class="space-y-4">
+                        <div class="code-container !text-[10px] !p-4">
+                            <div class="text-indigo-300 font-bold mb-1">&lt;!-- CSS Inline --&gt;</div>
+                            <div class="text-slate-100">&lt;div <span class="text-brand-400">style</span>="<span
+                                    class="text-emerald-400">color: red;</span>"&gt;...&lt;/div&gt;</div>
+                            <div class="text-indigo-300 font-bold mt-3 mb-1">&lt;!-- JS Inline --&gt;</div>
+                            <div class="text-slate-100">&lt;button <span class="text-brand-400">onclick</span>="<span
+                                    class="text-emerald-400">alert('Hi!')</span>"&gt;...&lt;/button&gt;</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Method 2: Internal -->
+                <div
+                    class="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-xl relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:rotate-12 transition-transform">
+                        <i class="fa-solid fa-file-code text-5xl text-emerald-600"></i>
+                    </div>
+                    <h3 class="text-xl font-black text-slate-900 mb-4 flex items-center gap-3">
+                        <span
+                            class="w-8 h-8 bg-emerald-100 text-emerald-600 rounded-lg flex items-center justify-center text-xs">02</span>
+                        內部區塊 (Internal)
+                    </h3>
+                    <p class="text-xs text-slate-500 mb-6 leading-relaxed">在 HTML 檔案中開闢專屬區塊。CSS 放
+                        <code>&lt;head&gt;</code>，JS 通常放 <code>&lt;body&gt;</code> 底部。
+                    </p>
+                    <div class="space-y-4">
+                        <div class="code-container !text-[10px] !p-4">
+                            <div class="text-indigo-300 font-bold mb-1">&lt;style&gt; <span
+                                    class="text-slate-500 font-normal">/* 放於 head */</span></div>
+                            <div class="pl-4 text-brand-400">body { background: #eee; }</div>
+                            <div class="text-indigo-300 font-bold mb-1">&lt;/style&gt;</div>
+
+                            <div class="text-indigo-300 font-bold mt-3 mb-1">&lt;script&gt; <span
+                                    class="text-slate-500 font-normal">/* 放於 body 底部 */</span></div>
+                            <div class="pl-4 text-brand-400">console.log("Loaded!");</div>
+                            <div class="text-indigo-300 font-bold mb-1">&lt;/script&gt;</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Method 3: External -->
+                <div
+                    class="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-xl relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:rotate-12 transition-transform">
+                        <i class="fa-solid fa-link text-5xl text-rose-600"></i>
+                    </div>
+                    <h3 class="text-xl font-black text-slate-900 mb-4 flex items-center gap-3">
+                        <span
+                            class="w-8 h-8 bg-rose-100 text-rose-600 rounded-lg flex items-center justify-center text-xs">03</span>
+                        外部導引連結 (External)
+                    </h3>
+                    <p class="text-xs text-slate-500 mb-6 leading-relaxed">最專業的方法。將代碼獨立存為 <code>.css</code> 或
+                        <code>.js</code> 檔案，實現結構與樣式的完美分離。
+                    </p>
+                    <div class="space-y-4">
+                        <div class="code-container !text-[10px] !p-4">
+                            <div class="text-indigo-300 font-bold mb-1">&lt;!-- CSS Link (in Head) --&gt;</div>
+                            <div class="text-slate-100">&lt;<span class="text-brand-400">link</span> rel="stylesheet"
+                                <span class="text-brand-400">href</span>="style.css"&gt;
+                            </div>
+
+                            <div class="text-indigo-300 font-bold mt-3 mb-1">&lt;!-- JS Script (in Body) --&gt;</div>
+                            <div class="text-slate-100">&lt;<span class="text-brand-400">script</span> <span
+                                    class="text-brand-400">src</span>="app.js"&gt;&lt;/script&gt;</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div
+                class="mt-8 p-6 bg-slate-900 rounded-3xl border border-slate-800 flex flex-col md:flex-row items-center justify-between gap-6 shadow-2xl">
+                <div class="flex items-center gap-4">
+                    <div
+                        class="w-12 h-12 bg-amber-400/10 text-amber-400 rounded-2xl flex items-center justify-center text-xl">
+                        <i class="fa-solid fa-lightbulb"></i>
+                    </div>
+                    <div>
+                        <div class="text-white font-bold">最佳實務提點 (Best Practice)</div>
+                        <div class="text-slate-400 text-xs mt-1">為了網頁讀取速度與維護性，大多數專案應優先使用第一種與第三種方法。</div>
+                    </div>
+                </div>
+                <div class="flex gap-4">
+                    <div
+                        class="px-4 py-2 bg-white/5 rounded-xl border border-white/10 text-xs font-mono text-emerald-400">
+                        CSS: in &lt;head&gt;</div>
+                    <div
+                        class="px-4 py-2 bg-white/5 rounded-xl border border-white/10 text-xs font-mono text-brand-400">
+                        JS: before &lt;/body&gt;</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Opening/Closing Tags -->
+        <section id="basics" class="mb-32">
+            <div class="flex items-center gap-4 mb-10">
+                <div class="h-px flex-grow bg-slate-200"></div>
+                <h2 class="text-2xl font-outfit font-bold text-slate-900 px-4">01. 標籤結構與語法</h2>
+                <div class="h-px flex-grow bg-slate-200"></div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div class="space-y-6">
+                    <h3 class="text-3xl font-bold text-slate-900">開標籤與閉標籤</h3>
+                    <p class="text-slate-600 leading-relaxed">
+                        在 HTML 中，大多數的標籤都是成對出現的。這就像是「括號」一樣，告訴瀏覽器這個元素的範圍從哪裡開始，到哪裡結束。
+                    </p>
+                    <ul class="space-y-4">
+                        <li class="flex gap-3">
+                            <div
+                                class="mt-1 w-6 h-6 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center flex-shrink-0">
+                                <i class="fa-solid fa-check text-xs"></i>
+                            </div>
+                            <div>
+                                <span class="font-bold text-slate-800">開標籤 (Opening Tag):</span>
+                                <code>&lt;tagname&gt;</code> - 標示內容的開始。
+                            </div>
+                        </li>
+                        <li class="flex gap-3">
+                            <div
+                                class="mt-1 w-6 h-6 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center flex-shrink-0">
+                                <i class="fa-solid fa-check text-xs"></i>
+                            </div>
+                            <div>
+                                <span class="font-bold text-slate-800">閉標籤 (Closing Tag):</span>
+                                <code>&lt;/tagname&gt;</code> - 標示內容的結束（多了一個斜線）。
+                            </div>
+                        </li>
+                        <li class="flex gap-3 text-brand-600">
+                            <div
+                                class="mt-1 w-6 h-6 rounded-full bg-brand-50 text-brand-600 flex items-center justify-center flex-shrink-0">
+                                <i class="fa-solid fa-lightbulb text-xs"></i>
+                            </div>
+                            <div class="italic">
+                                有些標籤不需要閉標籤，稱為「自閉合標籤」，例如 <code>&lt;img&gt;</code> 或 <code>&lt;input&gt;</code>。
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="code-container shadow-2xl">
+                    <div class="flex items-center gap-2 mb-4 border-b border-slate-700 pb-2">
+                        <div class="w-3 h-3 bg-rose-500 rounded-full"></div>
+                        <div class="w-3 h-3 bg-amber-500 rounded-full"></div>
+                        <div class="w-3 h-3 bg-emerald-500 rounded-full"></div>
+                        <span class="text-xs text-slate-400 ml-2 font-sans">syntax_example.html</span>
+                    </div>
+                    <div class="space-y-1 text-base">
+                        <div><span class="text-brand-400">&lt;p&gt;</span>這是一段開頭標籤。</div>
+                        <div class="pl-4 text-slate-400 font-sans tracking-wide">內容放在中間...</div>
+                        <div><span class="text-brand-400">&lt;/p&gt;</span>這是結束標籤。</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Common Tags -->
+        <div id="tags" class="mb-32">
+            <div class="flex items-center gap-4 mb-10">
+                <div class="h-px flex-grow bg-slate-200"></div>
+                <h2 class="text-2xl font-outfit font-bold text-slate-900 px-4">02. 常用排版標籤</h2>
+                <div class="h-px flex-grow bg-slate-200"></div>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+                <!-- H1-H6 & P -->
+                <div class="section-card p-8 border-t-4 border-t-amber-500">
+                    <div
+                        class="w-12 h-12 bg-amber-100 text-amber-600 rounded-2xl flex items-center justify-center text-2xl mb-6">
+                        <i class="fa-solid fa-heading"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">標題與段落 (H & P)</h3>
+                    <p class="text-slate-500 text-sm mb-6 leading-relaxed">
+                        用於定義網頁的結構與內容。從 H1 (最重要) 到 H6 (最次要)；而 <code>&lt;p&gt;</code> 則代表段落文字。
+                    </p>
+                    <div class="demo-box">
+                        <h1 class="text-2xl font-black mb-2">H1 最重要標題</h1>
+                        <p class="text-sm text-slate-600 mb-4 leading-relaxed">這是一個被 P 標籤包覆的段落，通常會自動換行並與其他元素保持間距。</p>
+                        <h2 class="text-lg font-bold mb-1">H2 次級標題</h2>
+                        <h6 class="text-[10px] uppercase font-bold text-slate-400 tracking-widest">H6 最小標題樣式</h6>
+                    </div>
+                    <button
+                        class="view-code-btn mt-4 text-xs font-bold text-brand-600 flex items-center gap-1 hover:underline">
+                        <i class="fa-solid fa-code"></i> 檢視程式碼
+                    </button>
+                    <div class="hidden-code mt-4 hidden">
+                        <pre class="code-container text-[10px]"><code>&lt;h1&gt;主標題&lt;/h1&gt;
+&lt;p&gt;內容段落文字...&lt;/p&gt;
+&lt;h2&gt;次級標題&lt;/h2&gt;
+&lt;h6&gt;最小標題&lt;/h6&gt;</code></pre>
+                    </div>
+                </div>
+
+                <!-- P, Span -->
+                <div class="section-card p-8 border-t-4 border-t-emerald-500">
+                    <div
+                        class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center text-2xl mb-6">
+                        <i class="fa-solid fa-paragraph"></i>
+                    </div>
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="text-xl font-bold">行內元素 (Span)</h3>
+                        <span
+                            class="px-2 py-1 bg-emerald-50 text-emerald-600 text-[10px] font-bold rounded">INLINE</span>
+                    </div>
+                    <p class="text-slate-500 text-sm mb-6 leading-relaxed">
+                        <code>&lt;span&gt;</code> 是行內元素。它的寬度<strong>僅取決於內容</strong>，不會自動換行，適合用來修飾段落中的局部文字。
+                    </p>
+                    <div class="demo-box">
+                        <p class="text-slate-800">這是一段 <span
+                                class="bg-yellow-200 font-bold px-1 ring-2 ring-yellow-400 rounded">重點文字</span> 會留在原行。
+                        </p>
+                    </div>
+                    <button
+                        class="view-code-btn mt-4 text-xs font-bold text-brand-600 flex items-center gap-1 hover:underline">
+                        <i class="fa-solid fa-code"></i> 檢視程式碼
+                    </button>
+                    <div class="hidden-code mt-4 hidden">
+                        <pre class="code-container text-[10px]"><code>&lt;p&gt;
+  這是 &lt;span class="highlight"&gt;行內元素&lt;/span&gt; 範例。
+&lt;/p&gt;</code></pre>
+                    </div>
+                </div>
+
+                <!-- Div -->
+                <div class="section-card p-8 border-t-4 border-t-brand-500">
+                    <div
+                        class="w-12 h-12 bg-brand-100 text-brand-600 rounded-2xl flex items-center justify-center text-2xl mb-6">
+                        <i class="fa-solid fa-box"></i>
+                    </div>
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="text-xl font-bold">區塊元素 (Div)</h3>
+                        <span class="px-2 py-1 bg-brand-50 text-brand-600 text-[10px] font-bold rounded">BLOCK</span>
+                    </div>
+                    <p class="text-slate-500 text-sm mb-6 leading-relaxed">
+                        <code>&lt;div&gt;</code> 是區塊元素。它預設會<strong>橫跨整行寬度 (100%)</strong>，即使內容很少也會換行，適合做為佈局容器。
+                    </p>
+                    <div class="demo-box space-y-2">
+                        <div class="bg-brand-500 p-2 rounded text-white text-xs font-bold text-center">Div A (佔據全寬)
+                        </div>
+                        <div class="bg-brand-600 p-2 rounded text-white text-xs font-bold text-center">Div B (自動換行)
+                        </div>
+                    </div>
+                    <button
+                        class="view-code-btn mt-4 text-xs font-bold text-brand-600 flex items-center gap-1 hover:underline">
+                        <i class="fa-solid fa-code"></i> 檢視程式碼
+                    </button>
+                    <div class="hidden-code mt-4 hidden">
+                        <pre class="code-container text-[10px]"><code>&lt;div class="block-element"&gt;
+  我是區塊元素，我會換行。
+&lt;/div&gt;</code></pre>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Form & Inputs -->
+        <div id="inputs" class="mb-32">
+            <div class="flex items-center gap-4 mb-10">
+                <div class="h-px flex-grow bg-slate-200"></div>
+                <h2 class="text-2xl font-outfit font-bold text-slate-900 px-4">03. 表單與輸入 (Form)</h2>
+                <div class="h-px flex-grow bg-slate-200"></div>
+            </div>
+
+            <div class="bg-white rounded-[2.5rem] border border-slate-200 p-8 md:p-12 shadow-xl">
+                <div class="grid lg:grid-cols-2 gap-16">
+                    <div>
+                        <h3 class="text-3xl font-bold mb-8 flex items-center gap-3">
+                            <span
+                                class="w-10 h-10 bg-slate-900 text-white rounded-full flex items-center justify-center text-sm font-black">?</span>
+                            如何與使用者互動？
+                        </h3>
+                        <p class="text-slate-600 mb-8 leading-relaxed">
+                            <code>&lt;form&gt;</code> 標籤負責宣告一個表單區塊。而內部的 <code>&lt;input&gt;</code> 則提供不同的輸入方式，透過
+                            <code>type</code> 屬性來決定它是哪種功能。
+                        </p>
+
+                        <div class="space-y-6">
+                            <div class="flex items-start gap-4">
+                                <div
+                                    class="w-12 h-12 flex-shrink-0 bg-slate-50 rounded-xl flex items-center justify-center border border-slate-100">
+                                    <i class="fa-solid fa-input-text text-xl"></i>
+                                </div>
+                                <div>
+                                    <div class="font-bold mb-1">Text / Password</div>
+                                    <div class="text-sm text-slate-500">最基礎的文字與密碼輸入框。</div>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-4">
+                                <div
+                                    class="w-12 h-12 flex-shrink-0 bg-slate-50 rounded-xl flex items-center justify-center border border-slate-100">
+                                    <i class="fa-solid fa-calendar text-xl"></i>
+                                </div>
+                                <div>
+                                    <div class="font-bold mb-1">Date / Number</div>
+                                    <div class="text-sm text-slate-500">受限格式的日期選取器或數字調整。</div>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-4">
+                                <div
+                                    class="w-12 h-12 flex-shrink-0 bg-slate-50 rounded-xl flex items-center justify-center border border-slate-100">
+                                    <i class="fa-solid fa-toggle-on text-xl"></i>
+                                </div>
+                                <div>
+                                    <div class="font-bold mb-1">Checkbox / Radio</div>
+                                    <div class="text-sm text-slate-500">多選一或複選的多功能開關。</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="bg-slate-50 p-8 rounded-3xl border border-slate-200">
+                            <h4
+                                class="font-black text-slate-900 mb-6 uppercase tracking-wider text-sm flex items-center gap-2">
+                                <i class="fa-regular fa-eye"></i> Live Interactive Demo
+                            </h4>
+                            <form class="space-y-4" onsubmit="return false">
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase ml-1">Normal
+                                        Text</label>
+                                    <input type="text" placeholder="輸入你的名字..."
+                                        class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-4 focus:ring-brand-500/10 focus:border-brand-500 outline-none transition-all">
+                                </div>
+                                <div>
+                                    <label
+                                        class="block text-xs font-bold text-slate-500 mb-1.5 uppercase ml-1">Password</label>
+                                    <input type="password" value="********"
+                                        class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-4 focus:ring-brand-500/10 focus:border-brand-500 outline-none transition-all">
+                                </div>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label
+                                            class="block text-xs font-bold text-slate-500 mb-1.5 uppercase ml-1">Date</label>
+                                        <input type="date"
+                                            class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-4 focus:ring-brand-500/10 focus:border-brand-500 outline-none transition-all">
+                                    </div>
+                                    <div>
+                                        <label
+                                            class="block text-xs font-bold text-slate-500 mb-1.5 uppercase ml-1">Number</label>
+                                        <input type="number" value="1"
+                                            class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-4 focus:ring-brand-500/10 focus:border-brand-500 outline-none transition-all">
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-6 pt-2">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox"
+                                            class="w-5 h-5 rounded border-slate-300 text-brand-600 focus:ring-brand-500">
+                                        <span class="text-sm font-medium text-slate-700">記住我</span>
+                                    </label>
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="radio" name="gender"
+                                            class="w-5 h-5 border-slate-300 text-brand-600 focus:ring-brand-500">
+                                        <span class="text-sm font-medium text-slate-700">男</span>
+                                    </label>
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="radio" name="gender"
+                                            class="w-5 h-5 border-slate-300 text-brand-600 focus:ring-brand-500">
+                                        <span class="text-sm font-medium text-slate-700">女</span>
+                                    </label>
+                                </div>
+                                <button type="submit"
+                                    class="w-full bg-slate-900 text-white py-4 rounded-xl font-bold hover:bg-slate-800 transition-colors shadow-lg active:scale-[0.98]">
+                                    提交表單
+                                </button>
+                            </form>
+                            <div class="mt-8">
+                                <button
+                                    class="view-code-btn text-xs font-bold text-brand-600 flex items-center gap-1 hover:underline">
+                                    <i class="fa-solid fa-code"></i> Show Core HTML
+                                </button>
+                                <div class="hidden-code mt-4 hidden">
+                                    <pre class="code-container text-[10px]"><code>&lt;form&gt;
+  &lt;input type="text"&gt;
+  &lt;input type="password"&gt;
+  &lt;input type="date"&gt;
+  &lt;input type="checkbox"&gt;
+  &lt;button&gt;Submit&lt;/button&gt;
+&lt;/form&gt;</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Multimedia -->
+        <div id="media" class="mb-32">
+            <div class="flex items-center gap-4 mb-10">
+                <div class="h-px flex-grow bg-slate-200"></div>
+                <h2 class="text-2xl font-outfit font-bold text-slate-900 px-4">04. 多媒體呈現 (Multimedia)</h2>
+                <div class="h-px flex-grow bg-slate-200"></div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- Picture -->
+                <div class="section-card p-8 flex flex-col">
+                    <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-image text-brand-500"></i> Picture / Image
+                    </h3>
+                    <p class="text-slate-500 text-sm mb-6 flex-grow">
+                        不僅可以用 <code>&lt;img&gt;</code>，還能用 <code>&lt;picture&gt;</code> 根據螢幕大小提供不同尺寸的圖片，優化效能。
+                    </p>
+                    <div
+                        class="relative group overflow-hidden rounded-2xl aspect-video bg-slate-100 flex items-center justify-center border border-slate-200">
+                        <picture>
+                            <source media="(min-width: 650px)"
+                                srcset="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=800&auto=format&fit=crop">
+                            <img src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=400&auto=format&fit=crop"
+                                class="w-full h-full object-cover transition-transform group-hover:scale-110 duration-700"
+                                alt="Tech">
+                        </picture>
+                        <div
+                            class="absolute inset-0 bg-brand-900/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white font-bold text-xs p-4 text-center">
+                            &lt;picture&gt;&lt;source&gt;&lt;img&gt;&lt;/picture&gt;
+                        </div>
+                    </div>
+                    <button
+                        class="view-code-btn mt-4 text-xs font-bold text-brand-600 flex items-center gap-1 hover:underline">
+                        <i class="fa-solid fa-code"></i> 檢視程式碼
+                    </button>
+                    <div class="hidden-code mt-4 hidden">
+                        <pre class="code-container text-[10px]"><code>&lt;picture&gt;
+  &lt;source media="(min-width: 650px)" srcset="..."&gt;
+  &lt;img src="..." alt="響應式圖片"&gt;
+&lt;/picture&gt;</code></pre>
+                    </div>
+                </div>
+
+                <!-- Audio/Video -->
+                <div class="section-card p-8 flex flex-col">
+                    <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-play-circle text-vibrant-pink"></i> Audio / Video
+                    </h3>
+                    <p class="text-slate-500 text-sm mb-6 flex-grow">
+                        現代瀏覽器支援原生的多媒體播放器，只需要指定路徑與 <code>controls</code> 屬性即可。
+                    </p>
+                    <div class="space-y-4">
+                        <div class="bg-indigo-50 p-4 rounded-xl border border-indigo-100">
+                            <audio controls class="w-full">
+                                <source src="https://www.w3schools.com/html/horse.ogg" type="audio/ogg">
+                                Your browser does not support audio.
+                            </audio>
+                        </div>
+                        <div class="relative rounded-xl overflow-hidden aspect-video bg-slate-900">
+                            <video class="w-full h-full" controls autoplay
+                                poster="https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=800">
+                                <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+                                Your browser does not support video.
+                            </video>
+                        </div>
+                    </div>
+                    <button
+                        class="view-code-btn mt-4 text-xs font-bold text-brand-600 flex items-center gap-1 hover:underline">
+                        <i class="fa-solid fa-code"></i> 檢視程式碼
+                    </button>
+                    <div class="hidden-code mt-4 hidden">
+                        <pre class="code-container text-[10px]"><code>&lt;!-- 音訊 --&gt;
+&lt;audio controls&gt;
+  &lt;source src="audio.mp3" type="audio/mpeg"&gt;
+&lt;/audio&gt;
+
+&lt;!-- 影片 --&gt;
+&lt;video controls poster="cover.jpg"&gt;
+  &lt;source src="video.mp4" type="video/mp4"&gt;
+&lt;/video&gt;</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Practical Demo -->
+        <div id="practical" class="mb-32">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-outfit font-black text-slate-900 mb-4">實戰演練：建立第一個個人網頁</h2>
+                <p class="text-slate-600 max-w-xl mx-auto">
+                    結合剛剛學到的標籤，讓我們來規劃一個基礎的個人介紹頁面結構。
+                </p>
+            </div>
+
+            <div id="aboutme" class="bg-slate-900 rounded-[3rem] p-4 md:p-8 overflow-hidden shadow-2xl relative">
+                <!-- Glowing Decoration -->
+                <div class="absolute -top-20 -right-20 w-80 h-80 bg-brand-500/20 rounded-full blur-[100px]"></div>
+                <div class="absolute top-[20%] -left-20 w-60 h-60 bg-vibrant-purple/20 rounded-full blur-[80px]"></div>
+
+                <div class="relative bg-white rounded-3xl overflow-hidden shadow-inner flex flex-col min-h-[700px]">
+                    <!-- Nav Dummy -->
+                    <div
+                        class="bg-white/80 backdrop-blur-md px-8 py-5 border-b border-slate-100 flex justify-between items-center sticky top-0 z-10">
+                        <div class="font-outfit font-black text-brand-600 text-xl tracking-tight">ALEX.W</div>
+                        <div
+                            class="hidden sm:flex gap-8 text-[11px] font-black text-slate-400 uppercase tracking-[0.2em]">
+                            <span class="text-slate-900">Home</span>
+                            <span class="hover:text-brand-500 cursor-pointer transition-colors">Portfolio</span>
+                            <span class="hover:text-brand-500 cursor-pointer transition-colors">Contact</span>
+                        </div>
+                    </div>
+
+                    <!-- Page Content Wrapper (Hero Section) -->
+                    <div class="flex-grow flex flex-col items-center justify-center p-8 md:p-16 text-center">
+                        <div class="relative mb-10">
+                            <div
+                                class="w-40 h-40 rounded-[2.5rem] rotate-6 bg-brand-100 absolute -z-10 -top-2 -left-2 animate-pulse">
+                            </div>
+                            <div
+                                class="w-40 h-40 rounded-[2rem] overflow-hidden shadow-2xl border-4 border-white ring-1 ring-slate-100">
+                                <img src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?q=80&w=400&auto=format&fit=crop"
+                                    alt="Avatar" class="w-full h-full object-cover">
+                            </div>
+                            <!-- Badge -->
+                            <div
+                                class="absolute -bottom-4 -right-4 bg-emerald-500 text-white text-[10px] font-black px-3 py-1.5 rounded-full shadow-lg flex items-center gap-1.5 border-2 border-white">
+                                <span class="w-1.5 h-1.5 bg-white rounded-full animate-ping"></span> ONLINE
+                            </div>
+                        </div>
+
+                        <h3 class="text-4xl md:text-6xl font-outfit font-black text-slate-900 mb-6 tracking-tighter">
+                            Modern Developer <br>
+                            <span
+                                class="bg-gradient-to-r from-brand-600 to-indigo-600 bg-clip-text text-transparent">Athlete
+                                Spirit.</span>
+                        </h3>
+
+                        <p class="text-slate-500 max-w-xl mx-auto leading-relaxed mb-10 text-lg font-light">
+                            曾是游泳校隊，現在則是網頁開發的主力。將<span>運動員的毅力</span>帶入代碼世界。熱衷於將複雜的邏輯轉化為極簡的視覺體驗。
+                        </p>
+
+                        <div class="flex flex-wrap justify-center gap-3">
+                            <span
+                                class="px-5 py-2.5 bg-slate-50 border border-slate-100 rounded-2xl text-xs font-bold text-slate-600 hover:bg-white hover:shadow-md transition-all cursor-default">#HTML5</span>
+                            <span
+                                class="px-5 py-2.5 bg-slate-50 border border-slate-100 rounded-2xl text-xs font-bold text-slate-600 hover:bg-white hover:shadow-md transition-all cursor-default">#JavaCore</span>
+                            <span
+                                class="px-5 py-2.5 bg-slate-50 border border-slate-100 rounded-2xl text-xs font-bold text-slate-600 hover:bg-white hover:shadow-md transition-all cursor-default">#CSSDesign</span>
+                            <span
+                                class="px-5 py-2.5 bg-slate-50 border border-slate-100 rounded-2xl text-xs font-bold text-slate-600 hover:bg-white hover:shadow-md transition-all cursor-default">#Swimming</span>
+                        </div>
+                    </div>
+
+                    <!-- Footer Dummy -->
+                    <div class="bg-white px-8 py-10 border-t border-slate-50 text-center">
+                        <div class="flex justify-center gap-8 mb-6">
+                            <div
+                                class="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 hover:bg-brand-50 hover:text-brand-600 transition-all cursor-pointer">
+                                <i class="fa-brands fa-github"></i>
+                            </div>
+                            <div
+                                class="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 hover:bg-brand-50 hover:text-brand-600 transition-all cursor-pointer">
+                                <i class="fa-brands fa-linkedin-in"></i>
+                            </div>
+                            <div
+                                class="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 hover:bg-brand-50 hover:text-brand-600 transition-all cursor-pointer">
+                                <i class="fa-brands fa-instagram"></i>
+                            </div>
+                        </div>
+                        <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">&copy; 2026 Alex Wang
+                            Portfolio. All Rights Reserved.</p>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="mt-12 text-center">
+                <p class="text-slate-500 mb-4 italic">點擊下方按鈕獲取此範例的 HTML 模板</p>
+                <button id="show-template-btn"
+                    class="px-8 py-3 bg-brand-600 text-white rounded-2xl font-bold shadow-lg hover:bg-brand-700 transition-all flex items-center gap-2 mx-auto">
+                    <i class="fa-solid fa-file-code"></i> 獲取模板代碼
+                </button>
+            </div>
+        </div>
+
+        <!-- CSS Basics Section -->
+        <section id="css" class="mb-32">
+            <div class="flex items-center gap-4 mb-10">
+                <div class="h-px flex-grow bg-slate-200"></div>
+                <h2 class="text-5xl font-outfit font-black text-slate-900 px-4">CSS 核心基礎</h2>
+                <div class="h-px flex-grow bg-slate-200"></div>
+            </div>
+
+            <p class="text-center text-slate-600 max-w-2xl mx-auto mb-16">
+                如果說 HTML 是網頁的骨架，那麼 CSS 就是它的衣服與靈魂。讓我們來看看如何運用 CSS 為網頁穿上層次感。
+            </p>
+
+            <!-- CSS Syntax & Selectors -->
+            <div class="grid lg:grid-cols-2 gap-12 mb-20 items-stretch">
+                <!-- Selector Guide -->
+                <div class="bg-white rounded-[2rem] p-10 border border-slate-100 shadow-xl overflow-hidden relative">
+                    <div class="absolute -top-10 -right-10 w-40 h-40 bg-brand-50 rounded-full blur-3xl"></div>
+                    <h3 class="text-2xl font-bold text-slate-900 mb-8 flex items-center gap-3">
+                        <span
+                            class="w-8 h-8 bg-brand-600 text-white rounded-lg flex items-center justify-center text-sm font-black">1</span>
+                        選擇器 (Selectors)
+                    </h3>
+                    <div class="space-y-4">
+                        <!-- Element Selector -->
+                        <div
+                            class="p-4 bg-slate-50 rounded-2xl border border-slate-100 group transition-all hover:bg-emerald-50 hover:border-emerald-100">
+                            <div class="flex justify-between items-start mb-2">
+                                <span class="text-emerald-600 font-bold font-mono">button / p / div</span>
+                                <span
+                                    class="px-2 py-0.5 bg-emerald-100 text-emerald-700 text-[10px] font-bold rounded">ELEMENT</span>
+                            </div>
+                            <p class="text-[11px] text-slate-500 leading-relaxed uppercase tracking-tight">
+                                直接用標籤名，會套用到<strong>全網頁</strong>該類型的元素。</p>
+                        </div>
+                        <!-- Class Selector -->
+                        <div
+                            class="p-4 bg-slate-50 rounded-2xl border border-slate-100 group transition-all hover:bg-brand-50 hover:border-brand-100">
+                            <div class="flex justify-between items-start mb-2">
+                                <span class="text-brand-600 font-bold font-mono">.className</span>
+                                <span
+                                    class="px-2 py-0.5 bg-brand-100 text-brand-700 text-[10px] font-bold rounded">CLASS</span>
+                            </div>
+                            <p class="text-[11px] text-slate-500 leading-relaxed uppercase tracking-tight">
+                                用點（.）來選取所有具有該類別名的元素，適合重複使用。</p>
+                        </div>
+                        <!-- ID Selector -->
+                        <div
+                            class="p-4 bg-slate-50 rounded-2xl border border-slate-100 group transition-all hover:bg-rose-50 hover:border-rose-100">
+                            <div class="flex justify-between items-start mb-2">
+                                <span class="text-rose-600 font-bold font-mono">#elementID</span>
+                                <span
+                                    class="px-2 py-0.5 bg-rose-100 text-rose-700 text-[10px] font-bold rounded">ID</span>
+                            </div>
+                            <p class="text-[11px] text-slate-500 leading-relaxed uppercase tracking-tight">用井字號（#）選取唯一的
+                                ID，每個 ID 在同一頁面僅限出現一次。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Syntax Guide -->
+                <div class="bg-slate-900 rounded-[2rem] p-10 shadow-2xl overflow-hidden relative">
+                    <h3 class="text-2xl font-bold text-white mb-8 flex items-center gap-3">
+                        <span
+                            class="w-8 h-8 bg-brand-500 text-white rounded-lg flex items-center justify-center text-sm font-black">2</span>
+                        語法結構 (Syntax)
+                    </h3>
+                    <div class="space-y-4 font-mono text-sm">
+                        <div class="text-brand-300">.title-text <span class="text-white">{</span></div>
+                        <div class="pl-8 text-slate-300">
+                            <span class="text-vibrant-purple">color</span>: <span
+                                class="text-emerald-400">#0ea5e9</span>;
+                            <span class="text-slate-500 ml-2 italic">// 字體顏色</span>
+                        </div>
+                        <div class="pl-8 text-slate-300">
+                            <span class="text-vibrant-purple">background-color</span>: <span
+                                class="text-emerald-400">white</span>;
+                            <span class="text-slate-500 ml-2 italic">// 背景顏色</span>
+                        </div>
+                        <div class="pl-8 text-slate-300">
+                            <span class="text-vibrant-purple">display</span>: <span
+                                class="text-emerald-400">flex</span>;
+                            <span class="text-slate-500 ml-2 italic">// 顯示模式</span>
+                        </div>
+                        <div class="pl-8 text-slate-300">
+                            <span class="text-vibrant-purple">transition</span>: <span class="text-emerald-400">0.3s
+                                ease</span>;
+                            <span class="text-slate-500 ml-2 italic">// 動畫過渡</span>
+                        </div>
+                        <div class="text-white">}</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Layout, Typography & Box Model -->
+            <div class="grid lg:grid-cols-3 gap-8 mb-20">
+                <!-- Flexbox Layout -->
+                <div class="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-lg">
+                    <h4 class="text-xl font-black text-slate-900 mb-6 flex items-center gap-2">
+                        <i class="fa-solid fa-layer-group text-indigo-500"></i> Flexbox 佈局彈性
+                    </h4>
+                    <div class="grid md:grid-cols-2 gap-8 text-sm">
+                        <div class="space-y-4">
+                            <div class="font-bold text-slate-700 border-l-4 border-indigo-500 pl-3">Flex 核心屬性</div>
+                            <ul class="space-y-2 text-slate-500 text-[11px] leading-relaxed">
+                                <li><code>display: flex;</code> <span class="text-slate-400">- 啟動彈性盒子。</span></li>
+                                <li><code>justify-content: center;</code> <span class="text-slate-400">-
+                                        水平居中。</span></li>
+                                <li><code>align-items: center;</code> <span class="text-slate-400">- 垂直居中。</span>
+                                </li>
+                                <li><code>gap: 1rem;</code> <span class="text-slate-400">- 元素間距。</span></li>
+                            </ul>
+                            <div class="mt-4 p-3 bg-indigo-50 rounded-xl border border-indigo-100">
+                                <p class="text-[10px] font-bold text-indigo-700 mb-2">12 欄位系統規則 (Grid System)</p>
+                                <div class="flex gap-1 h-4">
+                                    <div class="flex-grow bg-indigo-200 rounded-sm"></div>
+                                    <div class="flex-grow bg-indigo-200 rounded-sm"></div>
+                                    <div class="flex-grow bg-indigo-300 rounded-sm"></div>
+                                    <div class="flex-grow bg-indigo-400 rounded-sm"></div>
+                                    <div class="flex-grow bg-indigo-500 rounded-sm"></div>
+                                </div>
+                                <p class="text-[8px] text-slate-400 mt-2">如同 Bootstrap，Flex 常用於建構 12 欄位響應式網格。</p>
+                            </div>
+                        </div>
+                        <div class="space-y-4">
+                            <div class="font-bold text-slate-700 border-l-4 border-emerald-500 pl-3">視覺演示</div>
+                            <div
+                                class="demo-box flex flex-col gap-2 h-32 bg-slate-50/50 justify-center items-center group">
+                                <div class="flex gap-2 justify-center items-center w-full">
+                                    <div
+                                        class="w-10 h-10 bg-indigo-500 rounded-xl shadow-lg animate-pulse flex items-center justify-center text-white text-[8px] font-black">
+                                        BOX 1</div>
+                                    <div class="w-10 h-10 bg-indigo-400 rounded-xl shadow-lg animate-pulse flex items-center justify-center text-white text-[8px] font-black"
+                                        style="animation-delay: 0.2s">BOX 2</div>
+                                </div>
+                                <p class="text-[9px] text-slate-400 font-mono">justify-content: center</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Typography (Font) -->
+                <div class="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-lg">
+                    <h4 class="text-xl font-black text-slate-900 mb-6 flex items-center gap-2">
+                        <i class="fa-solid fa-font text-brand-500"></i> 文字美學 (Typography)
+                    </h4>
+                    <div class="space-y-6">
+                        <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                            <div class="text-[10px] text-brand-600 font-bold mb-2 uppercase">Font Family & Size
+                            </div>
+                            <div class="text-lg font-outfit font-black text-slate-900 leading-none">AaBb 123</div>
+                            <p class="text-[11px] text-slate-500 mt-2 italic font-mono">font-size: 1.5rem;</p>
+                        </div>
+                        <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                            <div class="text-[10px] text-emerald-600 font-bold mb-2 uppercase">Font Weight</div>
+                            <div class="space-y-1">
+                                <div class="font-thin text-xs text-slate-400">Light (300) - 輕盈感</div>
+                                <div class="font-medium text-xs text-slate-600">Medium (500) - 穩定感</div>
+                                <div class="font-black text-xs text-slate-900">Black (900) - 力量感</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Box Model (Padding & Margin) -->
+                <div class="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-lg">
+                    <h4 class="text-xl font-black text-slate-900 mb-6 flex items-center gap-2">
+                        <i class="fa-solid fa-expand-arrows-alt text-brand-500"></i> 盒模型 (Box Model)
+                    </h4>
+                    <div class="relative aspect-square max-w-[200px] mx-auto flex items-center justify-center">
+                        <!-- Margin Outer -->
+                        <div
+                            class="absolute inset-0 border-2 border-dashed border-rose-300 rounded-xl bg-rose-50/30 flex items-start justify-center p-1">
+                            <span class="text-[8px] font-bold text-rose-500 uppercase">Margin</span>
+                        </div>
+                        <!-- Border Inner -->
+                        <div
+                            class="absolute inset-4 border-2 border-slate-400 rounded-lg bg-white flex items-start justify-center p-1">
+                            <span class="text-[8px] font-bold text-slate-400 uppercase">Border</span>
+                        </div>
+                        <!-- Padding Innermost -->
+                        <div
+                            class="absolute inset-8 border-2 border-dashed border-emerald-300 rounded-md bg-emerald-50/50 flex items-center justify-center p-2 text-center leading-none">
+                            <span class="text-[8px] font-bold text-emerald-600 uppercase">Padding<br>+ CONTENT</span>
+                        </div>
+                    </div>
+                    <div class="mt-8 text-xs text-slate-500 space-y-2">
+                        <p><strong>Margin:</strong> 元素與他人的外間隔。</p>
+                        <p><strong>Padding:</strong> 內容與邊框的內間隔。</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CSS Units -->
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-20">
+                <!-- Pixels -->
+                <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-lg group">
+                    <div class="w-10 h-10 bg-slate-100 text-slate-600 rounded-xl flex items-center justify-center mb-4">
+                        <span class="font-black text-xs">PX</span>
+                    </div>
+                    <div class="font-bold text-slate-900 mb-2">像素 (Pixels)</div>
+                    <p class="text-[11px] text-slate-500 mb-4 tracking-tight">「絕對單位」。在螢幕上是固定的大小，最直觀但靈活性較低。</p>
+                    <div class="h-8 bg-slate-100 rounded-lg flex items-center px-3 border border-slate-200">
+                        <div class="h-2 bg-brand-500 rounded-full" style="width: 50px;"></div>
+                        <span class="ml-2 text-[8px] font-mono text-slate-400">width: 50px;</span>
+                    </div>
+                </div>
+
+                <!-- REM -->
+                <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-lg group">
+                    <div class="w-10 h-10 bg-brand-50 text-brand-600 rounded-xl flex items-center justify-center mb-4">
+                        <span class="font-black text-xs">REM</span>
+                    </div>
+                    <div class="font-bold text-slate-900 mb-2">相對根元素 (REM)</div>
+                    <p class="text-[11px] text-slate-500 mb-4 tracking-tight">「相對單位」。相對於 HTML 根字體大小（通常 1rem =
+                        16px）。適合無障礙縮放。</p>
+                    <div class="h-8 bg-brand-50 rounded-lg flex items-center px-3 border border-brand-100">
+                        <div class="h-2 bg-brand-600 rounded-full" style="width: 48px;"></div>
+                        <span class="ml-2 text-[8px] font-mono text-brand-400">width: 3rem;</span>
+                    </div>
+                </div>
+
+                <!-- Percentage -->
+                <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-lg group">
+                    <div
+                        class="w-10 h-10 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center mb-4">
+                        <span class="font-black text-xs">%</span>
+                    </div>
+                    <div class="font-bold text-slate-900 mb-2">百分比 (%)</div>
+                    <p class="text-[11px] text-slate-500 mb-4 tracking-tight">「流動單位」。相對於父元素的大小，是 RWD 響應式佈局的核心。</p>
+                    <div
+                        class="h-8 bg-emerald-50 rounded-lg flex items-center px-3 border border-emerald-100 overflow-hidden">
+                        <div class="h-2 bg-emerald-500 rounded-full" style="width: 75%;"></div>
+                        <span class="ml-2 text-[8px] font-mono text-emerald-400">width: 75%;</span>
+                    </div>
+                </div>
+
+                <!-- EM -->
+                <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-lg group">
+                    <div
+                        class="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center mb-4">
+                        <span class="font-black text-xs">EM</span>
+                    </div>
+                    <div class="font-bold text-slate-900 mb-2">相對於父層 (EM)</div>
+                    <p class="text-[11px] text-slate-500 mb-4 tracking-tight">「階層單位」。相對於父元素的字體大小。適合用於元件內部的比例縮放。</p>
+                    <div class="h-8 bg-indigo-50 rounded-lg flex items-center px-3 border border-indigo-100">
+                        <div class="h-2 bg-indigo-400 rounded-full" style="width: 40px;"></div>
+                        <span class="ml-2 text-[8px] font-mono text-indigo-400">font-size: 1.2em;</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Interactivity & Position -->
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 mb-20">
+                <!-- Color Systems -->
+                <div
+                    class="bg-white p-6 rounded-3xl border border-slate-100 shadow-lg text-center group cursor-help transition-all hover:-translate-y-2">
+                    <div
+                        class="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center mx-auto mb-4">
+                        <i class="fa-solid fa-palette"></i>
+                    </div>
+                    <div class="font-bold text-slate-900 mb-1">顏色色彩 (Color)</div>
+                    <p class="text-[10px] text-slate-400 font-medium uppercase mb-4">支援多種定義方式</p>
+                    <div class="space-y-2 text-left">
+                        <div
+                            class="flex items-center justify-between px-2 py-1 bg-slate-50 rounded-lg border border-slate-100">
+                            <span class="text-[9px] font-mono text-slate-500">HEX: #0ea5e9</span>
+                            <div class="w-3 h-3 bg-[#0ea5e9] rounded-sm shadow-sm font-black"></div>
+                        </div>
+                        <div
+                            class="flex items-center justify-between px-2 py-1 bg-slate-50 rounded-lg border border-slate-100">
+                            <span class="text-[9px] font-mono text-slate-500">RGBA: (0,0,0,0.5)</span>
+                            <div class="w-3 h-3 bg-black/50 rounded-sm shadow-sm font-black"></div>
+                        </div>
+                        <div class="text-[9px] text-slate-400 mt-1 italic">A = Alpha (0-1 透明度)</div>
+                    </div>
+                </div>
+
+                <!-- Stacking Context -->
+                <div
+                    class="bg-white p-6 rounded-3xl border border-slate-100 shadow-lg text-center group cursor-help transition-all hover:-translate-y-2">
+                    <div
+                        class="w-10 h-10 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center mx-auto mb-4">
+                        <i class="fa-solid fa-layer-group"></i>
+                    </div>
+                    <div class="font-bold text-slate-900 mb-1">層次堆疊 (Stacking)</div>
+                    <p class="text-[10px] text-slate-400 font-medium uppercase mb-4">Z-Index 管理</p>
+                    <div class="relative h-12 flex justify-center items-center">
+                        <div
+                            class="absolute w-12 h-6 bg-slate-100 border border-slate-200 rounded-md rotate-[-10deg] shadow-sm flex items-center justify-center text-[8px] font-bold text-slate-300">
+                            Z: 1</div>
+                        <div
+                            class="absolute w-12 h-6 bg-emerald-200 border border-emerald-300 rounded-md shadow-md flex items-center justify-center text-[8px] font-bold text-emerald-700 translate-x-2 translate-y-2">
+                            Z: 99</div>
+                    </div>
+                    <p class="text-[9px] text-slate-500 mt-2 font-medium">像圖層一樣，數值愈大愈靠前。</p>
+                </div>
+
+                <!-- Pseudo State -->
+                <div
+                    class="bg-white p-6 rounded-3xl border border-slate-100 shadow-lg text-center group cursor-help transition-all hover:-translate-y-2 col-span-1">
+                    <div
+                        class="w-10 h-10 bg-rose-50 text-rose-600 rounded-xl flex items-center justify-center mx-auto mb-4">
+                        <i class="fa-solid fa-bolt"></i>
+                    </div>
+                    <div class="font-bold text-slate-900 mb-1">元件狀態 (State)</div>
+                    <p class="text-[10px] text-slate-400 font-medium uppercase mb-4">互動回饋 (:hover / :active)</p>
+                    <div
+                        class="text-left bg-slate-100 p-2 rounded-xl border border-slate-200 font-mono text-[8px] space-y-1 mb-3">
+                        <div class="text-rose-600 font-black">.btn:hover {</div>
+                        <div class="pl-3 text-slate-500"> transform: scale(1.1);</div>
+                        <div class="text-rose-600 font-black">}</div>
+                    </div>
+                    <button
+                        class="w-full py-2 bg-white border border-slate-200 rounded-xl text-[10px] font-bold text-slate-600 hover:bg-rose-500 hover:text-white hover:border-rose-500 hover:shadow-lg active:scale-90 transition-all">
+                        立刻體驗狀態變化
+                    </button>
+                </div>
+
+                <!-- Position -->
+                <div
+                    class="bg-white p-6 rounded-3xl border border-slate-100 shadow-lg text-center group transition-all hover:-translate-y-2 col-span-1">
+                    <div
+                        class="w-10 h-10 bg-vibrant-purple/10 text-vibrant-purple rounded-xl flex items-center justify-center mx-auto mb-4">
+                        <i class="fa-solid fa-crosshairs"></i>
+                    </div>
+                    <div class="font-bold text-slate-900 mb-1">定位系統 (Position)</div>
+                    <p class="text-[10px] text-slate-400 font-medium uppercase mb-4">Relative / Absolute / Fixed</p>
+                    <div class="space-y-2 text-left mb-4">
+                        <div class="p-2 bg-slate-50 rounded-lg border border-slate-100">
+                            <div class="text-[9px] font-bold text-slate-700">Fixed (固定)</div>
+                            <p class="text-[8px] text-slate-400">相對於「視窗」定位。捲動頁面時不會跟著移動 (如導覽列)。</p>
+                        </div>
+                        <div class="p-2 bg-slate-50 rounded-lg border border-slate-100">
+                            <div class="text-[9px] font-bold text-slate-700">Absolute (絕對)</div>
+                            <p class="text-[8px] text-slate-400">相對於最近的「定位父層」偏移。</p>
+                        </div>
+                    </div>
+                    <div class="relative h-12 bg-slate-100 rounded-xl overflow-hidden border border-slate-200">
+                        <div
+                            class="absolute top-1 right-1 px-1.5 py-0.5 bg-vibrant-purple text-white text-[7px] rounded font-black">
+                            FIXED</div>
+                    </div>
+                </div>
+
+                <!-- Media Query -->
+                <div
+                    class="bg-indigo-600 p-6 rounded-3xl border border-indigo-500 shadow-xl text-center group cursor-help transition-all hover:-translate-y-2 col-span-1">
+                    <div
+                        class="w-10 h-10 bg-white/10 text-white rounded-xl flex items-center justify-center mx-auto mb-4">
+                        <i class="fa-solid fa-mobile-screen-button"></i>
+                    </div>
+                    <div class="font-bold text-white mb-1">媒體查詢 (Media Query)</div>
+                    <p class="text-[10px] text-indigo-200 font-medium uppercase mb-4">響應式設計 (RWD)</p>
+                    <div
+                        class="text-left bg-slate-900/40 p-3 rounded-xl border border-white/10 font-mono text-[8px] space-y-1 mb-3">
+                        <div class="text-indigo-300 font-black">@media (max-width: 768px) {</div>
+                        <div class="pl-3 text-emerald-400"> .sidebar { display: none; }</div>
+                        <div class="text-indigo-300 font-black">}</div>
+                    </div>
+                    <div class="text-[9px] text-indigo-100 leading-normal text-left space-y-2">
+                        <p><strong>斷點 (Breakpoint):</strong> 網頁寬度的臨界點，讓頁面在特定尺寸下「改變長相」。</p>
+                        <p><strong>必要性:</strong> 確保你的網頁在手機、平板與桌機上都有一流的閱讀體驗。</p>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- jQuery Tools Section -->
+        <section id="jquery" class="mb-32">
+            <div class="flex items-center gap-4 mb-10">
+                <div class="h-px flex-grow bg-slate-200"></div>
+                <h2 class="text-2xl font-outfit font-bold text-slate-900 px-4">03. jQuery 互動魔法箱</h2>
+                <div class="h-px flex-grow bg-slate-200"></div>
+            </div>
+
+            <!-- Intro Card -->
+            <div
+                class="bg-gradient-to-br from-slate-900 to-indigo-950 rounded-[2.5rem] p-10 md:p-16 mb-20 relative overflow-hidden shadow-2xl">
+                <div class="absolute top-0 right-0 w-64 h-64 bg-brand-500/10 rounded-full blur-[100px]"></div>
+                <div class="relative z-10 grid lg:grid-cols-2 gap-16 items-center">
+                    <div>
+                        <div
+                            class="inline-flex items-center px-3 py-1 bg-brand-500/20 text-brand-400 rounded-full text-[10px] font-bold uppercase tracking-widest mb-6 border border-brand-500/30">
+                            Introduction to Library
+                        </div>
+                        <h3 class="text-4xl font-outfit font-black text-white mb-6">為什麼選擇 jQuery？</h3>
+                        <p class="text-slate-400 text-lg leading-relaxed mb-8">
+                            jQuery 是 JavaScript 的「快速開發工具箱」。它將複雜的瀏覽器操縱簡化為幾行直覺的代碼，讓開發者能以 **「Write Less, Do More」**
+                            的初衷打造生動的網頁特效。
+                        </p>
+                        <div class="flex flex-wrap gap-4">
+                            <div
+                                class="px-4 py-2 bg-white/5 rounded-xl border border-white/10 text-brand-400 font-mono text-xs">
+                                <i class="fa-solid fa-bolt mr-2"></i> 快速上手
+                            </div>
+                            <div
+                                class="px-4 py-2 bg-white/5 rounded-xl border border-white/10 text-emerald-400 font-mono text-xs">
+                                <i class="fa-solid fa-code-compare mr-2"></i> 跨瀏覽器相容
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-6">
+                        <!-- Comparison Card -->
+                        <div class="bg-white/5 backdrop-blur-md rounded-3xl border border-white/10 p-8 shadow-inner">
+                            <h4 class="text-lg font-bold text-white mb-6 flex items-center gap-2">
+                                <i class="fa-solid fa-code-branch text-brand-400"></i> Code 對決：簡約的極致
+                            </h4>
+                            <div class="space-y-6">
+                                <div>
+                                    <div class="text-[10px] text-slate-500 font-bold mb-2 uppercase">Native JS (傳統做法)
+                                    </div>
+                                    <pre
+                                        class="text-[11px] font-mono text-rose-300 leading-relaxed bg-black/30 p-4 rounded-xl">document.getElementById("btn")<br>  .addEventListener("click", function() {<br>    this.style.display = "none";<br>  });</pre>
+                                </div>
+                                <div class="relative py-2">
+                                    <div class="absolute inset-0 flex items-center">
+                                        <div class="w-full border-t border-white/5"></div>
+                                    </div>
+                                    <div class="relative flex justify-center"><span
+                                            class="bg-indigo-600 text-white px-3 py-1 rounded-full text-[10px] font-black italic">VS</span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="text-[10px] text-brand-400 font-bold mb-2 uppercase">jQuery (魔法寫法)</div>
+                                    <pre
+                                        class="text-[11px] font-mono text-emerald-300 leading-relaxed bg-brand-500/10 p-4 rounded-xl border border-brand-500/20">$("#btn").click(function() {<br>  $(this).hide();<br>});</pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Features Grid -->
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-20">
+                <!-- Selection -->
+                <div class="section-card p-10 group bg-white hover:bg-brand-600 transition-all duration-500">
+                    <div
+                        class="w-14 h-14 bg-brand-50 text-brand-600 rounded-2xl flex items-center justify-center text-2xl mb-6 shadow-sm group-hover:bg-white/20 group-hover:text-white transition-colors">
+                        <i class="fa-solid fa-mouse-pointer"></i>
+                    </div>
+                    <h4 class="text-xl font-black text-slate-900 mb-4 group-hover:text-white">精準選取 (Sizzle)</h4>
+                    <p class="text-slate-500 text-sm leading-relaxed group-hover:text-brand-100">
+                        使用 <code>$()</code> 符號配合 CSS 選取器，就能瞬間控制網頁上的任何元素，不再需要冗長的 JS 語法。
+                    </p>
+                </div>
+
+                <!-- Events -->
+                <div class="section-card p-10 group bg-white hover:bg-emerald-600 transition-all duration-500">
+                    <div
+                        class="w-14 h-14 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center text-2xl mb-6 shadow-sm group-hover:bg-white/20 group-hover:text-white transition-colors">
+                        <i class="fa-solid fa-bolt"></i>
+                    </div>
+                    <h4 class="text-xl font-black text-slate-900 mb-4 group-hover:text-white">事件監聽 (.on)</h4>
+                    <p class="text-slate-500 text-sm leading-relaxed group-hover:text-emerald-100">
+                        點擊、滾動、輸入——所有使用者互動都能透過 <code>.on()</code> 輕鬆捕捉並觸發後續反應。
+                    </p>
+                </div>
+
+                <!-- Effects -->
+                <div class="section-card p-10 group bg-white hover:bg-vibrant-purple transition-all duration-500">
+                    <div
+                        class="w-14 h-14 bg-purple-50 text-vibrant-purple rounded-2xl flex items-center justify-center text-2xl mb-6 shadow-sm group-hover:bg-white/20 group-hover:text-white transition-colors">
+                        <i class="fa-solid fa-wand-sparkles"></i>
+                    </div>
+                    <h4 class="text-xl font-black text-slate-900 mb-4 group-hover:text-white">內建特效 (.fadeOut)</h4>
+                    <p class="text-slate-500 text-sm leading-relaxed group-hover:text-purple-100">
+                        想要淡入、滑動或切換？內建的動畫方法讓你只需一行代碼就能完成專業級的視覺回饋。
+                    </p>
+                </div>
+
+                <!-- CDN Concept -->
+                <div
+                    class="section-card p-1 relative overflow-hidden shadow-xl hover:scale-[1.03] transition-transform duration-500">
+                    <div class="bg-indigo-600 h-full rounded-[1.4rem] p-10 text-white relative">
+                        <div
+                            class="w-14 h-14 bg-white/10 rounded-2xl flex items-center justify-center text-2xl mb-6 shadow-sm">
+                            <i class="fa-solid fa-cloud"></i>
+                        </div>
+                        <h4 class="text-xl font-black mb-4">CDN 核心概念</h4>
+                        <p class="text-indigo-100/70 text-sm leading-relaxed mb-6">
+                            無需下載檔案，直接透過「內容傳遞網路」引用。它能讓你從最近的伺服器抓取代碼，優化載入速度。
+                        </p>
+                        <div
+                            class="bg-black/20 p-4 rounded-xl border border-white/5 font-mono text-[9px] overflow-x-auto">
+                            &lt;script src="https://...jquery.min.js"&gt;&lt;/script&gt;
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Transition to Modern Frameworks Note -->
+            <div class="p-10 bg-slate-50 rounded-[2.5rem] border border-slate-200">
+                <div class="flex flex-col md:flex-row items-center gap-8">
+                    <div class="lg:w-1/3 text-center md:text-left">
+                        <h4 class="text-2xl font-black text-slate-800 mb-2">踏向未來的墊腳石</h4>
+                        <p class="text-slate-500 text-sm italic">"Learning the ladder, reaching the stars."</p>
+                    </div>
+                    <div class="lg:w-2/3">
+                        <p class="text-slate-600 leading-relaxed text-sm">
+                            雖然現在主流是 Vue 或 React 等框架，但 jQuery 建立的 **「操作 DOM」** 與 **「處理事件」**
+                            的思維依然是前端不可或缺的底功。學會了它，你將能更快理解現代框架在底層到底幫你解決了什麼。
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Modal for Template -->
+    <div id="code-modal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"></div>
+        <div
+            class="bg-white w-full max-w-4xl rounded-3xl shadow-2xl relative z-10 overflow-hidden flex flex-col max-h-[90vh]">
+            <div class="p-6 border-b border-slate-100 flex justify-between items-center">
+                <h4 class="text-xl font-bold text-slate-900">About Me 實戰模板</h4>
+                <button id="close-modal" class="p-2 hover:bg-slate-100 rounded-lg text-slate-400">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+            <div class="p-6 overflow-y-auto flex-grow bg-slate-900">
+                <pre class="text-slate-300 font-mono text-sm"><code>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;My Profile&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;!-- Navbar --&gt;
+    &lt;nav&gt;
+        &lt;div&gt;Logo&lt;/div&gt;
+        &lt;ul&gt;
+            &lt;li&gt;Home&lt;/li&gt;
+            &lt;li&gt;About&lt;/li&gt;
+        &lt;/ul&gt;
+    &lt;/nav&gt;
+
+    &lt;!-- Hero Section (Main Content) --&gt;
+    &lt;main&gt;
+        &lt;div&gt;
+            &lt;img src="avatar.jpg" alt="Avatar"&gt;
+            &lt;h1&gt;Hi, I'm Alex&lt;/h1&gt;
+            &lt;p&gt;I am a developer.&lt;/p&gt;
+        &lt;/div&gt;
+    &lt;/main&gt;
+
+    &lt;!-- Footer --&gt;
+    &lt;footer&gt;
+        &lt;p&gt;&copy; 2024 Alex Wang&lt;/p&gt;
+    &lt;/footer&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+            </div>
+            <div class="p-4 bg-slate-50 border-t border-slate-100 flex justify-end">
+                <button
+                    class="px-6 py-2 bg-brand-600 text-white rounded-xl font-bold text-sm shadow cursor-pointer hover:bg-brand-700"
+                    onclick="alert('代碼已複製！(模擬)')">
+                    複製代碼
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 pt-20 pb-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-8 mb-16">
+                <div class="text-center md:text-left">
+                    <div class="text-2xl font-outfit font-black text-slate-900 mb-2">前端基礎核心教材</div>
+                    <p class="text-slate-500 text-sm">深入研究。從零開始。打造未來。</p>
+                </div>
+                <div class="flex gap-8">
+                    <a href="#" class="text-slate-400 hover:text-brand-500 transition-colors"><i
+                            class="fa-brands fa-facebook-f text-xl"></i></a>
+                    <a href="#" class="text-slate-400 hover:text-brand-500 transition-colors"><i
+                            class="fa-brands fa-instagram text-xl"></i></a>
+                    <a href="#" class="text-slate-400 hover:text-brand-500 transition-colors"><i
+                            class="fa-brands fa-youtube text-xl"></i></a>
+                </div>
+            </div>
+            <div
+                class="flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                <div>&copy; 2026 前端深入研究課程室. All Rights Reserved.</div>
+                <div class="flex gap-6">
+                    <a href="#" class="hover:text-slate-600">Privacy Policy</a>
+                    <a href="#" class="hover:text-slate-600">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        $(document).ready(function () {
+            // Mobile menu toggle
+            $('#mobile-menu-btn').click(function () {
+                $('#mobile-menu').toggleClass('hidden');
+            });
+
+            // Toggle Code Visibility
+            $('.view-code-btn').click(function () {
+                const codeDiv = $(this).next('.hidden-code');
+                codeDiv.slideToggle();
+                const btnText = $(this).contents().filter(function () {
+                    return this.nodeType === 3;
+                }).text().trim();
+
+                if (btnText.includes('檢視') || btnText.includes('Show')) {
+                    $(this).html('<i class="fa-solid fa-eye-slash"></i> 隱藏程式碼');
+                } else {
+                    $(this).html('<i class="fa-solid fa-code"></i> 檢視程式碼');
+                }
+            });
+
+            // Modal Logic
+            $('#show-template-btn').click(function () {
+                $('#code-modal').removeClass('hidden').addClass('flex');
+                $('body').addClass('overflow-hidden');
+            });
+
+            $('#close-modal, .absolute.inset-0.bg-slate-900\\/60').click(function () {
+                $('#code-modal').addClass('hidden').removeClass('flex');
+                $('body').removeClass('overflow-hidden');
+            });
+
+            // Smooth Scroll (already handled by scroll-smooth class, but added for finer control if needed)
+            $('nav a').click(function () {
+                $('#mobile-menu').addClass('hidden');
+            });
+
+            // Animation on scroll observer
+            const observerOptions = {
+                threshold: 0.1
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        $(entry.target).addClass('opacity-100 translate-y-0');
+                        $(entry.target).removeClass('opacity-0 translate-y-10');
+                    }
+                });
+            }, observerOptions);
+
+            $('.section-card, section, #aboutme').each(function () {
+                $(this).addClass('transition-all duration-1000 opacity-0 translate-y-10');
+                observer.observe(this);
+            });
+        });
+    </script>
+</body>
+
+</html>

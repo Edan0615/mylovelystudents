@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>蘇品樺：第四次上課課本 - JavaScript 與 jQuery 互動邏輯</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- jQuery CDN -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <!-- GSAP for Premium Animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&family=Noto+Sans+TC:wght@300;400;700;900&display=swap"
+        rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#18181b',
+                        accent: '#ff7b00',
+                        beartor: {
+                            dark: '#121212',
+                            gray: '#71717a',
+                            muted: '#f4f4f5',
+                            primary: '#ff7b00'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'Noto Sans TC', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #ffffff;
+            color: #121212;
+            overflow-x: hidden;
+            letter-spacing: -0.02em;
+        }
+
+        .premium-card {
+            background: #ffffff;
+            border: 1px solid rgba(18, 18, 18, 0.05);
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.04);
+            border-radius: 2.5rem;
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .premium-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 40px 80px -20px rgba(0, 0, 0, 0.08);
+            border-color: rgba(18, 18, 18, 0.1);
+        }
+
+        .section-tag {
+            background: #121212;
+            color: #ffffff;
+            padding: 6px 16px;
+            border-radius: 99px;
+            font-size: 0.7rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #121212 0%, #ff7b00 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .feynman-box {
+            border-left: 4px solid #ff7b00;
+            padding-left: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        ::selection {
+            background: #121212;
+            color: white;
+        }
+
+        .noise-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            opacity: 0.02;
+            z-index: 9999;
+            background-image: url('https://grainy-gradients.vercel.app/noise.svg');
+        }
+
+        .code-block {
+            background: #121212;
+            color: #a1a1aa;
+            padding: 2rem;
+            border-radius: 1.5rem;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .code-block::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #ff7b00, #121212);
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        /* Interactive Demo Styles */
+        .demo-canvas {
+            height: 300px;
+            background: #f8f8f8;
+            border-radius: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .magic-box {
+            width: 80px;
+            height: 80px;
+            background: #121212;
+            border-radius: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 900;
+            font-size: 1.2rem;
+            z-index: 10;
+        }
+    </style>
+</head>
+
+<body class="font-sans antialiased">
+    <div class="noise-bg"></div>
+
+    <!-- Navigation -->
+    <nav
+        class="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-zinc-100 px-8 h-20 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-black rounded-xl flex items-center justify-center text-white font-black text-xl">S
+            </div>
+            <div>
+                <span class="block text-sm font-black tracking-tighter uppercase leading-none">Lesson 04</span>
+                <span class="text-[10px] text-zinc-400 font-bold uppercase tracking-widest leading-none">JavaScript &
+                    jQuery</span>
+            </div>
+        </div>
+        <div class="hidden md:flex items-center gap-8 text-[10px] font-black uppercase tracking-widest text-zinc-400">
+            <a href="#intro" class="hover:text-black transition-colors">What is JS</a>
+            <a href="#jquery" class="hover:text-black transition-colors">Why jQuery</a>
+            <a href="#pillars" class="hover:text-black transition-colors">3 Pillars</a>
+            <a href="#syntax" class="hover:text-black transition-colors">Deep Dive</a>
+        </div>
+        <div class="flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></span>
+            <span class="text-[9px] font-black uppercase tracking-widest text-orange-600">Active Learning</span>
+        </div>
+    </nav>
+
+    <div class="max-w-7xl mx-auto px-6 py-24">
+        <!-- Hero Section -->
+        <header id="intro" class="max-w-4xl mb-32 reveal">
+            <span class="section-tag mb-8 inline-block">The Soul of Web</span>
+            <h1 class="text-6xl md:text-8xl font-black mb-10 tracking-tighter leading-[0.9]">
+                賦予網頁生命：<br>
+                <span class="gradient-text">JavaScript 全解析</span>
+            </h1>
+            <p class="text-xl md:text-2xl text-zinc-500 font-medium leading-relaxed max-w-2xl">
+                網頁開發是由三根巨大的柱子支撐起來的：HTML 定義結構，CSS 決定美感，而 **JavaScript** 則是賦予靈魂與肌肉的關鍵。
+            </p>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+
+            <!-- 1. What is JavaScript -->
+            <section id="what-is-js" class="lg:col-span-12 premium-card p-12 md:p-20 overflow-hidden relative reveal">
+                <div class="absolute top-0 right-0 p-12 opacity-[0.03] pointer-events-none">
+                    <svg class="w-96 h-96" fill="currentColor" viewBox="0 0 24 24">
+                        <path
+                            d="M13 3h-2v10h2V3zm4.83 2.17l-1.42 1.42C17.99 7.86 19 9.81 19 12c0 3.87-3.13 7-7 7s-7-3.13-7-7c0-2.19 1.01-4.14 2.58-5.42L6.17 5.17C4.23 6.82 3 9.26 3 12c0 4.97 4.03 9 9 9s9-4.03 9-9c0-2.74-1.23-5.18-3.17-6.83z" />
+                    </svg>
+                </div>
+
+                <div class="relative z-10">
+                    <span class="text-xs font-black text-zinc-400 uppercase tracking-[0.3em] mb-6 block">Module 01</span>
+                    <h2 class="text-4xl md:text-5xl font-black mb-12 tracking-tighter italic">JavaScript 的定位：三本柱</h2>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <div class="p-8 bg-zinc-50 rounded-3xl border border-zinc-100">
+                            <h3 class="text-xl font-black mb-4">HTML (骨架)</h3>
+                            <p class="text-sm text-zinc-500">內容的結構。標題、文字、圖片的位置。</p>
+                        </div>
+                        <div class="p-8 bg-zinc-50 rounded-3xl border border-zinc-100">
+                            <h3 class="text-xl font-black mb-4">CSS (皮囊)</h3>
+                            <p class="text-sm text-zinc-500">視覺的美感。顏色、字體、間距、排版。</p>
+                        </div>
+                        <div class="p-8 bg-orange-500 text-white rounded-3xl shadow-xl shadow-orange-200">
+                            <h3 class="text-xl font-black mb-4">JavaScript (靈魂/肌肉)</h3>
+                            <p class="text-sm opacity-80">網頁的動作。點擊反應、資料運算、動態交互。</p>
+                        </div>
+                    </div>
+
+                    <div class="mt-12 feynman-box">
+                        <p class="text-lg text-zinc-600 leading-relaxed italic">
+                            「如果沒有 JavaScript，網頁就像一張精美的海報；有了它，網頁才真正變成了一個應用程式。」
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. Why jQuery -->
+            <section id="jquery" class="lg:col-span-12 premium-card p-12 md:p-20 overflow-hidden relative reveal">
+                <div class="relative z-10">
+                    <span class="text-xs font-black text-zinc-400 uppercase tracking-[0.3em] mb-6 block">Module 02</span>
+                    <h2 class="text-4xl md:text-5xl font-black mb-12 tracking-tighter italic">為什麼我們需要 jQuery？</h2>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                        <div class="space-y-6">
+                            <p class="text-zinc-600 leading-relaxed">
+                                原生的 JavaScript (Vanilla JS) 在操作網頁元素時，語法往往非常繁瑣且在不同瀏覽器間存在相容性問題。
+                            </p>
+                            <ul class="space-y-4">
+                                <li class="flex items-start gap-3">
+                                    <span class="text-orange-500 font-black">✓</span>
+                                    <div>
+                                        <h4 class="font-bold">語法簡潔</h4>
+                                        <p class="text-xs text-zinc-400">Write Less, Do More. 一行代碼抵十行。</p>
+                                    </div>
+                                </li>
+                                <li class="flex items-start gap-3">
+                                    <span class="text-orange-500 font-black">✓</span>
+                                    <div>
+                                        <h4 class="font-bold">跨瀏覽器相容</h4>
+                                        <p class="text-xs text-zinc-400">不用擔心 Safari 或 Chrome 的微小差異。</p>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="code-block">
+                            <div class="text-[10px] text-zinc-500 font-black mb-4 tracking-widest uppercase">代碼對比</div>
+                            <pre class="text-xs leading-relaxed">
+// 原生 JavaScript
+document.getElementById("btn").addEventListener("click", function() {
+  document.querySelector(".box").style.display = "none";
+});
+
+// jQuery 寫法
+$("#btn").on("click", function() {
+  $(".box").fadeOut();
+});
+                            </pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. Three Learning Pillars -->
+            <section id="pillars" class="lg:col-span-12 premium-card p-12 md:p-20 reveal">
+                <span class="text-xs font-black text-zinc-400 uppercase tracking-[0.3em] mb-6 block">Module 03</span>
+                <h2 class="text-4xl md:text-5xl font-black mb-12 tracking-tighter italic text-center">JavaScript 學習的三大區塊</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+                    <div class="text-center group">
+                        <div class="w-16 h-16 bg-zinc-100 rounded-2xl mx-auto mb-6 flex items-center justify-center text-3xl group-hover:bg-zinc-900 group-hover:text-white transition-all">⌨️</div>
+                        <h4 class="font-black mb-4">1. 基礎語法 (Basic Syntax)</h4>
+                        <p class="text-xs text-zinc-400 leading-relaxed">變數、迴圈、判斷式。這是所有程式語言共通的邏輯基石。</p>
+                    </div>
+                    <div class="text-center group">
+                        <div class="w-16 h-16 bg-zinc-100 rounded-2xl mx-auto mb-6 flex items-center justify-center text-3xl group-hover:bg-zinc-900 group-hover:text-white transition-all">🏗️</div>
+                        <h4 class="font-black mb-4">2. DOM 操作 (Manipulation)</h4>
+                        <p class="text-xs text-zinc-400 leading-relaxed">抓取 HTML 標籤，動態修改文字、顏色或結構。這就是 jQuery 的強項。</p>
+                    </div>
+                    <div class="text-center group">
+                        <div class="w-16 h-16 bg-zinc-100 rounded-2xl mx-auto mb-6 flex items-center justify-center text-3xl group-hover:bg-zinc-900 group-hover:text-white transition-all">🌐</div>
+                        <h4 class="font-black mb-4">3. 資料傳輸 (Ajax/Axios)</h4>
+                        <p class="text-xs text-zinc-400 leading-relaxed">向伺服器請求資料（如天氣、股市、會員資訊）並顯示在頁面上。</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. Deep Dive: Basic Syntax -->
+            <section id="syntax" class="lg:col-span-12 premium-card p-12 md:p-20 reveal">
+                <span class="text-xs font-black text-zinc-400 uppercase tracking-[0.3em] mb-6 block">Module 04</span>
+                <h2 class="text-4xl md:text-5xl font-black mb-12 tracking-tighter italic">核心語法詳解 (Syntax Deep Dive)</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-16">
+                    <div class="space-y-12">
+                        <!-- Variables -->
+                        <div class="space-y-4">
+                            <div class="flex items-center gap-4">
+                                <span class="text-2xl">📦</span>
+                                <h3 class="text-2xl font-black">變數 (Variables)</h3>
+                            </div>
+                            <p class="text-sm text-zinc-500">用來存放資料的「箱子」。現代開發推薦使用 `let` 與 `const`。</p>
+                            <pre class="bg-zinc-50 p-4 rounded-2xl text-xs font-mono">
+let age = 20; // 會變動的資料
+const name = "Pinhua"; // 不會變動的常數</pre>
+                        </div>
+
+                        <!-- If/Else -->
+                        <div class="space-y-4">
+                            <div class="flex items-center gap-4">
+                                <span class="text-2xl">🚦</span>
+                                <h3 class="text-2xl font-black">判斷式 (If/Else)</h3>
+                            </div>
+                            <p class="text-sm text-zinc-500">根據條件決定程式的走向。如果...就...，否則就...</p>
+                            <pre class="bg-zinc-50 p-4 rounded-2xl text-xs font-mono">
+if (score >= 60) {
+  console.log("及格！");
+} else {
+  console.log("不及格");
+}</pre>
+                        </div>
+
+                        <!-- Switch -->
+                        <div class="space-y-4">
+                            <div class="flex items-center gap-4">
+                                <span class="text-2xl">🎛️</span>
+                                <h3 class="text-2xl font-black">切換開關 (Switch)</h3>
+                            </div>
+                            <p class="text-sm text-zinc-500">當條件很多時（如：週一到週日），用 Switch 會比 If/Else 更整潔。</p>
+                            <pre class="bg-zinc-50 p-4 rounded-2xl text-xs font-mono">
+switch (day) {
+  case "Monday": console.log("上課"); break;
+  case "Sunday": console.log("休息"); break;
+  default: console.log("努力中");
+}</pre>
+                        </div>
+
+                        <!-- Loops -->
+                        <div class="space-y-4">
+                            <div class="flex items-center gap-4">
+                                <span class="text-2xl">🔄</span>
+                                <h3 class="text-2xl font-black">迴圈 (Loops)</h3>
+                            </div>
+                            <p class="text-sm text-zinc-500">重複執行一段代碼。最常用的是 `for` 與 `while`。</p>
+                            
+                            <div class="grid grid-cols-1 gap-4">
+                                <div class="space-y-2">
+                                    <div class="text-[10px] font-black text-zinc-400 uppercase">For 迴圈 (已知次數)</div>
+                                    <pre class="bg-zinc-50 p-4 rounded-2xl text-xs font-mono">
+for (let i = 0; i < 5; i++) {
+  console.log("For 第" + i + "次");
+}</pre>
+                                </div>
+                                <div class="space-y-2">
+                                    <div class="text-[10px] font-black text-zinc-400 uppercase">While 迴圈 (未知次數/條件成立就跑)</div>
+                                    <pre class="bg-zinc-50 p-4 rounded-2xl text-xs font-mono">
+let count = 0;
+while (count < 5) {
+  console.log("While 第" + count + "次");
+  count++;
+}</pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Control Flow: Break/Continue -->
+                        <div class="space-y-4">
+                            <div class="flex items-center gap-4">
+                                <span class="text-2xl">🛑</span>
+                                <h3 class="text-2xl font-black">流程控制 (Break / Continue)</h3>
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="space-y-2">
+                                    <div class="text-[10px] font-black text-zinc-400 uppercase">Break (直接跳出)</div>
+                                    <pre class="bg-zinc-50 p-3 rounded-xl text-[10px] font-mono">
+for (let i=0; i<10; i++) {
+  if (i === 5) break; // 停在 5
+  console.log(i);
+}</pre>
+                                </div>
+                                <div class="space-y-2">
+                                    <div class="text-[10px] font-black text-zinc-400 uppercase">Continue (跳過這一次)</div>
+                                    <pre class="bg-zinc-50 p-3 rounded-xl text-[10px] font-mono">
+for (let i=0; i<10; i++) {
+  if (i === 5) continue; // 略過 5
+  console.log(i);
+}</pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-12">
+                        <!-- Arrays -->
+                        <div class="space-y-4">
+                            <div class="flex items-center gap-4">
+                                <span class="text-2xl">📚</span>
+                                <h3 class="text-2xl font-black">陣列 (Arrays)</h3>
+                            </div>
+                            <p class="text-sm text-zinc-500">一組有序的資料集合。就像一個有很多隔層的抽屜。</p>
+                            <pre class="bg-zinc-50 p-4 rounded-2xl text-xs font-mono">
+let fruits = ["蘋果", "香蕉", "橘子"];
+console.log(fruits[0]); // 印出 蘋果</pre>
+                        </div>
+
+                        <!-- Functions -->
+                        <div class="space-y-4">
+                            <div class="flex items-center gap-4">
+                                <span class="text-2xl">🛠️</span>
+                                <h3 class="text-2xl font-black">函式 (Functions)</h3>
+                            </div>
+                            <p class="text-sm text-zinc-500">將一段邏輯打包起來，需要時直接呼叫（Call）。這就是「模組化」。</p>
+                            <pre class="bg-zinc-50 p-4 rounded-2xl text-xs font-mono">
+function sayHi(name) {
+  return "你好, " + name;
+}
+sayHi("蘇品樺"); // 執行！</pre>
+                        </div>
+
+                        <!-- Practical Demo Link -->
+                        <div class="p-8 bg-zinc-900 text-white rounded-3xl">
+                            <h4 class="font-black mb-4">🚀 小結</h4>
+                            <p class="text-xs text-zinc-400 leading-relaxed mb-6">
+                                這些基礎語法是所有邏輯的靈魂。我們學這些不是為了考試，而是為了能像拼圖一樣，把這些邏輯拼湊成有趣的網頁功能。
+                            </p>
+                            <div class="demo-canvas">
+                                <div class="magic-box" id="magicBox">JS</div>
+                            </div>
+                            <button id="btnPlay" class="w-full mt-6 py-4 bg-orange-500 rounded-xl font-black uppercase text-xs">執行語法演示</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-32 pt-20 border-t border-zinc-100 flex flex-col md:flex-row justify-between items-center gap-8 reveal">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 bg-black rounded-2xl flex items-center justify-center text-white font-black text-xl shadow-xl shadow-zinc-200">S</div>
+                <div>
+                    <h4 class="font-black text-sm tracking-tight uppercase">墨宇設計・蘇品樺專屬課程</h4>
+                    <p class="text-[10px] text-zinc-400 font-bold uppercase tracking-[0.2em] mt-1">© 2026 Premium Education Experience</p>
+                </div>
+            </div>
+            <div class="flex gap-4">
+                <div class="px-6 py-3 bg-zinc-50 rounded-xl text-[10px] font-black uppercase tracking-widest text-zinc-500 border border-zinc-100">Next: Advanced DOM</div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            // GSAP Reveal Animation
+            gsap.to(".reveal", {
+                opacity: 1,
+                y: 0,
+                duration: 1,
+                stagger: 0.2,
+                ease: "power3.out"
+            });
+
+            // Demo Logic
+            $("#btnPlay").on("click", function() {
+                // 演示判斷式與循環
+                let count = 0;
+                const timer = setInterval(() => {
+                    count++;
+                    $("#magicBox").text(count);
+                    gsap.from("#magicBox", { scale: 0.8, duration: 0.1 });
+                    
+                    if(count >= 5) {
+                        clearInterval(timer);
+                        $("#magicBox").text("Done!");
+                        gsap.to("#magicBox", { 
+                            backgroundColor: "#ff7b00", 
+                            rotation: 360, 
+                            duration: 0.5,
+                            ease: "back.out"
+                        });
+                    }
+                }, 300);
+            });
+        });
+    </script>
+</body>
+
+</html>
