@@ -1,0 +1,1462 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>朱珮瑜專案三 - 第一次諮詢課本：Laravel + Vue + Bootstrap 沉浸式學習指南</title>
+
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="專為朱珮瑜專案三打造的沉浸式高級版教學課本。配色採用白色與尊爵黑，以 Vibe Coding 核心哲學出發，融合學校分工模型，帶你用「想」的學會 Laravel + Vue + Bootstrap 的全端系統開發。">
+    <meta name="keywords" content="Vibe Coding, Laravel, Vue, Bootstrap, 網頁開發課程, 全端開發, 心理學網站">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        regal: {
+                            black: '#0F0F11',
+                            charcoal: '#1C1C1E',
+                            darkGray: '#3A3A3C',
+                            gray: '#7E7E82',
+                            lightGray: '#AEAEB2',
+                            bg: '#F5F5F7',
+                            border: '#E5E5EA',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Outfit', 'Noto Sans TC', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Noto+Sans+TC:wght@300;400;500;700;900&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap" rel="stylesheet">
+
+    <!-- jQuery CDN -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        body {
+            font-family: 'Outfit', 'Noto Sans TC', sans-serif;
+            background-color: #FFFFFF;
+            color: #0F0F11;
+            scroll-behavior: smooth;
+        }
+
+        .serif-font {
+            font-family: 'Playfair Display', 'Noto Sans TC', serif;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #FFFFFF;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #E5E5EA;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #0F0F11;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 280px;
+            height: 100vh;
+            position: fixed;
+            left: -280px;
+            top: 0;
+            background: #FFFFFF;
+            z-index: 100;
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            border-right: 1px solid #E5E5EA;
+        }
+
+        .sidebar.active {
+            transform: translateX(280px);
+        }
+
+        .sidebar-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 15, 17, 0.3);
+            backdrop-filter: blur(4px);
+            z-index: 90;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+
+        .sidebar-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* Interactive Card effects */
+        .luxury-card {
+            background: #FFFFFF;
+            border: 1px solid #E5E5EA;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .luxury-card:hover {
+            border-color: #0F0F11;
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(15, 15, 17, 0.05);
+        }
+
+        /* Active TOC item indicator */
+        .toc-link.active {
+            color: #0F0F11;
+            font-weight: 600;
+            border-left: 2px solid #0F0F11;
+            padding-left: 1.25rem;
+        }
+
+        .office-marker {
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .office-marker.active {
+            background-color: #0F0F11;
+            color: #FFFFFF;
+            border-color: #0F0F11;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+
+<body class="antialiased overflow-x-hidden">
+
+    <!-- Menu Trigger Button -->
+    <button id="sidebar-toggle" class="fixed top-6 right-6 z-50 flex items-center justify-center w-12 h-12 bg-white border border-regal-border rounded-full hover:bg-regal-black hover:text-white transition-all duration-300 shadow-sm focus:outline-none">
+        <i data-lucide="menu" id="toggle-icon" class="w-5 h-5 transition-transform duration-300"></i>
+    </button>
+
+    <!-- Sidebar Table of Contents -->
+    <aside class="sidebar flex flex-col justify-between p-8" id="sidebar">
+        <div>
+            <!-- Logo Section -->
+            <div class="flex items-center space-x-3 mb-10 pb-6 border-b border-regal-border">
+                <div class="w-9 h-9 bg-regal-black rounded-lg flex items-center justify-center text-white">
+                    <i data-lucide="book-open" class="w-4.5 h-4.5"></i>
+                </div>
+                <div>
+                    <h3 class="text-sm font-bold tracking-tight text-regal-black uppercase">Project 3</h3>
+                    <p class="text-[10px] text-regal-gray tracking-wider uppercase font-medium">Peiyu's CourseBook</p>
+                </div>
+            </div>
+
+            <!-- Navigation Links -->
+            <div class="space-y-1">
+                <p class="text-[10px] text-regal-lightGray tracking-widest uppercase font-bold mb-4 px-3">目錄內容</p>
+                <nav class="flex flex-col space-y-1">
+                    <a href="#hero" class="toc-link block px-3 py-2 text-sm text-regal-gray hover:text-regal-black transition-all border-l border-transparent pl-4">
+                        課程封面
+                    </a>
+                    <a href="#philosophy" class="toc-link block px-3 py-2 text-sm text-regal-gray hover:text-regal-black transition-all border-l border-transparent pl-4">
+                        Vibe Coding 核心哲學
+                    </a>
+                    <a href="#methods" class="toc-link block px-3 py-2 text-sm text-regal-gray hover:text-regal-black transition-all border-l border-transparent pl-4">
+                        我們的學習方式
+                    </a>
+                    <a href="#pitfalls" class="toc-link block px-3 py-2 text-sm text-regal-gray hover:text-regal-black transition-all border-l border-transparent pl-4">
+                        傳統學習的危機
+                    </a>
+                    <a href="#outcomes" class="toc-link block px-3 py-2 text-sm text-regal-gray hover:text-regal-black transition-all border-l border-transparent pl-4">
+                        學完收穫與定位
+                    </a>
+                    <a href="#syllabus" class="toc-link block px-3 py-2 text-sm text-regal-gray hover:text-regal-black transition-all border-l border-transparent pl-4">
+                        10堂系統化課程規劃
+                    </a>
+                    <a href="#analogy" class="toc-link block px-3 py-2 text-sm text-regal-gray hover:text-regal-black transition-all border-l border-transparent pl-4">
+                        學校分工合作模型
+                    </a>
+                    <a href="#stack" class="toc-link block px-3 py-2 text-sm text-regal-gray hover:text-regal-black transition-all border-l border-transparent pl-4">
+                        開發三大核心框架
+                    </a>
+                    <a href="#market" class="toc-link block px-3 py-2 text-sm text-regal-gray hover:text-regal-black transition-all border-l border-transparent pl-4">
+                        技術薪水與市場行情
+                    </a>
+                    <a href="#checkpoint" class="toc-link block px-3 py-2 text-sm text-regal-gray hover:text-regal-black transition-all border-l border-transparent pl-4">
+                        第一堂課隨堂驗收
+                    </a>
+                </nav>
+            </div>
+        </div>
+
+        <!-- Footer / Student Status -->
+        <div class="border-t border-regal-border pt-6 mt-6">
+            <div class="p-4 bg-regal-bg rounded-xl">
+                <span class="inline-block px-2 py-0.5 bg-regal-black text-white text-[9px] font-bold tracking-widest rounded mb-2 uppercase">Status</span>
+                <h4 class="text-xs font-bold text-regal-black">朱珮瑜 專案三</h4>
+                <p class="text-[11px] text-regal-gray mt-1">第一次諮詢：全端系統建構與心理學網站整合</p>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+    <!-- Main Content -->
+    <main class="w-full min-h-screen">
+
+        <!-- 1. Hero Section -->
+        <section id="hero" class="min-h-screen flex flex-col justify-between px-6 py-12 md:px-20 md:py-16 relative bg-white">
+            <!-- Top brand indicator -->
+            <div class="flex justify-between items-center w-full">
+                <span class="text-xs font-bold tracking-widest uppercase text-regal-black">
+                    PROJECT THREE / 1ST CONSULTATION
+                </span>
+                <span class="text-xs font-medium text-regal-gray">
+                    ANTIGRAVITY ACADEMY © 2026
+                </span>
+            </div>
+
+            <!-- Hero Main Body -->
+            <div class="max-w-4xl my-auto">
+                <div class="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-regal-bg border border-regal-border mb-6">
+                    <span class="w-1.5 h-1.5 rounded-full bg-regal-black animate-ping"></span>
+                    <span class="text-xs font-bold tracking-wider text-regal-black uppercase">沉浸式高級學習載體</span>
+                </div>
+                <h1 class="text-4xl md:text-7xl font-extrabold tracking-tight leading-tight text-regal-black serif-font mb-6">
+                    用「思考」駕馭程式，<br>
+                    <span class="text-regal-gray font-light">打造以心為本的</span> 系統架構
+                </h1>
+                <p class="text-lg md:text-xl text-regal-gray max-w-2xl leading-relaxed mb-8">
+                    我們將基於先前一起完成的心理學網站，使用 Laravel + Vue + Bootstrap 的全端技術，完整重塑它的內容。這一次，我們跳脫傳統一行行敲代碼的泥淖，改以 <span class="text-regal-black font-semibold underline">Vibe Coding</span> 的方式，由你擔任掌控全域的導演，AI 則是你的執行製片。
+                </p>
+                <div class="flex flex-col sm:flex-row items-stretch sm:items-center space-y-3 sm:space-y-0 sm:space-x-4">
+                    <a href="#philosophy" class="px-8 py-4 bg-regal-black text-white text-sm font-semibold tracking-wider hover:bg-neutral-800 transition-all rounded text-center shadow-lg shadow-neutral-200">
+                        開啟沉浸式閱讀
+                    </a>
+                    <a href="#syllabus" class="px-8 py-4 bg-white border border-regal-border text-regal-black text-sm font-semibold tracking-wider hover:border-regal-black transition-all rounded text-center">
+                        瀏覽10堂課大綱
+                    </a>
+                </div>
+            </div>
+
+            <!-- Bottom details grid -->
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-6 pt-12 border-t border-regal-border">
+                <div>
+                    <span class="block text-[10px] text-regal-lightGray tracking-widest uppercase font-semibold">目標對象</span>
+                    <span class="text-sm font-bold text-regal-black mt-1 block">朱珮瑜 (Peiyu)</span>
+                </div>
+                <div>
+                    <span class="block text-[10px] text-regal-lightGray tracking-widest uppercase font-semibold">核心技術</span>
+                    <span class="text-sm font-bold text-regal-black mt-1 block">Laravel + Vue + Bootstrap</span>
+                </div>
+                <div>
+                    <span class="block text-[10px] text-regal-lightGray tracking-widest uppercase font-semibold">核心模式</span>
+                    <span class="text-sm font-bold text-regal-black mt-1 block">Vibe Coding + AI 協作</span>
+                </div>
+                <div>
+                    <span class="block text-[10px] text-regal-lightGray tracking-widest uppercase font-semibold">上課頻率</span>
+                    <span class="text-sm font-bold text-regal-black mt-1 block">推薦一週一次 (高難度)</span>
+                </div>
+                <div>
+                    <span class="block text-[10px] text-regal-lightGray tracking-widest uppercase font-semibold">規劃規格</span>
+                    <span class="text-sm font-bold text-regal-black mt-1 block">至少 10 堂精實課程</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. Vibe Coding Philosophy -->
+        <section id="philosophy" class="py-24 px-6 md:px-20 bg-regal-bg border-y border-regal-border">
+            <div class="max-w-6xl mx-auto">
+                <span class="text-xs font-bold tracking-widest uppercase text-regal-gray block mb-4">Core Philosophy</span>
+                <h2 class="text-3xl md:text-5xl font-bold tracking-tight text-regal-black serif-font mb-16">
+                    寫程式最核心的是「想」，而非「打字」
+                </h2>
+
+                <div class="grid md:grid-cols-2 gap-12">
+                    <!-- Left Column: The Vibe Coding Revolution -->
+                    <div class="space-y-6">
+                        <div class="p-8 bg-white border border-regal-border rounded-2xl relative overflow-hidden">
+                            <div class="absolute top-0 right-0 w-24 h-24 bg-regal-bg rounded-bl-full flex items-center justify-center">
+                                <i data-lucide="brain" class="w-8 h-8 text-regal-black"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-regal-black mb-4">什麼是 Vibe Coding？</h3>
+                            <p class="text-sm text-regal-gray leading-relaxed mb-4">
+                                在這個由大語言模型主導的新時代，寫程式不再意味著背誦 API 或通宵 debug。Vibe Coding 是一種全新的開發方式——<strong>你負責思考系統的邏輯、資料庫結構與美學脈絡；而枯燥、重複的程式碼撰寫與基本的 Bug 排除，則全面交給 AI 來執行。</strong>
+                            </p>
+                            <p class="text-sm text-regal-gray leading-relaxed">
+                                這使你能將精力專注於「網站的靈魂」與「商業邏輯」，而非迷失在括號和分號的細節裡。
+                            </p>
+                        </div>
+
+                        <div class="p-8 bg-white border border-regal-border rounded-2xl">
+                            <h3 class="text-lg font-bold text-regal-black mb-4">為什麼我們要這樣設計課程？</h3>
+                            <div class="space-y-4">
+                                <div class="flex items-start space-x-3">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-regal-black mt-2 shrink-0"></span>
+                                    <p class="text-sm text-regal-gray"><strong class="text-regal-black">以 Laravel 學校為基底：</strong>其實我們會整體蓋在 Laravel 上面，它就像是一個學校一樣。正如我們上面解構的，每個元件都有它特別的職責。我們就是要熟悉這個「學校般」的系統，並且熟練地操控它，來達成我們的所有開發目的。</p>
+                                </div>
+                                <div class="flex items-start space-x-3">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-regal-black mt-2 shrink-0"></span>
+                                    <p class="text-sm text-regal-gray"><strong class="text-regal-black">奠定長遠架構思維：</strong>懂得看懂架構，未來想更動任何細節，或是推出 2.0 版本，你都能自己精準找到對應的區塊進行更新與調整。</p>
+                                </div>
+                                <div class="flex items-start space-x-3">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-regal-black mt-2"></span>
+                                    <p class="text-sm text-regal-gray"><strong class="text-regal-black">降低程式碼排斥感：</strong>在學習的初期，不需要為了遺漏括號或型別宣告而沮喪，先透過 AI 把網站完整呈現，看見成果，建立信心。</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Interactive Diagram (Thinking vs Writing) -->
+                    <div class="flex flex-col justify-between p-8 bg-regal-black text-white rounded-2xl relative">
+                        <div>
+                            <span class="text-[10px] text-regal-gray tracking-widest uppercase font-bold block mb-2">Role Division</span>
+                            <h3 class="text-2xl font-bold mb-6">AI 時代的開發分工</h3>
+
+                            <div class="space-y-6">
+                                <!-- Block: You (Thinker) -->
+                                <div class="p-5 border border-neutral-800 bg-neutral-900 rounded-xl">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <div class="flex items-center space-x-2">
+                                            <i data-lucide="user" class="w-4 h-4 text-white"></i>
+                                            <span class="text-sm font-bold tracking-wide uppercase">你 (導演 / 思考者)</span>
+                                        </div>
+                                        <span class="text-[10px] bg-white text-regal-black font-extrabold px-1.5 py-0.5 rounded">想 (Think)</span>
+                                    </div>
+                                    <p class="text-xs text-regal-lightGray leading-relaxed">
+                                        決定這個頁面要拿來做什麼？心理測驗需要儲存什麼資料？後台應該長怎樣？如何讓使用者操作最順暢？分析模組之間的分工合作。
+                                    </p>
+                                </div>
+
+                                <!-- Connection Line -->
+                                <div class="flex justify-center my-2">
+                                    <i data-lucide="arrow-down" class="w-5 h-5 text-regal-gray animate-bounce"></i>
+                                </div>
+
+                                <!-- Block: AI (Executor) -->
+                                <div class="p-5 border border-neutral-800 bg-neutral-900 rounded-xl">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <div class="flex items-center space-x-2">
+                                            <i data-lucide="bot" class="w-4 h-4 text-white"></i>
+                                            <span class="text-sm font-bold tracking-wide uppercase">AI (製片 / 撰寫者)</span>
+                                        </div>
+                                        <span class="text-[10px] bg-neutral-700 text-white font-extrabold px-1.5 py-0.5 rounded">寫 (Write)</span>
+                                    </div>
+                                    <p class="text-xs text-regal-lightGray leading-relaxed">
+                                        撰寫符合 Laravel 規範的路由程式碼、配置 Vue 的資料雙向綁定、套用 Bootstrap 的網格系統，並在遭遇系統錯誤時幫你除錯。
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-8 pt-6 border-t border-neutral-800 text-center">
+                            <span class="text-xs italic text-regal-gray">
+                                「懂得如何『想』的人，才是程式真正的主人。」
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2.2 Our Learning Methods -->
+        <section id="methods" class="py-24 px-6 md:px-20 bg-white">
+            <div class="max-w-6xl mx-auto">
+                <span class="text-xs font-bold tracking-widest uppercase text-regal-gray block mb-4">Our Methodology</span>
+                <h2 class="text-3xl md:text-5xl font-bold tracking-tight text-regal-black serif-font mb-6">
+                    我們的獨家學習方式
+                </h2>
+                <p class="text-sm text-regal-gray max-w-2xl leading-relaxed mb-16">
+                    擺脫傳統程式開發課程的沉悶與死記，我們用更高級、更符合大腦直覺的模式來設計這堂課。
+                </p>
+
+                <div class="grid md:grid-cols-3 gap-8">
+                    <!-- Method 1 -->
+                    <div class="luxury-card p-8 rounded-2xl flex flex-col justify-between">
+                        <div>
+                            <div class="w-12 h-12 bg-neutral-100 text-regal-black rounded-xl flex items-center justify-center mb-6">
+                                <i data-lucide="smartphone" class="w-6 h-6"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-regal-black mb-3">A. 用網站技術開發「動態課本」</h3>
+                            <p class="text-xs text-regal-gray leading-relaxed mb-6">
+                                我們不使用冰冷的 PDF 或傳統簡報。這份課本本身就是使用「網頁技術」打造的高級動態網頁。在閱讀學習的過程中，你就在親自體驗 HTML、CSS、JS 與 jQuery 帶來的流暢互動成果，這本身就是最生動的實戰展示。
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Method 2 -->
+                    <div class="luxury-card p-8 rounded-2xl flex flex-col justify-between">
+                        <div>
+                            <div class="w-12 h-12 bg-neutral-100 text-regal-black rounded-xl flex items-center justify-center mb-6">
+                                <i data-lucide="smile" class="w-6 h-6"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-regal-black mb-3">B. 生活化接地氣的「概念故事」</h3>
+                            <p class="text-xs text-regal-gray leading-relaxed mb-6">
+                                我深信再複雜的理工或計算機概念，都可以被說成故事書或極其接地氣的生活場景（如後續的學校部門分工）。我們絕不跟你聊生硬的技術官話，用你聽得懂的語言傳授，但同時保留對應的<strong>英文專業術語</strong>，方便你日後上網搜尋查閱。
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Method 3 -->
+                    <div class="luxury-card p-8 rounded-2xl flex flex-col justify-between">
+                        <div>
+                            <div class="w-12 h-12 bg-neutral-100 text-regal-black rounded-xl flex items-center justify-center mb-6">
+                                <i data-lucide="award" class="w-6 h-6"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-regal-black mb-3">C. 8年計算機體系的「實戰精華」</h3>
+                            <p class="text-xs text-regal-gray leading-relaxed mb-6">
+                                我會將自己將近 8 年的計算機體系專業訓練、以及在業界積累的實戰開發經驗提煉成課程核心。我不跟你聊虛無飄渺的架空理論，而是直接在實戰中指引你「該怎麼做、怎麼設定、怎麼規避錯誤」，用最少時間傳授最精華的實戰解法。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2.3 The Pitfalls of Traditional Learning -->
+        <section id="pitfalls" class="py-24 px-6 md:px-20 bg-regal-bg border-y border-regal-border">
+            <div class="max-w-6xl mx-auto">
+                <span class="text-xs font-bold tracking-widest uppercase text-regal-gray block mb-4">Learning Risks</span>
+                <h2 class="text-3xl md:text-5xl font-bold tracking-tight text-regal-black serif-font mb-6">
+                    如果不像我這樣學，會發生什麼事？
+                </h2>
+                <p class="text-sm text-regal-gray max-w-2xl leading-relaxed mb-6">
+                    傳統的寫程式學習，往往需要耗費大量的時間去死記與熟練語法（Syntax）等細節。在合適的引導下，這個探索語法的過程自然是非常有趣的事情，如果有機會與閒暇，我也非常推薦去體驗。
+                </p>
+                <p class="text-sm text-regal-gray max-w-2xl leading-relaxed mb-12">
+                    然而在現實生活中，坦白說，大家學習程式的核心動力之一是「經濟利益與賺錢」——這完全符合<strong>經濟學的供需法則</strong>。與學校的學術教育不同，學校可能會希望你從零去做出一個電腦編譯器（Compiler）來證明學術理解；但現實商業市場需要的，是你能快速做出<strong>一個 A 產品（APP），去解決 B 問題</strong>。這就是為什麼我們不繞遠路。如果你堅持使用傳統死記語法的路徑，你將面臨以下四個危機：
+                </p>
+
+                <div class="grid md:grid-cols-2 gap-8">
+                    <!-- Painpoint A -->
+                    <div class="p-8 bg-white border border-regal-border rounded-xl hover:border-regal-black transition-all">
+                        <div class="flex items-center space-x-3 mb-4">
+                            <span class="w-7 h-7 bg-regal-black text-white text-xs font-bold flex items-center justify-center rounded font-mono">A</span>
+                            <h4 class="font-bold text-sm text-regal-black">自主摸索極度耗時且困難</h4>
+                        </div>
+                        <p class="text-xs text-regal-gray leading-relaxed">
+                            雖然自主摸索的過程很有趣（我自己也很喜歡），但若沒有一套系統化的地圖做指引，你很容易耗費巨大的時間與心力，甚至在不知不覺中，略微跟不上這個時代急速變化的步伐。
+                        </p>
+                    </div>
+
+                    <!-- Painpoint B -->
+                    <div class="p-8 bg-white border border-regal-border rounded-xl hover:border-regal-black transition-all">
+                        <div class="flex items-center space-x-3 mb-4">
+                            <span class="w-7 h-7 bg-regal-black text-white text-xs font-bold flex items-center justify-center rounded font-mono">B</span>
+                            <h4 class="font-bold text-sm text-regal-black">被科技的更新速度 Overwhelmed 而放棄</h4>
+                        </div>
+                        <p class="text-xs text-regal-gray leading-relaxed">
+                            今天的科技更新是以天為單位在推進。若用舊思維一行行背程式碼，你會被成千上萬層出不窮的新語法、新框架徹底 overwhelming（淹沒），最終導致挫折感過重而不想再學。
+                        </p>
+                    </div>
+
+                    <!-- Painpoint C -->
+                    <div class="p-8 bg-white border border-regal-border rounded-xl hover:border-regal-black transition-all">
+                        <div class="flex items-center space-x-3 mb-4">
+                            <span class="w-7 h-7 bg-regal-black text-white text-xs font-bold flex items-center justify-center rounded font-mono">C</span>
+                            <h4 class="font-bold text-sm text-regal-black">不解底層架構導致無法與 AI 溝通，無法更新線上線下版</h4>
+                        </div>
+                        <p class="text-xs text-regal-gray leading-relaxed">
+                            AI 的能力取決於你的指令（Prompt）。如果不了解網頁底層的運作結構，你根本無法跟 AI 進行有效溝通。當未來你需要更新、除錯，或是要把程式從本地端（線下版）部署到雲端主機（線上版）時，你將會卡死在架構斷層中。
+                        </p>
+                    </div>
+
+                    <!-- Painpoint D -->
+                    <div class="p-8 bg-white border border-regal-border rounded-xl hover:border-regal-black transition-all">
+                        <div class="flex items-center space-x-3 mb-4">
+                            <span class="w-7 h-7 bg-regal-black text-white text-xs font-bold flex items-center justify-center rounded font-mono">D</span>
+                            <h4 class="font-bold text-sm text-regal-black">抓不到系統核心，沒辦法「打蛇打七寸」</h4>
+                        </div>
+                        <p class="text-xs text-regal-gray leading-relaxed">
+                            軟體開發最怕頭痛醫頭、腳痛醫腳。如果不理解整個網站（學校）的分工脈絡，遇到 Bug 時你將盲目打轉，無法精準抓住痛點、做到「打蛇打七寸」，卡在小錯誤上消耗所有學習熱情。
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2.5 Outcomes Section -->
+        <section id="outcomes" class="py-24 px-6 md:px-20 bg-white">
+            <div class="max-w-6xl mx-auto">
+                <span class="text-xs font-bold tracking-widest uppercase text-regal-gray block mb-4">Course Expectations</span>
+                <h2 class="text-3xl md:text-5xl font-bold tracking-tight text-regal-black serif-font mb-6">
+                    學完這套技術，你能做到什麼？
+                </h2>
+                <p class="text-sm text-regal-gray max-w-2xl leading-relaxed mb-16">
+                    這是一門兼具思維高度與工程實戰的全端課程。我們的目標並非讓你死記語法，而是培養你成為能夠在 AI 時代下達正確指令、掌控大局的系統架構者。
+                </p>
+
+                <div class="grid md:grid-cols-3 gap-8">
+                    <!-- Outcome 1 -->
+                    <div class="p-8 border border-regal-border rounded-2xl bg-regal-bg/30">
+                        <div class="w-10 h-10 bg-regal-black text-white rounded-lg flex items-center justify-center mb-6">
+                            <i data-lucide="compass" class="w-5 h-5"></i>
+                        </div>
+                        <h4 class="text-lg font-bold text-regal-black mb-3">熟悉網站前後端開發概念</h4>
+                        <p class="text-xs text-regal-gray leading-relaxed">
+                            你將不再覺得網站背後是個看不懂的黑盒子。你會明白資料庫（總務處）、API（通訊橋樑）與前端瀏覽器（諮商室）之間究竟是如何流動、交接與渲染的，徹底打通開發思維。
+                        </p>
+                    </div>
+
+                    <!-- Outcome 2 -->
+                    <div class="p-8 border border-regal-border rounded-2xl bg-regal-bg/30">
+                        <div class="w-10 h-10 bg-regal-black text-white rounded-lg flex items-center justify-center mb-6">
+                            <i data-lucide="message-square" class="w-5 h-5"></i>
+                        </div>
+                        <h4 class="text-lg font-bold text-regal-black mb-3">具備與工程師溝通的語言</h4>
+                        <p class="text-xs text-regal-gray leading-relaxed">
+                            未來不論是自己發包接案、創業還是主導公司軟體專案，你都能精準使用專業術語（API 串接、資料庫欄位關聯、路由調配）跟工程師對話，不再因為資訊不對等而有溝通障礙。
+                        </p>
+                    </div>
+
+                    <!-- Outcome 3 -->
+                    <div class="p-8 border border-regal-border rounded-2xl bg-regal-bg/30">
+                        <div class="w-10 h-10 bg-regal-black text-white rounded-lg flex items-center justify-center mb-6">
+                            <i data-lucide="sparkles" class="w-5 h-5"></i>
+                        </div>
+                        <h4 class="text-lg font-bold text-regal-black mb-3">理論上可開發任何想像的 APP</h4>
+                        <p class="text-xs text-regal-gray leading-relaxed">
+                            Laravel + Vue 是一組沒有上限的底層全端組合。只要掌握了狀態管理與 API 資料交換，理論上人類所能想像得到的任何 APP/網站，你都有能力在 AI 輔助下將其實作出來。
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Realistic Warning Box -->
+                <div class="mt-12 p-8 border border-regal-border rounded-2xl bg-white relative overflow-hidden">
+                    <div class="absolute left-0 top-0 bottom-0 w-1.5 bg-regal-black"></div>
+                    <h4 class="text-sm font-bold text-regal-black mb-3 flex items-center space-x-2">
+                        <i data-lucide="alert-triangle" class="w-4 h-4 text-regal-black"></i>
+                        <span>⚠️ 誠實學習提醒與時間規劃</span>
+                    </h4>
+                    <p class="text-xs text-regal-gray leading-relaxed mb-4">
+                        必須特別注意的是，十堂課的時間對於龐大的全端系統來說其實是<strong>非常不夠的</strong>。因此在課程中，很多較為深奧的理論或底層細節，我們會以「簡單帶過」或「挑選最核心重點講」的方式進行，但我們會確保盡一切努力帶你學到所有該學的核心拼圖。
+                    </p>
+                    <p class="text-xs text-regal-gray leading-relaxed">
+                        這是一門<strong>最複雜也最難的課程</strong>，這也是為什麼我們極力<strong>推薦上課時間為「一個禮拜一次」</strong>。一週的時間能讓你在課後有足夠的緩衝，去消化複雜的系統邏輯、熟悉這套 Laravel 「學校系統」，並有足夠時間讓你在實作中透過 AI 進行嘗試。
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. Syllabus: 10 Lessons -->
+        <section id="syllabus" class="py-24 px-6 md:px-20 bg-white">
+            <div class="max-w-6xl mx-auto">
+                <div class="flex flex-col md:flex-row md:justify-between md:items-end mb-16">
+                    <div>
+                        <span class="text-xs font-bold tracking-widest uppercase text-regal-gray block mb-4">Curriculum Outline</span>
+                        <h2 class="text-3xl md:text-5xl font-bold tracking-tight text-regal-black serif-font">
+                            10堂系統化課程規劃
+                        </h2>
+                        <div class="flex items-center space-x-2 mt-4 text-xs font-bold text-regal-black tracking-wider uppercase bg-regal-bg border border-regal-border px-3.5 py-1.5 rounded-full w-fit">
+                            <i data-lucide="chevrons-up" class="w-4 h-4"></i>
+                            <span>學習路徑：我們會從「後端 ➜ 前端」往上學習</span>
+                        </div>
+                    </div>
+                    <p class="text-sm text-regal-gray max-w-md mt-4 md:mt-0">
+                        以心理學網站為藍本，我們將<strong>由後端往前端逐層往上建造（Backend-first, Frontend-up）</strong>。先搭好資料庫地基、串接 API 路由，再構築前端互動與樣式，這是最符合全端科學邏輯的學習路徑。
+                    </p>
+                </div>
+
+                <!-- Syllabus Accordion List -->
+                <div class="space-y-4">
+                    <!-- Lesson 1 -->
+                    <div class="syllabus-item border border-regal-border rounded-xl transition-all duration-300 overflow-hidden">
+                        <button class="syllabus-trigger flex items-center justify-between w-full p-6 text-left focus:outline-none hover:bg-regal-bg transition-colors">
+                            <div class="flex items-center space-x-6">
+                                <span class="text-lg font-bold text-regal-lightGray font-mono">01</span>
+                                <div>
+                                    <span class="text-[10px] text-regal-gray tracking-wider uppercase font-bold">第一堂：前輩知識與定位</span>
+                                    <h4 class="text-md font-bold text-regal-black mt-0.5">啟航 — Web 演進史與 PHP / Laravel 架構初探</h4>
+                                </div>
+                            </div>
+                            <i data-lucide="chevron-down" class="w-5 h-5 text-regal-gray transition-transform duration-300"></i>
+                        </button>
+                        <div class="syllabus-content hidden p-6 pt-0 border-t border-regal-border bg-white">
+                            <div class="grid md:grid-cols-2 gap-6 pt-6">
+                                <div>
+                                    <h5 class="text-xs font-bold text-regal-black tracking-widest uppercase mb-2">觀念學習核心</h5>
+                                    <p class="text-sm text-regal-gray leading-relaxed">
+                                        深入理解網頁開發的發展歷史（從早期靜態 HTML、CGI、到動態 MVC 架構）。分析為什麼 PHP 依然是當今全球網頁市佔率最高的語言，以及 Laravel 作為現代化 Web 框架的優雅之處與優勢定位。
+                                    </p>
+                                </div>
+                                <div>
+                                    <h5 class="text-xs font-bold text-regal-black tracking-widest uppercase mb-2">實作任務</h5>
+                                    <p class="text-sm text-regal-gray leading-relaxed">
+                                        在本機配置 PHP 開發環境，安裝 Composer 與 Node.js，初探 Laravel 專案的初始目錄結構（瞭解各個資料夾的職責分工），並透過 Git 建立初始版本控制。
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Lesson 2 -->
+                    <div class="syllabus-item border border-regal-border rounded-xl transition-all duration-300 overflow-hidden">
+                        <button class="syllabus-trigger flex items-center justify-between w-full p-6 text-left focus:outline-none hover:bg-regal-bg transition-colors">
+                            <div class="flex items-center space-x-6">
+                                <span class="text-lg font-bold text-regal-lightGray font-mono">02</span>
+                                <div>
+                                    <span class="text-[10px] text-regal-gray tracking-wider uppercase font-bold">第二堂：命令列魔法</span>
+                                    <h4 class="text-md font-bold text-regal-black mt-0.5">魔杖 — PHP Artisan 終端命令列的高效操控</h4>
+                                </div>
+                            </div>
+                            <i data-lucide="chevron-down" class="w-5 h-5 text-regal-gray transition-transform duration-300"></i>
+                        </button>
+                        <div class="syllabus-content hidden p-6 pt-0 border-t border-regal-border bg-white">
+                            <div class="grid md:grid-cols-2 gap-6 pt-6">
+                                <div>
+                                    <h5 class="text-xs font-bold text-regal-black tracking-widest uppercase mb-2">觀念學習核心</h5>
+                                    <p class="text-sm text-regal-gray leading-relaxed">
+                                        學習脫離對 GUI（圖形化介面）的依賴，理解終端機（Terminal）與 CLI 指令的運作邏輯。認識 Laravel 內建的強力助理 —— Artisan 命令行工具，它將扮演自動化生成代碼與管理系統的「魔杖」角色。
+                                    </p>
+                                </div>
+                                <div>
+                                    <h5 class="text-xs font-bold text-regal-black tracking-widest uppercase mb-2">實作任務</h5>
+                                    <p class="text-sm text-regal-gray leading-relaxed">
+                                        熟練使用 `php artisan` 核心命令，包括專案服務啟動（serve）、自動生成 Controller / Model 架構代碼、以及列出所有系統路由表（route:list），體驗純鍵盤高效率開發。
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Lesson 3 -->
+                    <div class="syllabus-item border border-regal-border rounded-xl transition-all duration-300 overflow-hidden">
+                        <button class="syllabus-trigger flex items-center justify-between w-full p-6 text-left focus:outline-none hover:bg-regal-bg transition-colors">
+                            <div class="flex items-center space-x-6">
+                                <span class="text-lg font-bold text-regal-lightGray font-mono">03</span>
+                                <div>
+                                    <span class="text-[10px] text-regal-gray tracking-wider uppercase font-bold">第三堂：核心 MVC 串接</span>
+                                    <h4 class="text-md font-bold text-regal-black mt-0.5">黃金三角 — Route 路由、Controller 控制器與 Blade 模板</h4>
+                                </div>
+                            </div>
+                            <i data-lucide="chevron-down" class="w-5 h-5 text-regal-gray transition-transform duration-300"></i>
+                        </button>
+                        <div class="syllabus-content hidden p-6 pt-0 border-t border-regal-border bg-white">
+                            <div class="grid md:grid-cols-2 gap-6 pt-6">
+                                <div>
+                                    <h5 class="text-xs font-bold text-regal-black tracking-widest uppercase mb-2">觀念學習核心</h5>
+                                    <p class="text-sm text-regal-gray leading-relaxed">
+                                        深入「校長室」路由（`routes/web.php`）與「教務處」控制器（Controller）的運作邏輯。理解 HTTP 請求如何被解析分發，並渲染 Laravel 專屬的 Blade 視圖引擎（View），實現最基礎的伺服器端網頁渲染。
+                                    </p>
+                                </div>
+                                <div>
+                                    <h5 class="text-xs font-bold text-regal-black tracking-widest uppercase mb-2">實作任務</h5>
+                                    <p class="text-sm text-regal-gray leading-relaxed">
+                                        設定第一個自訂網址路由，撰寫 Controller 控制邏輯，並透過 Blade 模板語法（如 `@if`、`@foreach` 迴圈）將後端資料傳遞並動態呈現在瀏覽器畫面上。
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Lesson 4 -->
+                    <div class="syllabus-item border border-regal-border rounded-xl transition-all duration-300 overflow-hidden">
+                        <button class="syllabus-trigger flex items-center justify-between w-full p-6 text-left focus:outline-none hover:bg-regal-bg transition-colors">
+                            <div class="flex items-center space-x-6">
+                                <span class="text-lg font-bold text-regal-lightGray font-mono">04</span>
+                                <div>
+                                    <span class="text-[10px] text-regal-gray tracking-wider uppercase font-bold">第四堂：資料庫建模</span>
+                                    <h4 class="text-md font-bold text-regal-black mt-0.5">地基 — Migrations 資料庫建置與 Eloquent ORM 模型</h4>
+                                </div>
+                            </div>
+                            <i data-lucide="chevron-down" class="w-5 h-5 text-regal-gray transition-transform duration-300"></i>
+                        </button>
+                        <div class="syllabus-content hidden p-6 pt-0 border-t border-regal-border bg-white">
+                            <div class="grid md:grid-cols-2 gap-6 pt-6">
+                                <div>
+                                    <h5 class="text-xs font-bold text-regal-black tracking-widest uppercase mb-2">觀念學習核心</h5>
+                                    <p class="text-sm text-regal-gray leading-relaxed">
+                                        擺脫傳統複雜 SQL 語法的硬背。理解什麼是關聯式資料庫、Migrations（資料表版本控制）與 Eloquent ORM（將資料表包裝成物件）。設計心理測驗專案中的「題目、選項、結果」資料關聯。
+                                    </p>
+                                </div>
+                                <div>
+                                    <h5 class="text-xs font-bold text-regal-black tracking-widest uppercase mb-2">實作任務</h5>
+                                    <p class="text-sm text-regal-gray leading-relaxed">
+                                        使用 Migration 指令定義 `quizzes`、`questions`、`options` 等資料表結構與欄位，執行資料庫遷移，並在 Model 中設定「一對多」的 Eloquent 關聯，實現物件化資料撈取。
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Lesson 5 -->
+                    <div class="syllabus-item border border-regal-border rounded-xl transition-all duration-300 overflow-hidden">
+                        <button class="syllabus-trigger flex items-center justify-between w-full p-6 text-left focus:outline-none hover:bg-regal-bg transition-colors">
+                            <div class="flex items-center space-x-6">
+                                <span class="text-lg font-bold text-regal-lightGray font-mono">05</span>
+                                <div>
+                                    <span class="text-[10px] text-regal-gray tracking-wider uppercase font-bold">第五堂：架構重構與擴充</span>
+                                    <h4 class="text-md font-bold text-regal-black mt-0.5">邏輯分流 — 導入 Service Pattern 服務層優雅架構</h4>
+                                </div>
+                            </div>
+                            <i data-lucide="chevron-down" class="w-5 h-5 text-regal-gray transition-transform duration-300"></i>
+                        </button>
+                        <div class="syllabus-content hidden p-6 pt-0 border-t border-regal-border bg-white">
+                            <div class="grid md:grid-cols-2 gap-6 pt-6">
+                                <div>
+                                    <h5 class="text-xs font-bold text-regal-black tracking-widest uppercase mb-2">觀念學習核心</h5>
+                                    <p class="text-sm text-regal-gray leading-relaxed">
+                                        體會高級架構的設計思維。隨著功能變複雜，Controller 會變得無比臃腫難以維護。學習「高內聚、低耦合」原則，引進 Service Pattern，將複雜的商業邏輯（如心理測驗的複雜計分演算、分析邏輯）獨立封裝。
+                                    </p>
+                                </div>
+                                <div>
+                                    <h5 class="text-xs font-bold text-regal-black tracking-widest uppercase mb-2">實作任務</h5>
+                                    <p class="text-sm text-regal-gray leading-relaxed">
+                                        建立 `QuizService`，把原本塞在 Controller 的測驗分析演算法移至服務層處理，使 Controller 僅負責接收請求與回傳結果，實現極致乾淨且易擴充的後端架構。
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Lesson 6 -->
+                    <div class="syllabus-item border border-regal-border rounded-xl transition-all duration-300 overflow-hidden">
+                        <button class="syllabus-trigger flex items-center justify-between w-full p-6 text-left focus:outline-none hover:bg-regal-bg transition-colors">
+                            <div class="flex items-center space-x-6">
+                                <span class="text-lg font-bold text-regal-lightGray font-mono">06</span>
+                                <div>
+                                    <span class="text-[10px] text-regal-gray tracking-wider uppercase font-bold">第六堂：相依套件生態</span>
+                                    <h4 class="text-md font-bold text-regal-black mt-0.5">套件大合奏 — Composer 與 Node.js 套件管理與靜態資源編譯</h4>
+                                </div>
+                            </div>
+                            <i data-lucide="chevron-down" class="w-5 h-5 text-regal-gray transition-transform duration-300"></i>
+                        </button>
+                        <div class="syllabus-content hidden p-6 pt-0 border-t border-regal-border bg-white">
+                            <div class="grid md:grid-cols-2 gap-6 pt-6">
+                                <div>
+                                    <h5 class="text-xs font-bold text-regal-black tracking-widest uppercase mb-2">觀念學習核心</h5>
+                                    <p class="text-sm text-regal-gray leading-relaxed">
+                                        學習「不重複造輪子」的現代軟體工程思維。理解後端套件管理器 Composer (PHP) 與前端套件管理器 npm / Node.js (JS) 的運作本質與依賴檔案（json/lock 文件），認識靜態資源打包編譯（Vite）。
+                                    </p>
+                                </div>
+                                <div>
+                                    <h5 class="text-xs font-bold text-regal-black tracking-widest uppercase mb-2">實作任務</h5>
+                                    <p class="text-sm text-regal-gray leading-relaxed">
+                                        學習使用 `composer require` 安裝後端輔助套件，並使用 `npm install` 配置前端環境，運行 Vite 編譯指令，完成前後端靜態檔案資源的整合建置。
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Lesson 7 -->
+                    <div class="syllabus-item border border-regal-border rounded-xl transition-all duration-300 overflow-hidden">
+                        <button class="syllabus-trigger flex items-center justify-between w-full p-6 text-left focus:outline-none hover:bg-regal-bg transition-colors">
+                            <div class="flex items-center space-x-6">
+                                <span class="text-lg font-bold text-regal-lightGray font-mono">07</span>
+                                <div>
+                                    <span class="text-[10px] text-regal-gray tracking-wider uppercase font-bold">第七堂：前後端串接</span>
+                                    <h4 class="text-md font-bold text-regal-black mt-0.5">橋樑機制 — Web API 運作本質與前後端連線的秘密</h4>
+                                </div>
+                            </div>
+                            <i data-lucide="chevron-down" class="w-5 h-5 text-regal-gray transition-transform duration-300"></i>
+                        </button>
+                        <div class="syllabus-content hidden p-6 pt-0 border-t border-regal-border bg-white">
+                            <div class="grid md:grid-cols-2 gap-6 pt-6">
+                                <div>
+                                    <h5 class="text-xs font-bold text-regal-black tracking-widest uppercase mb-2">觀念學習核心</h5>
+                                    <p class="text-sm text-regal-gray leading-relaxed">
+                                        專門為「前後端對話」設計的關鍵課程。理解瀏覽器 JavaScript 與伺服器 PHP 之間的溝通管道。深入 HTTP 協議中的 GET/POST 請求、RESTful API 規劃，以及輕量化的資料交換媒介 —— JSON 格式。
+                                    </p>
+                                </div>
+                                <div>
+                                    <h5 class="text-xs font-bold text-regal-black tracking-widest uppercase mb-2">實作任務</h5>
+                                    <p class="text-sm text-regal-gray leading-relaxed">
+                                        在 Laravel 中開啟專屬 API 路由（`routes/api.php`），寫出回傳 JSON 的心理測驗 API；並使用前端 JavaScript 工具發送非同步請求，成功讀取並顯示後端提供的資料。
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Lesson 8 -->
+                    <div class="syllabus-item border border-regal-border rounded-xl transition-all duration-300 overflow-hidden">
+                        <button class="syllabus-trigger flex items-center justify-between w-full p-6 text-left focus:outline-none hover:bg-regal-bg transition-colors">
+                            <div class="flex items-center space-x-6">
+                                <span class="text-lg font-bold text-regal-lightGray font-mono">08</span>
+                                <div>
+                                    <span class="text-[10px] text-regal-gray tracking-wider uppercase font-bold">第八堂：前端極速建構</span>
+                                    <h4 class="text-md font-bold text-regal-black mt-0.5">介面封裝 — Blade + Bootstrap 5 後台視覺與自適應佈局</h4>
+                                </div>
+                            </div>
+                            <i data-lucide="chevron-down" class="w-5 h-5 text-regal-gray transition-transform duration-300"></i>
+                        </button>
+                        <div class="syllabus-content hidden p-6 pt-0 border-t border-regal-border bg-white">
+                            <div class="grid md:grid-cols-2 gap-6 pt-6">
+                                <div>
+                                    <h5 class="text-xs font-bold text-regal-black tracking-widest uppercase mb-2">觀念學習核心</h5>
+                                    <p class="text-sm text-regal-gray leading-relaxed">
+                                        壓縮整合 HTML、CSS 與 CSS 框架。學習響應式網頁設計（RWD）的核心「網格系統（Grid System）」，並理解如何用 Bootstrap 提供的現成元件，在完全不寫自訂 CSS 下快速完成後台排版。
+                                    </p>
+                                </div>
+                                <div>
+                                    <h5 class="text-xs font-bold text-regal-black tracking-widest uppercase mb-2">實作任務</h5>
+                                    <p class="text-sm text-regal-gray leading-relaxed">
+                                        使用 Blade 引入 Bootstrap 5 CDN，繪製出專業漂亮的後台測驗題目管理列表（CRUD 介面）、新增題目的表單，以及在手機和電腦上都能流暢操作的自適應佈局。
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Lesson 9 -->
+                    <div class="syllabus-item border border-regal-border rounded-xl transition-all duration-300 overflow-hidden">
+                        <button class="syllabus-trigger flex items-center justify-between w-full p-6 text-left focus:outline-none hover:bg-regal-bg transition-colors">
+                            <div class="flex items-center space-x-6">
+                                <span class="text-lg font-bold text-regal-lightGray font-mono">09</span>
+                                <div>
+                                    <span class="text-[10px] text-regal-gray tracking-wider uppercase font-bold">第九堂：Vue.js 響應式魔法</span>
+                                    <h4 class="text-md font-bold text-regal-black mt-0.5">前端交互 — 輕量化 Vue.js 導入與響應式狀態魔法</h4>
+                                </div>
+                            </div>
+                            <i data-lucide="chevron-down" class="w-5 h-5 text-regal-gray transition-transform duration-300"></i>
+                        </button>
+                        <div class="syllabus-content hidden p-6 pt-0 border-t border-regal-border bg-white">
+                            <div class="grid md:grid-cols-2 gap-6 pt-6">
+                                <div>
+                                    <h5 class="text-xs font-bold text-regal-black tracking-widest uppercase mb-2">觀念學習核心</h5>
+                                    <p class="text-sm text-regal-gray leading-relaxed">
+                                        若每答一題就要整頁重整，用戶的心理測驗體驗會非常糟糕。壓縮前端 MVVM 概念，認識 Vue 3 的「響應式狀態（Reactive State）」，理解如何讓資料與網頁畫面即時雙向同步。
+                                    </p>
+                                </div>
+                                <div>
+                                    <h5 class="text-xs font-bold text-regal-black tracking-widest uppercase mb-2">實作任務</h5>
+                                    <p class="text-sm text-regal-gray leading-relaxed">
+                                        在 Blade 頁面引入 Vue 3，接管心理測驗做題區塊。實作「點擊選項即時切換下一題」、計算作答分數，並在點完最後一題時發送 API 請求給後端。
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Lesson 10 -->
+                    <div class="syllabus-item border border-regal-border rounded-xl transition-all duration-300 overflow-hidden">
+                        <button class="syllabus-trigger flex items-center justify-between w-full p-6 text-left focus:outline-none hover:bg-regal-bg transition-colors">
+                            <div class="flex items-center space-x-6">
+                                <span class="text-lg font-bold text-regal-lightGray font-mono">10</span>
+                                <div>
+                                    <span class="text-[10px] text-regal-gray tracking-wider uppercase font-bold">第十堂：成果總結與部署</span>
+                                    <h4 class="text-md font-bold text-regal-black mt-0.5">終點與起點 — 專案整合除錯、Vibe Coding 實戰與未來擴充</h4>
+                                </div>
+                            </div>
+                            <i data-lucide="chevron-down" class="w-5 h-5 text-regal-gray transition-transform duration-300"></i>
+                        </button>
+                        <div class="syllabus-content hidden p-6 pt-0 border-t border-regal-border bg-white">
+                            <div class="grid md:grid-cols-2 gap-6 pt-6">
+                                <div>
+                                    <h5 class="text-xs font-bold text-regal-black tracking-widest uppercase mb-2">觀念學習核心</h5>
+                                    <p class="text-sm text-regal-gray leading-relaxed">
+                                        回顧整個專案生命週期與架構。在 Vibe Coding 模式下，當系統出錯時，如何有邏輯地排除 bug？並理解網頁從本機（Local）部署至雲端主機（Production）的生命週期概念。
+                                    </p>
+                                </div>
+                                <div>
+                                    <h5 class="text-xs font-bold text-regal-black tracking-widest uppercase mb-2">實作任務</h5>
+                                    <p class="text-sm text-regal-gray leading-relaxed">
+                                        完美串聯資料庫、Laravel 後端、Service 邏輯層、Vue 前端與 API 對話。講師故意設計常見報錯，引導學生透過 Console 與日誌引導 AI 完成精確除錯，並實行專案最終功能總驗收。
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. The School Division of Labor Analogy -->
+        <section id="analogy" class="py-24 px-6 md:px-20 bg-regal-bg border-y border-regal-border">
+            <div class="max-w-6xl mx-auto">
+                <span class="text-xs font-bold tracking-widest uppercase text-regal-gray block mb-4">Architecture Analogy</span>
+                <h2 class="text-3xl md:text-5xl font-bold tracking-tight text-regal-black serif-font mb-6">
+                    網頁架構的「學校分工合作模型」
+                </h2>
+                <p class="text-sm text-regal-gray max-w-2xl leading-relaxed mb-16">
+                    很多日常生活中我們習以為常的運作，背後其實都經過了高度的設計與分工合作。寫程式的本質也是如此——我們在做的事情，就是設計一個分工嚴密、高度協調的「系統」。當你退一步看，這就像是在創造一個有條不紊運轉的小世界，會帶給你一種無與倫比的「創造」感。點擊下方不同的辦公室，理解這個精緻的系統如何分工協作吧！
+                </p>
+
+                <!-- Interactive Analogy Map -->
+                <div class="grid lg:grid-cols-12 gap-8 items-stretch">
+                    <!-- Left: Interactive Map -->
+                    <div class="lg:col-span-7 bg-white border border-regal-border p-8 rounded-2xl flex flex-col justify-between">
+                        <div>
+                            <span class="text-[10px] text-regal-lightGray tracking-widest uppercase font-bold block mb-4">School Campus Map</span>
+                            <div class="grid grid-cols-2 gap-4">
+                                <button data-office="principal" class="office-marker active p-6 border border-regal-border rounded-xl text-left hover:border-regal-black transition-all">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="text-xs font-bold uppercase tracking-wider text-regal-lightGray font-mono">Office 01</span>
+                                        <i data-lucide="compass" class="w-4 h-4"></i>
+                                    </div>
+                                    <h4 class="font-extrabold text-sm tracking-wide">校長室 (Principal)</h4>
+                                </button>
+
+                                <button data-office="academic" class="office-marker p-6 border border-regal-border rounded-xl text-left hover:border-regal-black transition-all">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="text-xs font-bold uppercase tracking-wider text-regal-lightGray font-mono">Office 02</span>
+                                        <i data-lucide="layers" class="w-4 h-4"></i>
+                                    </div>
+                                    <h4 class="font-extrabold text-sm tracking-wide">教務處 (Academic)</h4>
+                                </button>
+
+                                <button data-office="general" class="office-marker p-6 border border-regal-border rounded-xl text-left hover:border-regal-black transition-all">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="text-xs font-bold uppercase tracking-wider text-regal-lightGray font-mono">Office 03</span>
+                                        <i data-lucide="database" class="w-4 h-4"></i>
+                                    </div>
+                                    <h4 class="font-extrabold text-sm tracking-wide">總務處 (General Affairs)</h4>
+                                </button>
+
+                                <button data-office="security" class="office-marker p-6 border border-regal-border rounded-xl text-left hover:border-regal-black transition-all">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="text-xs font-bold uppercase tracking-wider text-regal-lightGray font-mono">Office 04</span>
+                                        <i data-lucide="shield-check" class="w-4 h-4"></i>
+                                    </div>
+                                    <h4 class="font-extrabold text-sm tracking-wide">警衛室 (Security Guard)</h4>
+                                </button>
+
+                                <button data-office="classroom" class="office-marker p-6 border border-regal-border rounded-xl text-left hover:border-regal-black transition-all col-span-2">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="text-xs font-bold uppercase tracking-wider text-regal-lightGray font-mono">Office 05</span>
+                                        <i data-lucide="monitor" class="w-4 h-4"></i>
+                                    </div>
+                                    <h4 class="font-extrabold text-sm tracking-wide">美化組與班級現場 (Classroom Decor)</h4>
+                                </button>
+
+                                <button data-office="counseling" class="office-marker p-6 border border-regal-border rounded-xl text-left hover:border-regal-black transition-all col-span-2">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="text-xs font-bold uppercase tracking-wider text-regal-lightGray font-mono">Office 06</span>
+                                        <i data-lucide="heart" class="w-4 h-4"></i>
+                                    </div>
+                                    <h4 class="font-extrabold text-sm tracking-wide">心理諮商室 (Counseling Room)</h4>
+                                </button>
+                            </div>
+                        </div>
+                        <p class="text-[11px] text-regal-gray mt-6 text-center italic">
+                            提示：點選上方任一辦公室，右側會同步顯示該部門的職責說明與未來修改指引。
+                        </p>
+                    </div>
+
+                    <!-- Right: Detail Description Panel -->
+                    <div class="lg:col-span-5 bg-regal-black text-white p-8 rounded-2xl flex flex-col justify-between" id="office-detail-panel">
+                        <!-- Content will be swapped by jQuery -->
+                        <div id="office-dynamic-content" class="space-y-6">
+                            <div>
+                                <span class="text-[9px] bg-white text-regal-black px-2 py-0.5 rounded font-extrabold uppercase tracking-widest">Office 01</span>
+                                <h3 class="text-2xl font-bold mt-3 text-white">校長室 (Principal's Office)</h3>
+                                <p class="text-xs text-regal-gray tracking-wider uppercase mt-1">對應技術：Laravel Router (routes/web.php)</p>
+                            </div>
+                            <div class="w-full h-px bg-neutral-800 my-4"></div>
+                            <div>
+                                <h4 class="text-sm font-bold text-white mb-2 flex items-center space-x-2">
+                                    <i data-lucide="check-circle" class="w-4 h-4 text-white"></i>
+                                    <span>職責說明</span>
+                                </h4>
+                                <p class="text-sm text-regal-lightGray leading-relaxed">
+                                    當有人從校門口（瀏覽器輸入網址）進來時，他會拿到一張「網址紙條」。門房不能隨便處理，會送往校長室。校長室的工作很單純：看著紙條上的網址，查閱手冊，決定將這個人指派去哪個處室（例如：把這項需求交給特定的教務處 Controller）處理。
+                                </p>
+                            </div>
+                            <div class="p-4 bg-neutral-900 border border-neutral-800 rounded-lg">
+                                <h5 class="text-xs font-bold text-white mb-2">未來修改指南：</h5>
+                                <p class="text-xs text-regal-lightGray leading-relaxed">
+                                    如果你在未來想要為網站新增一頁（例如新增一個「關於我們」或新的「測驗列表」），你首先必須去校長室（`routes/web.php`）寫一條新的路由指令，告訴系統這個網址要由誰來處理。
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="mt-8 pt-4 border-t border-neutral-800">
+                            <span class="text-xs text-regal-gray tracking-wide">
+                                學校角色分工與程式 MVC 架構對比
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. Framework Introduction -->
+        <section id="stack" class="py-24 px-6 md:px-20 bg-white">
+            <div class="max-w-6xl mx-auto">
+                <span class="text-xs font-bold tracking-widest uppercase text-regal-gray block mb-4">Core Frameworks</span>
+                <h2 class="text-3xl md:text-5xl font-bold tracking-tight text-regal-black serif-font mb-6">
+                    本專案三大開發框架
+                </h2>
+                <p class="text-sm text-regal-gray max-w-2xl leading-relaxed mb-16">
+                    我們在專案中將主要使用 Laravel 作為後端基底、Vue.js 作為前端高互動引擎，並以 Bootstrap 作為後台與部分組件的版面樣式。
+                </p>
+
+                <div class="grid md:grid-cols-3 gap-8">
+                    <!-- Laravel Card -->
+                    <div class="luxury-card p-8 rounded-2xl flex flex-col justify-between">
+                        <div>
+                            <div class="w-12 h-12 bg-red-50 text-red-600 rounded-xl flex items-center justify-center mb-6">
+                                <i data-lucide="server" class="w-6 h-6"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-regal-black mb-3">Laravel</h3>
+                            <span class="text-[10px] text-regal-gray tracking-widest uppercase font-bold block mb-4">Backend Framework (PHP)</span>
+                            <p class="text-sm text-regal-gray leading-relaxed mb-6">
+                                優雅的 PHP 全端框架。它提供了資料庫遷移（Migration）、強大的 Eloquent ORM（用物件的方式管理資料）、內建的安全驗證與路由機制。它將扮演我們網站的「後端心臟」，處理資料運算、存儲與身分驗證。
+                            </p>
+                        </div>
+                        <a href="https://laravel.com/" target="_blank" class="inline-flex items-center space-x-2 text-xs font-bold text-regal-black hover:translate-x-1 transition-transform">
+                            <span>前往 Laravel 官網</span>
+                            <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+                        </a>
+                    </div>
+
+                    <!-- Vue Card -->
+                    <div class="luxury-card p-8 rounded-2xl flex flex-col justify-between">
+                        <div>
+                            <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center mb-6">
+                                <i data-lucide="codepen" class="w-6 h-6"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-regal-black mb-3">Vue.js</h3>
+                            <span class="text-[10px] text-regal-gray tracking-widest uppercase font-bold block mb-4">Frontend Framework (JS)</span>
+                            <p class="text-sm text-regal-gray leading-relaxed mb-6">
+                                漸進式 JavaScript 框架。它的核心特色是「雙向資料綁定」與「組件化」。當你的心理測驗在前端點擊下一題時，Vue 會即時更新畫面狀態而不需重新整理網頁，讓使用者體驗無比絲滑、沉浸。
+                            </p>
+                        </div>
+                        <a href="https://vuejs.org/" target="_blank" class="inline-flex items-center space-x-2 text-xs font-bold text-regal-black hover:translate-x-1 transition-transform">
+                            <span>前往 Vue.js 官網</span>
+                            <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+                        </a>
+                    </div>
+
+                    <!-- Bootstrap Card -->
+                    <div class="luxury-card p-8 rounded-2xl flex flex-col justify-between">
+                        <div>
+                            <div class="w-12 h-12 bg-purple-50 text-purple-600 rounded-xl flex items-center justify-center mb-6">
+                                <i data-lucide="layout" class="w-6 h-6"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-regal-black mb-3">Bootstrap</h3>
+                            <span class="text-[10px] text-regal-gray tracking-widest uppercase font-bold block mb-4">UI/CSS Framework</span>
+                            <p class="text-sm text-regal-gray leading-relaxed mb-6">
+                                最受歡迎的 CSS 框架。它預先設計好了大量的網頁元件樣式（如按鈕、輸入框、導航列、表格、網格），能讓我們在幾乎不寫自訂 CSS 的情況下，快速建構出排版整齊、能在手機與電腦上自適應顯示的「後台管理介面」。
+                            </p>
+                        </div>
+                        <a href="https://getbootstrap.com/" target="_blank" class="inline-flex items-center space-x-2 text-xs font-bold text-regal-black hover:translate-x-1 transition-transform">
+                            <span>前往 Bootstrap 官網</span>
+                            <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. Salary Market Analysis -->
+        <section id="market" class="py-24 px-6 md:px-20 bg-regal-bg border-y border-regal-border">
+            <div class="max-w-6xl mx-auto">
+                <span class="text-xs font-bold tracking-widest uppercase text-regal-gray block mb-4">Market Outlook</span>
+                <h2 class="text-3xl md:text-5xl font-bold tracking-tight text-regal-black serif-font mb-6">
+                    Laravel + Vue 技術棧薪水行情與中位數
+                </h2>
+                <p class="text-sm text-regal-gray max-w-2xl leading-relaxed mb-12">
+                    學習這套技術不僅能幫助你實現心理學網站專案，更是全球及台灣軟體接案與職涯市場中極具競爭力的組合。以下是基於 2026 年最新調查的薪資行情分析。
+                </p>
+
+                <!-- Salary Interactive Display -->
+                <div class="bg-white border border-regal-border rounded-2xl p-8 shadow-sm">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 pb-6 border-b border-regal-border space-y-4 sm:space-y-0">
+                        <div>
+                            <span class="text-[10px] text-regal-lightGray tracking-widest uppercase font-bold">Salary Comparison</span>
+                            <h3 class="text-xl font-bold text-regal-black mt-1">Laravel + Vue 全端工程師年薪行情</h3>
+                        </div>
+                        <!-- Toggle Buttons -->
+                        <div class="inline-flex bg-regal-bg p-1 rounded-lg border border-regal-border">
+                            <button id="btn-tw" class="px-4 py-2 text-xs font-bold tracking-wider rounded-md bg-white text-regal-black shadow-sm focus:outline-none transition-all">
+                                台灣市場 (TWD)
+                            </button>
+                            <button id="btn-us" class="px-4 py-2 text-xs font-bold tracking-wider rounded-md text-regal-gray hover:text-regal-black focus:outline-none transition-all">
+                                美國市場 (USD)
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Salary Dynamic Grid -->
+                    <div class="grid md:grid-cols-3 gap-8" id="salary-container">
+                        <!-- Card 1: Junior -->
+                        <div class="p-6 bg-regal-bg rounded-xl border border-regal-border hover:border-regal-black transition-all">
+                            <span class="text-[9px] bg-regal-black text-white px-2 py-0.5 rounded font-extrabold uppercase tracking-widest">0 ~ 2 年經驗</span>
+                            <h4 class="text-lg font-bold text-regal-black mt-3">初階 Full-Stack</h4>
+                            <div class="mt-4 pb-4 border-b border-regal-border/60">
+                                <span class="text-xs text-regal-gray">月薪範圍</span>
+                                <p class="text-2xl font-black text-regal-black mt-0.5" id="salary-jr-val">NT$ 45,000 ~ 85,000</p>
+                            </div>
+                            <div class="mt-4">
+                                <span class="text-xs text-regal-gray">年薪中位數</span>
+                                <p class="text-lg font-extrabold text-regal-black mt-0.5" id="salary-jr-ann">NT$ 65 萬 ~ 110 萬</p>
+                            </div>
+                        </div>
+
+                        <!-- Card 2: Mid-Level -->
+                        <div class="p-6 bg-white rounded-xl border-2 border-regal-black relative overflow-hidden shadow-lg shadow-neutral-100">
+                            <div class="absolute top-0 right-0 bg-regal-black text-white text-[8px] tracking-widest uppercase font-black px-3 py-1 rounded-bl">
+                                主流戰力
+                            </div>
+                            <span class="text-[9px] bg-regal-black text-white px-2 py-0.5 rounded font-extrabold uppercase tracking-widest">3 ~ 5 年經驗</span>
+                            <h4 class="text-lg font-bold text-regal-black mt-3">中階 Full-Stack</h4>
+                            <div class="mt-4 pb-4 border-b border-regal-border/60">
+                                <span class="text-xs text-regal-gray">月薪範圍</span>
+                                <p class="text-2xl font-black text-regal-black mt-0.5" id="salary-mid-val">NT$ 65,000 ~ 120,000</p>
+                            </div>
+                            <div class="mt-4">
+                                <span class="text-xs text-regal-gray">年薪中位數</span>
+                                <p class="text-lg font-extrabold text-regal-black mt-0.5" id="salary-mid-ann">NT$ 90 萬 ~ 160 萬</p>
+                            </div>
+                        </div>
+
+                        <!-- Card 3: Senior -->
+                        <div class="p-6 bg-regal-bg rounded-xl border border-regal-border hover:border-regal-black transition-all">
+                            <span class="text-[9px] bg-regal-black text-white px-2 py-0.5 rounded font-extrabold uppercase tracking-widest">5 ~ 8+ 年經驗</span>
+                            <h4 class="text-lg font-bold text-regal-black mt-3">資深 Full-Stack</h4>
+                            <div class="mt-4 pb-4 border-b border-regal-border/60">
+                                <span class="text-xs text-regal-gray">月薪範圍</span>
+                                <p class="text-2xl font-black text-regal-black mt-0.5" id="salary-sr-val">NT$ 95,000 ~ 170,000+</p>
+                            </div>
+                            <div class="mt-4">
+                                <span class="text-xs text-regal-gray">年薪中位數</span>
+                                <p class="text-lg font-extrabold text-regal-black mt-0.5" id="salary-sr-ann">NT$ 130 萬 ~ 230 萬+</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Market insights detail & Credibility sources -->
+                    <div class="mt-8 p-6 bg-regal-bg rounded-xl space-y-4">
+                        <div class="flex flex-col md:flex-row justify-between items-start md:items-center space-y-4 md:space-y-0 border-b border-regal-border/60 pb-4">
+                            <div class="max-w-2xl">
+                                <h4 class="text-sm font-bold text-regal-black mb-1">💡 接案與遠端市場 (Remote Working) 的溢價空間</h4>
+                                <p class="text-xs text-regal-gray leading-relaxed">
+                                    許多台灣工程師憑藉「Laravel + Vue」的全端能力，直接承接來自美國、澳洲或新加坡的遠端工作（Remote Roles），年薪中位數常能大幅躍升至 <strong class="text-regal-black">US$ 55,000 起（約台幣 170 ~ 180 萬元）</strong>，甚至資深者可突破 <strong class="text-regal-black">US$ 100,000+</strong>。
+                                </p>
+                            </div>
+                            <div class="shrink-0 md:text-right">
+                                <span class="text-[9px] text-regal-lightGray block font-bold uppercase tracking-wider">數據更新時間</span>
+                                <span class="text-xs font-bold text-regal-black mt-1 block">2026 年第 2 季</span>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <span class="text-[9px] text-regal-lightGray block font-bold uppercase tracking-wider mb-1">📊 數據調查依據</span>
+                            <p class="text-[11px] text-regal-gray leading-relaxed">
+                                本薪水行情與中位數皆有真實統計調查依據，經由以下各平台之 2026 職缺調查報告彙整所得：
+                                <br>• <strong>台灣市場</strong>：整合 SecondTalent 跨國人才庫、CakeResume 全端工程師年薪調查、以及 104 人力銀行軟體開發月薪中位數。
+                                <br>• <strong>美國市場</strong>：參考 Salary.com 全端工程職能統計、Indeed 美國 Full-Stack 職缺薪水分析、以及 ZipRecruiter 針對 Laravel 技術特長之薪酬調查中位數。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 7. Interactive Checkpoint -->
+        <section id="checkpoint" class="py-24 px-6 md:px-20 bg-white">
+            <div class="max-w-4xl mx-auto border border-regal-border rounded-3xl p-8 md:p-12 relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-full h-1 bg-regal-black"></div>
+                <div class="max-w-2xl">
+                    <span class="text-xs font-bold tracking-widest uppercase text-regal-gray block mb-4">Quiz Checkpoint</span>
+                    <h2 class="text-2xl md:text-3xl font-bold tracking-tight text-regal-black serif-font mb-6">
+                        隨堂概念自我檢測
+                    </h2>
+                    <p class="text-sm text-regal-gray leading-relaxed mb-8">
+                        來看看你是否已經完全理解第一堂諮詢中所傳達的網站分工概念。請回答以下問題：
+                    </p>
+
+                    <!-- Question Widget -->
+                    <div class="space-y-6" id="quiz-widget">
+                        <div>
+                            <h4 class="text-sm font-bold text-regal-black mb-4">
+                                問題 1：在「學校行政模型」中，當使用者輸入網址請求訪問心理測驗頁時，最先接到紙條並決定如何轉發的「校長室」對應的是 Laravel 的什麼組件？
+                            </h4>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="q1-options">
+                                <button data-correct="false" class="quiz-option text-left px-5 py-4 border border-regal-border hover:border-regal-black rounded-xl text-xs font-semibold text-regal-charcoal hover:bg-regal-bg transition-all">
+                                    A. Controller (控制器 / 教務處)
+                                </button>
+                                <button data-correct="true" class="quiz-option text-left px-5 py-4 border border-regal-border hover:border-regal-black rounded-xl text-xs font-semibold text-regal-charcoal hover:bg-regal-bg transition-all">
+                                    B. Route (路由 / 校長室)
+                                </button>
+                                <button data-correct="false" class="quiz-option text-left px-5 py-4 border border-regal-border hover:border-regal-black rounded-xl text-xs font-semibold text-regal-charcoal hover:bg-regal-bg transition-all">
+                                    C. Migration & DB (資料庫 / 總務處)
+                                </button>
+                                <button data-correct="false" class="quiz-option text-left px-5 py-4 border border-regal-border hover:border-regal-black rounded-xl text-xs font-semibold text-regal-charcoal hover:bg-regal-bg transition-all">
+                                    D. Vue.js (前端組件 / 諮商室)
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Feedback Panel -->
+                        <div id="quiz-feedback" class="hidden p-4 rounded-xl text-xs leading-relaxed">
+                            <!-- Injected by JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="py-12 px-6 md:px-20 border-t border-regal-border bg-white text-center">
+            <div class="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0">
+                <span class="text-xs text-regal-gray font-medium">
+                    朱珮瑜專案三 第一次諮詢 專用課本
+                </span>
+                <span class="text-xs text-regal-lightGray">
+                    Designed with White & Regal Black Theme by Antigravity
+                </span>
+            </div>
+        </footer>
+
+    </main>
+
+    <!-- Interactive Scripts (jQuery & Custom Actions) -->
+    <script>
+        $(document).ready(function () {
+            // Initialize Lucide Icons
+            lucide.createIcons();
+
+            // Toggle Sidebar Table of Contents
+            $('#sidebar-toggle').click(function () {
+                toggleSidebar();
+            });
+
+            $('#sidebar-overlay').click(function () {
+                closeSidebar();
+            });
+
+            // Close sidebar on link click
+            $('.toc-link').click(function () {
+                closeSidebar();
+            });
+
+            function toggleSidebar() {
+                const sidebar = $('#sidebar');
+                const overlay = $('#sidebar-overlay');
+                const icon = $('#toggle-icon');
+
+                if (sidebar.hasClass('active')) {
+                    sidebar.removeClass('active');
+                    overlay.removeClass('active');
+                    icon.attr('data-lucide', 'menu');
+                } else {
+                    sidebar.addClass('active');
+                    overlay.addClass('active');
+                    icon.attr('data-lucide', 'x');
+                }
+                lucide.createIcons();
+            }
+
+            function closeSidebar() {
+                $('#sidebar').removeClass('active');
+                $('#sidebar-overlay').removeClass('active');
+                $('#toggle-icon').attr('data-lucide', 'menu');
+                lucide.createIcons();
+            }
+
+            // Accordion for Syllabus
+            $('.syllabus-trigger').click(function () {
+                const item = $(this).closest('.syllabus-item');
+                const content = item.find('.syllabus-content');
+                const icon = $(this).find('[data-lucide="chevron-down"], [data-lucide="chevron-up"]');
+
+                // Toggle visibility
+                content.slideToggle(300);
+                
+                // Toggle active class for background coloring
+                item.toggleClass('bg-regal-bg');
+
+                // Rotate arrow icon
+                if (item.hasClass('active-expanded')) {
+                    item.removeClass('active-expanded');
+                    icon.css('transform', 'rotate(0deg)');
+                } else {
+                    item.addClass('active-expanded');
+                    icon.css('transform', 'rotate(180deg)');
+                }
+            });
+
+            // Interactive Analogy Map office click behavior
+            $('.office-marker').click(function () {
+                $('.office-marker').removeClass('active');
+                $(this).addClass('active');
+
+                const office = $(this).data('office');
+                updateOfficeContent(office);
+            });
+
+            const officeData = {
+                principal: {
+                    title: "校長室 (Principal's Office)",
+                    tech: "對應技術：Laravel Router (routes/web.php)",
+                    badge: "Office 01",
+                    desc: "當有人從校門口（瀏覽器輸入網址）進來時，他會拿到一張「網址紙條」。門房不能隨便處理，會送往校長室。校長室的工作很單純：看著紙條上的網址，查閱手冊，決定將這個人指派去哪個處室（例如：把這項需求交給特定的教務處 Controller）處理。",
+                    modify: "如果你在未來想要為網站新增一頁（例如新增一個「關於我們」或新的「測驗列表」），你首先必須去校長室（<code>routes/web.php</code>）寫一條新的路由指令，告訴系統這個網址要由誰來處理。"
+                },
+                academic: {
+                    title: "教務處 (Academic Affairs)",
+                    tech: "對應技術：Laravel Controller (app/Http/Controllers)",
+                    badge: "Office 02",
+                    desc: "教務處是執行行政邏輯的核心部門。當校長指派一個任務給它時，它負責把相關的人員召集起來。比如：如果校長要教務處「列出所有心理測驗」，教務處就會去總務處（資料庫）把測驗題目領出來，然後打包送到班級現場（前端頁面）讓學生填寫。",
+                    modify: "如果你想修改「如何判定心理測驗分數」或「如何計算作答結果」，你應該去教務處（<code>Controller</code>）修改處理逻辑與加分規則。"
+                },
+                general: {
+                    title: "總務處 (General Affairs)",
+                    tech: "對應技術：Laravel Model & Database (MySQL / Eloquent)",
+                    badge: "Office 03",
+                    desc: "總務處管理著學校所有的資產、檔案、倉庫物資（資料庫）。它不負責做決策，只負責忠實地保管資料。教務處需要領取題目，必須通過總務處；教務處需要把使用者的作答存檔，也是交給總務處登記在冊。",
+                    modify: "如果你發現你的測驗多了一個「題型分類」或是「想要增加新欄位來記錄使用者的填寫時間」，你就必須去總務處擴建資料庫（撰寫新的 <code>Migration</code> 並定義 <code>Model</code>）。"
+                },
+                security: {
+                    title: "警衛室 (Security Guard)",
+                    tech: "對應技術：Laravel Middleware (app/Http/Middleware)",
+                    badge: "Office 04",
+                    desc: "警衛室守在門口，審查所有人是否有對應的憑證與權限。例如，它會檢查你是不是這間學校的學生（是否已登入），或是你身上有沒有帶違禁品（防範 CSRF 跨站攻擊）。只有通過警衛室安全審查的人，校長室才會為他分派工作。",
+                    modify: "如果你的心理學網站未來有某些頁面「只有付費會員能看」或是「只有後台管理員能進」，你必須在警衛室（<code>Middleware</code>）設定門禁規則。"
+                },
+                classroom: {
+                    title: "美化組與班級現場 (Classroom Decor)",
+                    tech: "對應技術：Bootstrap & Blade CSS/HTML",
+                    badge: "Office 05",
+                    desc: "這是整個學校的面貌，也是外人唯一看得到的部分。美化組負責粉刷牆壁、安排課桌椅的擺放、設計校服。Bootstrap 就像是一套現成的豪華校服規範與裝潢藍圖，讓我們可以在極短的時間內，讓教室看起來非常整齊、高端。",
+                    modify: "如果你要修改後台網頁的顏色、按鈕的排版位置、表格的高度、或是增加一個漂亮的標題欄位，你應該在美化組（<code>Bootstrap/Blade HTML</code>）裡面調整樣式。"
+                },
+                counseling: {
+                    title: "心理諮商室 (Counseling Room)",
+                    tech: "對應技術：Vue.js 前端即時互動 (Browser Logic)",
+                    badge: "Office 06",
+                    desc: "心理諮商室就在教室裡面，能給予學生第一時間的心理諮商與互動。在網頁中，如果每個動作都要回到總務處或校長室，速度會太慢。Vue.js 就像是諮商老師，在瀏覽器端（本地端）就能直接管理學生的情緒狀態（State）。你點擊選項，它能立即更新畫面，等全部做完再把結果送回校長室。",
+                    modify: "如果你想調整做心理測驗時的「即時互動動畫」、讓選項點擊後立即變色、或是「不重新整理網頁就動態呈現分數」，你需要去諮商室（<code>Vue 組件</code>）去編寫與調整 JavaScript 邏輯。"
+                }
+            };
+
+            function updateOfficeContent(office) {
+                const data = officeData[office];
+                if (!data) return;
+
+                const htmlContent = `
+                    <div>
+                        <span class="text-[9px] bg-white text-regal-black px-2 py-0.5 rounded font-extrabold uppercase tracking-widest">${data.badge}</span>
+                        <h3 class="text-2xl font-bold mt-3 text-white">${data.title}</h3>
+                        <p class="text-xs text-regal-gray tracking-wider uppercase mt-1">${data.tech}</p>
+                    </div>
+                    <div class="w-full h-px bg-neutral-800 my-4"></div>
+                    <div>
+                        <h4 class="text-sm font-bold text-white mb-2 flex items-center space-x-2">
+                            <i data-lucide="check-circle" class="w-4 h-4 text-white"></i>
+                            <span>職責說明</span>
+                        </h4>
+                        <p class="text-sm text-regal-lightGray leading-relaxed">
+                            ${data.desc}
+                        </p>
+                    </div>
+                    <div class="p-4 bg-neutral-900 border border-neutral-800 rounded-lg">
+                        <h5 class="text-xs font-bold text-white mb-2">未來修改指南：</h5>
+                        <p class="text-xs text-regal-lightGray leading-relaxed">
+                            ${data.modify}
+                        </p>
+                    </div>
+                `;
+
+                // Fade out then fade in content
+                $('#office-dynamic-content').fadeOut(200, function () {
+                    $(this).html(htmlContent).fadeIn(200);
+                    lucide.createIcons();
+                });
+            }
+
+            // Salary Market Toggle
+            const salaryData = {
+                tw: {
+                    jrVal: "NT$ 45,000 ~ 85,000",
+                    jrAnn: "NT$ 65 萬 ~ 110 萬",
+                    midVal: "NT$ 65,000 ~ 120,000",
+                    midAnn: "NT$ 90 萬 ~ 160 萬",
+                    srVal: "NT$ 95,000 ~ 170,000+",
+                    srAnn: "NT$ 130 萬 ~ 230 萬+"
+                },
+                us: {
+                    jrVal: "US$ 5,000 ~ 7,500 / 月",
+                    jrAnn: "US$ 65,000 ~ 90,000",
+                    midVal: "US$ 7,500 ~ 10,250 / 月",
+                    midAnn: "US$ 90,000 ~ 123,000",
+                    srVal: "US$ 10,800 ~ 15,000+ / 月",
+                    srAnn: "US$ 130,000 ~ 180,000+"
+                }
+            };
+
+            $('#btn-tw').click(function () {
+                toggleSalaryActive('tw');
+                updateSalary(salaryData.tw);
+            });
+
+            $('#btn-us').click(function () {
+                toggleSalaryActive('us');
+                updateSalary(salaryData.us);
+            });
+
+            function toggleSalaryActive(market) {
+                if (market === 'tw') {
+                    $('#btn-tw').addClass('bg-white text-regal-black shadow-sm').removeClass('text-regal-gray hover:text-regal-black');
+                    $('#btn-us').removeClass('bg-white text-regal-black shadow-sm').addClass('text-regal-gray hover:text-regal-black');
+                } else {
+                    $('#btn-us').addClass('bg-white text-regal-black shadow-sm').removeClass('text-regal-gray hover:text-regal-black');
+                    $('#btn-tw').removeClass('bg-white text-regal-black shadow-sm').addClass('text-regal-gray hover:text-regal-black');
+                }
+            }
+
+            function updateSalary(data) {
+                $('#salary-container').fadeOut(200, function () {
+                    $('#salary-jr-val').text(data.jrVal);
+                    $('#salary-jr-ann').text(data.jrAnn);
+                    $('#salary-mid-val').text(data.midVal);
+                    $('#salary-mid-ann').text(data.midAnn);
+                    $('#salary-sr-val').text(data.srVal);
+                    $('#salary-sr-ann').text(data.srAnn);
+                    $(this).fadeIn(200);
+                });
+            }
+
+            // Interactive Checkpoint Logic
+            $('.quiz-option').click(function () {
+                const isCorrect = $(this).data('correct') === true;
+                const feedback = $('#quiz-feedback');
+
+                // Clear previous classes
+                feedback.removeClass('bg-red-50 text-red-800 bg-emerald-50 text-emerald-800');
+                $('.quiz-option').removeClass('border-regal-black bg-regal-bg text-regal-black border-red-500 bg-red-50 text-red-800 border-emerald-500 bg-emerald-50 text-emerald-800');
+
+                if (isCorrect) {
+                    $(this).addClass('border-emerald-500 bg-emerald-50 text-emerald-800');
+                    feedback.addClass('bg-emerald-50 text-emerald-800 active')
+                        .html('<strong>🎉 答對了！非常棒！</strong><br>在 Laravel 的架構中，Route (路由) 就如同校長室。當接收到使用者的網址請求時，它負責根據網址查詢對應的對照表，並將請求分派給合適的 Controller (控制器/教務處) 進行後續的邏輯處理與資料提取。')
+                        .slideDown(250);
+                } else {
+                    $(this).addClass('border-red-500 bg-red-50 text-red-800');
+                    feedback.addClass('bg-red-50 text-red-800 active')
+                        .html('<strong>❌ 答錯囉，再想一想！</strong><br>提示：當網址進來時，誰是第一關負責查詢手冊、分派任務的角色呢？Controller 比較像是在執行實際業務的「教務處」；而 Model 則是管理檔案物資的「總務處」。負責第一關調度路由的，是<strong>校長室 (Route)</strong>。')
+                        .slideDown(250);
+                }
+            });
+
+            // Smooth TOC Scroll highlight
+            $(window).scroll(function() {
+                const scrollPos = $(document).scrollTop();
+                
+                $('section').each(function() {
+                    const top = $(this).offset().top - 100;
+                    const bottom = top + $(this).outerHeight();
+                    const id = $(this).attr('id');
+                    
+                    if (scrollPos >= top && scrollPos < bottom) {
+                        $('.toc-link').removeClass('active');
+                        $(`.toc-link[href="#${id}"]`).addClass('active');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>
