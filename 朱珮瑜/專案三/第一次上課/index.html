@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>設計師的後端探索：從 UI/UX 到 Laravel 後台世界</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Tailwind Configuration for Custom Fonts and Colors -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            serif: ['Noto Serif TC', 'Georgia', 'serif'],
+            sans: ['Inter', 'Noto Sans TC', 'sans-serif'],
+          },
+          colors: {
+            paper: {
+              50: '#FAF8F5',   // 象牙暖白
+              100: '#F4F1EA',  // 溫潤米色
+              200: '#E6DEC9',  // 復古紙張色
+            },
+            ink: {
+              800: '#2C2A29',  // 柔和碳黑
+              900: '#1C1B1A',  // 濃郁墨黑
+            },
+            gold: {
+              100: '#F5EFE6',  // 奢華淺金
+              200: '#EADBC8',  // 璀璨沙金
+              300: '#DAC0A3',  // 雅緻霧金
+              400: '#C5A880',  // 經典古銅金
+              800: '#735238',  // 深古銅褐
+              900: '#5C402B',  // 奢華暗褐
+            }
+          }
+        }
+      }
+    }
+  </script>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Serif+TC:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  
+  <!-- Custom CSS for Extra Textbook Aesthetics & Flip Effect -->
+  <style>
+    /* Paper Texture & Book Details */
+    .book-container {
+      perspective: 2000px;
+    }
+    
+    .paper-texture {
+      background-image: 
+        radial-gradient(circle at 50% 50%, rgba(255,255,255,0.45) 0%, rgba(255,255,255,0) 100%),
+        linear-gradient(rgba(140, 98, 57, 0.01) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(140, 98, 57, 0.01) 1px, transparent 1px);
+      background-size: 100% 100%, 24px 24px, 24px 24px;
+    }
+
+    /* Page Spine Shadow to make it look realistic */
+    .book-spine-single {
+      box-shadow: inset 0 0 25px rgba(92, 64, 43, 0.04);
+    }
+    
+    /* Elegant Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(140, 98, 57, 0.01);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(197, 168, 128, 0.3);
+      border-radius: 6px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(197, 168, 128, 0.5);
+    }
+
+    /* Interactive highlights */
+    .highlightable-text p, .highlightable-text li {
+      position: relative;
+      cursor: pointer;
+      transition: background-color 0.3s ease, padding 0.3s ease;
+      border-radius: 6px;
+    }
+    .highlightable-text p:hover, .highlightable-text li:hover {
+      background-color: rgba(218, 192, 163, 0.12);
+    }
+    
+    /* Actual Highlighter Classes */
+    .hl-yellow {
+      background-color: rgba(254, 240, 138, 0.85) !important;
+      border-bottom: 2px solid rgba(234, 179, 8, 0.4);
+    }
+    .hl-green {
+      background-color: rgba(187, 247, 208, 0.85) !important;
+      border-bottom: 2px solid rgba(34, 197, 94, 0.4);
+    }
+    .hl-blue {
+      background-color: rgba(191, 219, 254, 0.85) !important;
+      border-bottom: 2px solid rgba(59, 130, 246, 0.4);
+    }
+    
+    /* Flip Transition Animations */
+    .page-transition-enter {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    .page-transition-active {
+      transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+      opacity: 1;
+      transform: translateY(0deg);
+    }
+  </style>
+</head>
+<body class="bg-[#F8F6F0] text-ink-800 font-sans min-h-screen flex flex-col selection:bg-gold-200">
+
+  <!-- Floating Menu Trigger -->
+  <button id="toggle-sidebar" class="fixed top-4 left-4 z-50 p-3 bg-white/80 hover:bg-white backdrop-blur border border-stone-200/60 rounded-2xl text-stone-700 shadow-md transition-all flex items-center justify-center cursor-pointer" title="開啟/關閉目錄與工具">
+    <i class="fa-solid fa-bars-staggered text-lg"></i>
+  </button>
+
+  <!-- Floating Quick Utilities Dock -->
+  <div class="fixed top-4 right-4 z-50 bg-white/80 backdrop-blur-xl border border-stone-200/60 rounded-2xl shadow-md p-2 flex items-center gap-3.5 text-sm transition-all">
+    <!-- Font size adjustment -->
+    <div class="flex items-center bg-stone-100/80 rounded-xl p-0.5 border border-stone-200/60">
+      <button id="font-dec" class="px-2.5 py-1 hover:bg-white hover:shadow-sm rounded-lg transition-all text-xs font-bold" title="縮小字體">A-</button>
+      <button id="font-inc" class="px-2.5 py-1 hover:bg-white hover:shadow-sm rounded-lg transition-all text-xs font-bold" title="放大字體">A+</button>
+    </div>
+
+    <!-- Highlighter Color Picker -->
+    <div class="flex items-center gap-1.5 bg-stone-100/80 px-2 py-1 rounded-xl border border-stone-200/60">
+      <span class="text-xs text-stone-500 mr-1"><i class="fa-solid fa-highlighter text-gold-400"></i></span>
+      <button class="hl-color-btn w-4 h-4 rounded-full bg-yellow-300 border-2 border-white ring-2 ring-gold-300 ring-offset-0 transition-transform hover:scale-110" data-color="yellow"></button>
+      <button class="hl-color-btn w-4 h-4 rounded-full bg-green-300 border border-white transition-transform hover:scale-110" data-color="green"></button>
+      <button class="hl-color-btn w-4 h-4 rounded-full bg-blue-300 border border-white transition-transform hover:scale-110" data-color="blue"></button>
+    </div>
+
+    <!-- Bookmark current page -->
+    <button id="bookmark-page" class="flex items-center gap-1.5 py-1 px-3 hover:bg-white hover:shadow-sm border border-stone-200/85 rounded-xl text-stone-700 transition-all text-xs font-semibold" title="書籤此頁面">
+      <i class="fa-regular fa-bookmark text-gold-800" id="bookmark-icon"></i>
+      <span class="hidden md:inline">加入書籤</span>
+    </button>
+
+    <!-- Reading progress -->
+    <div class="hidden lg:flex items-center gap-2 border-l pl-3 border-stone-200">
+      <span class="text-xxs font-bold text-stone-500">進度</span>
+      <div class="w-16 bg-stone-200/60 h-1 rounded-full overflow-hidden">
+        <div id="reading-progress-bar" class="bg-gold-400 h-full w-1/6 transition-all duration-500"></div>
+      </div>
+      <span id="page-indicator" class="text-xxs font-serif font-bold text-stone-700">1 / 6</span>
+    </div>
+  </div>
+
+  <!-- Main Workspace Layout -->
+  <div class="flex flex-1 relative overflow-hidden">
+    
+    <!-- Collapsible Sidebar (TOC, Notes, Bookmarks) -->
+    <aside id="sidebar" class="w-80 bg-white/95 backdrop-blur-md border-r border-stone-200/60 flex flex-col h-screen absolute lg:relative z-30 transition-all duration-300 -translate-x-full lg:translate-x-0 shadow-xl lg:shadow-none">
+      
+      <!-- Logo inside sidebar -->
+      <div class="p-6 border-b border-stone-100 flex items-center gap-3">
+        <i class="fa-solid fa-gem text-gold-400 text-xl"></i>
+        <div>
+          <h2 class="font-serif font-black text-sm text-ink-900 tracking-wide">設計師的後端探索</h2>
+          <p class="text-[10px] text-stone-400 uppercase tracking-widest font-semibold mt-0.5">UI/UX To Backend Admin</p>
+        </div>
+      </div>
+
+      <!-- Tab Navigation inside Sidebar -->
+      <div class="flex border-b border-stone-100 text-sm font-semibold">
+        <button class="sidebar-tab flex-1 py-3.5 text-center border-b-2 border-gold-800 text-gold-800" data-tab="toc">
+          <i class="fa-solid fa-list-ul mr-1.5 text-xs"></i>目錄
+        </button>
+        <button class="sidebar-tab flex-1 py-3.5 text-center border-b-2 border-transparent text-stone-500 hover:text-stone-800" data-tab="notes">
+          <i class="fa-solid fa-pen-fancy mr-1.5 text-xs"></i>隨堂筆記
+        </button>
+        <button class="sidebar-tab flex-1 py-3.5 text-center border-b-2 border-transparent text-stone-500 hover:text-stone-800" data-tab="marks">
+          <i class="fa-solid fa-marker mr-1.5 text-xs"></i>重點摘要
+        </button>
+      </div>
+
+      <!-- Tab Content Area -->
+      <div class="flex-1 overflow-y-auto p-5">
+        
+        <!-- TOC Content -->
+        <div id="tab-toc" class="tab-pane space-y-4">
+          <div class="relative mb-4">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-stone-400">
+              <i class="fa-solid fa-magnifying-glass text-xs"></i>
+            </span>
+            <input type="text" id="search-toc" placeholder="搜尋課本內容..." class="w-full bg-stone-50 border border-stone-200/60 rounded-xl py-2 pl-9 pr-3 text-xs focus:outline-none focus:ring-1 focus:ring-gold-400 focus:border-gold-400 transition-all">
+          </div>
+          
+          <nav class="space-y-1.5">
+            <div class="text-xxs font-bold text-stone-400 tracking-wider uppercase mb-2">課程章節</div>
+            <a href="#" data-page="1" class="toc-item active flex items-center justify-between p-3.5 rounded-xl bg-gold-100/50 text-gold-900 border-l-4 border-gold-800 font-bold transition-all duration-200">
+              <span class="truncate"><span class="font-serif mr-1.5">第一章</span> 走進後端 (診所比喻)</span>
+              <span class="text-xs opacity-70">p.1</span>
+            </a>
+            <a href="#" data-page="2" class="toc-item flex items-center justify-between p-3.5 rounded-xl text-stone-600 hover:bg-stone-50 hover:text-stone-900 border-l-4 border-transparent transition-all duration-200">
+              <span class="truncate"><span class="font-serif mr-1.5">第二章</span> 前後端大對接 (接力賽)</span>
+              <span class="text-xs opacity-70">p.2</span>
+            </a>
+            <a href="#" data-page="3" class="toc-item flex items-center justify-between p-3.5 rounded-xl text-stone-600 hover:bg-stone-50 hover:text-stone-900 border-l-4 border-transparent transition-all duration-200">
+              <span class="truncate"><span class="font-serif mr-1.5">第三章</span> 後端邏輯與 Laravel</span>
+              <span class="text-xs opacity-70">p.3</span>
+            </a>
+            <a href="#" data-page="4" class="toc-item flex items-center justify-between p-3.5 rounded-xl text-stone-600 hover:bg-stone-50 hover:text-stone-900 border-l-4 border-transparent transition-all duration-200">
+              <span class="truncate"><span class="font-serif mr-1.5">第四章</span> 作業系統三國鼎立</span>
+              <span class="text-xs opacity-70">p.4</span>
+            </a>
+            <a href="#" data-page="5" class="toc-item flex items-center justify-between p-3.5 rounded-xl text-stone-600 hover:bg-stone-50 hover:text-stone-900 border-l-4 border-transparent transition-all duration-200">
+              <span class="truncate"><span class="font-serif mr-1.5">第五章</span> 後台與後端本質區別</span>
+              <span class="text-xs opacity-70">p.5</span>
+            </a>
+            <a href="#" data-page="6" class="toc-item flex items-center justify-between p-3.5 rounded-xl text-stone-600 hover:bg-stone-50 hover:text-stone-900 border-l-4 border-transparent transition-all duration-200">
+              <span class="truncate"><span class="font-serif mr-1.5">第六章</span> 深入探討資料庫與資料表</span>
+              <span class="text-xs opacity-70">p.6</span>
+            </a>
+          </nav>
+        </div>
+
+        <!-- Notes Content -->
+        <div id="tab-notes" class="tab-pane hidden space-y-4">
+          <div class="flex items-center justify-between mb-2">
+            <h3 class="text-xs font-bold text-stone-700 uppercase tracking-wide">當前頁面筆記</h3>
+            <span class="text-xxs px-2.5 py-0.5 bg-green-50 text-green-700 rounded-full font-bold border border-green-200">自動儲存中</span>
+          </div>
+          <textarea id="note-input" rows="8" placeholder="在此輸入您的筆記...這些筆記將會被自動儲存在本機硬碟中，您可以隨時閱讀與編輯。" class="w-full bg-paper-50 border border-stone-200/80 rounded-xl p-4 text-sm focus:outline-none focus:ring-1 focus:ring-gold-800 focus:border-gold-800 transition-all font-sans leading-relaxed shadow-inner"></textarea>
+          <div class="flex gap-2.5">
+            <button id="clear-note" class="flex-1 py-2 px-3 border border-stone-200 rounded-xl text-xs font-bold text-stone-600 hover:bg-stone-50 transition-colors">
+              <i class="fa-regular fa-trash-can mr-1"></i> 清空內容
+            </button>
+            <button id="download-note" class="flex-1 py-2 px-3 bg-gold-800 hover:bg-gold-900 text-white rounded-xl text-xs font-bold transition-all shadow-sm">
+              <i class="fa-solid fa-download mr-1"></i> 導出筆記
+            </button>
+          </div>
+        </div>
+
+        <!-- Bookmarks/Highlights Content -->
+        <div id="tab-marks" class="tab-pane hidden space-y-4">
+          <div class="flex justify-between items-center mb-2">
+            <h3 class="text-xs font-bold text-stone-700 uppercase tracking-wide">劃線與書籤摘要</h3>
+            <button id="clear-highlights" class="text-xxs font-bold text-red-600 hover:text-red-800 transition-colors">
+              <i class="fa-solid fa-rotate-left mr-0.5"></i> 清除全部劃線
+            </button>
+          </div>
+          
+          <div id="highlights-list" class="space-y-3">
+            <p class="text-xs text-stone-400 text-center py-8">尚無 any 劃線紀錄。請在課本中直接點擊段落進行重點劃線！</p>
+          </div>
+        </div>
+
+      </div>
+    </aside>
+
+    <!-- Interactive Textbook Main Body Container (Expanded viewport width) -->
+    <main class="flex-1 flex flex-col justify-between items-center p-4 md:p-8 pt-20 overflow-y-auto bg-[#F4F1EA] paper-texture relative h-screen">
+      
+      <div class="book-container w-full max-w-[96%] flex-1 flex flex-col justify-center items-center py-2">
+        
+        <div class="w-full bg-paper-50 rounded-3xl shadow-[0_30px_70px_-15px_rgba(92,64,43,0.12)] border border-stone-200/80 flex flex-col min-h-[750px] relative overflow-hidden transition-all duration-300">
+          
+          <!-- Decorative page stack edges -->
+          <div class="absolute inset-y-0 left-0 w-3 bg-stone-200/40 border-r border-stone-300/30 rounded-l-3xl z-10 hidden md:block"></div>
+          <div class="absolute inset-y-0 right-0 w-3 bg-stone-200/40 border-l border-stone-300/30 rounded-r-3xl z-10 hidden md:block"></div>
+
+          <!-- Page Content Wrapper - MAIN VIEWPORT -->
+          <div id="left-page" class="flex-1 p-6 md:p-14 flex flex-col justify-between book-spine-single relative z-20 transition-all duration-300">
+            
+            <div id="book-content-container" class="highlightable-text font-serif leading-relaxed text-stone-800 text-base md:text-[18px] space-y-6 flex-1">
+              
+              <!-- PAGE 1: CHAPTER 1 -->
+              <div id="page-content-1" class="page-content space-y-6">
+                <div class="space-y-2">
+                  <span class="text-xs font-serif font-bold text-gold-800 tracking-widest uppercase">Chapter 01</span>
+                  <h2 class="text-3xl font-black text-ink-900 tracking-wide font-serif mb-6">第一章：走進後端的世界（診所比喻）</h2>
+                </div>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                  <div class="lg:col-span-6 space-y-6">
+                    <p data-id="p1-1">
+                      親愛的設計師，您可能已經學過如何設計精美的網頁介面（前端 UI），但您是否曾好奇，當用戶在介面上輸入帳號密碼、送出表單後，網頁背後到底發生了什麼事？
+                    </p>
+                    <p data-id="p1-2">
+                      我們可以用一個<strong>「沒有電子化的傳統小診所」</strong>看感冒的情境，來比擬網頁與 App 的系統架構：前端掛號人員、後端行政人員與資料庫病歷櫃三者密切配合。
+                    </p>
+                    <p data-id="p1-3" class="text-stone-600 italic">
+                      透過這套實體診所運作機制，我們能將抽象的網路資料流（Data Flow）轉化為直觀的操作程序，對於建構高水準的 UI/UX 原型至關重要。
+                    </p>
+                  </div>
+
+                  <div class="lg:col-span-6 space-y-4">
+                    <div class="border border-stone-200/70 rounded-2xl overflow-hidden shadow-md bg-white p-2 transition-transform hover:scale-[1.01] duration-300">
+                      <img src="./clinic_metaphor.png" alt="診所前後端與資料庫比喻" class="w-full h-auto object-cover rounded-xl">
+                      <div class="p-2.5 text-center bg-stone-50/50 border-t border-stone-100">
+                        <span class="text-xxs font-sans text-stone-500 font-semibold italic">圖 1.1：小診所的前台（前端）、行政人員（後端）與病歷櫃（資料庫）關係圖</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Cards Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+                  <div class="bg-[#FAF8F5] p-5 rounded-2xl border border-gold-200/60 font-sans text-sm space-y-2 shadow-sm transition-all hover:shadow-md">
+                    <div class="flex items-center gap-2.5 text-gold-800 font-bold">
+                      <span class="w-7 h-7 rounded-xl bg-gold-800 text-white flex items-center justify-center text-xs"><i class="fa-solid fa-desktop"></i></span>
+                      <h4>前端 = 診所前台接待</h4>
+                    </div>
+                    <p class="text-stone-600 text-xs leading-relaxed" data-id="p1-ui-1">負責面對病患（使用者），提供掛號。相當於網頁排版、輸入欄位與按鈕。</p>
+                  </div>
+
+                  <div class="bg-[#FAF8F5] p-5 rounded-2xl border border-gold-200/60 font-sans text-sm space-y-2 shadow-sm transition-all hover:shadow-md">
+                    <div class="flex items-center gap-2.5 text-gold-800 font-bold">
+                      <span class="w-7 h-7 rounded-xl bg-gold-800 text-white flex items-center justify-center text-xs"><i class="fa-solid fa-user-gear"></i></span>
+                      <h4>後端 = 前台後行政人員</h4>
+                    </div>
+                    <p class="text-stone-600 text-xs leading-relaxed" data-id="p1-ui-2">在幕後工作。負責分析掛號資料、調閱指令與邏輯處理。相當於伺服器邏輯。</p>
+                  </div>
+
+                  <div class="bg-[#FAF8F5] p-5 rounded-2xl border border-gold-200/60 font-sans text-sm space-y-2 shadow-sm transition-all hover:shadow-md">
+                    <div class="flex items-center gap-2.5 text-gold-800 font-bold">
+                      <span class="w-7 h-7 rounded-xl bg-gold-800 text-white flex items-center justify-center text-xs"><i class="fa-solid fa-database"></i></span>
+                      <h4>資料庫 = 九宮格病歷櫃</h4>
+                    </div>
+                    <p class="text-stone-600 text-xs leading-relaxed" data-id="p1-ui-3">存放紙本病歷，按出生年份（88-91年）分類。行政人員負責從中精準調閱。</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- PAGE 2: CHAPTER 2 -->
+              <div id="page-content-2" class="page-content space-y-6 hidden">
+                <div class="space-y-2">
+                  <span class="text-xs font-serif font-bold text-gold-800 tracking-widest uppercase">Chapter 02</span>
+                  <h2 class="text-3xl font-black text-ink-900 tracking-wide font-serif mb-6">第二章：前後端的大對接（接力賽）</h2>
+                </div>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                  <div class="lg:col-span-6 space-y-6">
+                    <p data-id="p2-1">
+                      那麼，前端小熊和後端小熊，在網路世界中是怎麼合作的呢？其實就像是一場完美的<strong>接力大賽</strong>！
+                    </p>
+                    <p data-id="p2-2">
+                      當使用者在介面上點擊按鈕，前端小熊就拿著接力棒往前奔跑。這支接力棒不是普通木棍，而是包含了 **`010101` 等格式數據（例如 JSON 資料）**。
+                    </p>
+                    <p data-id="p2-3">
+                      前端小熊把接力棒交給後端小熊（即 API 對接）。後端小熊接棒後，帶著數據進入伺服器與資料庫進行高速運算，處理完畢後，再次將結果棒子交回前端小熊，畫面上便即時渲染出最新的介面狀態。這就是前後端「對接」的運作原理！
+                    </p>
+                  </div>
+
+                  <div class="lg:col-span-6">
+                    <div class="border border-stone-200/70 rounded-2xl overflow-hidden shadow-md bg-white p-2 transition-transform hover:scale-[1.01] duration-300">
+                      <img src="./bear_relay.png" alt="小熊數據接力賽" class="w-full h-auto object-cover rounded-xl">
+                      <div class="p-2.5 text-center bg-stone-50/50 border-t border-stone-100">
+                        <span class="text-xxs font-sans text-stone-500 font-semibold italic">圖 2.1：前端與後端小熊的「0101 二進位數據接力」示意圖</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- PAGE 3: CHAPTER 3 -->
+              <div id="page-content-3" class="page-content space-y-6 hidden">
+                <div class="space-y-2">
+                  <span class="text-xs font-serif font-bold text-gold-800 tracking-widest uppercase">Chapter 03</span>
+                  <h2 class="text-3xl font-black text-ink-900 tracking-wide font-serif mb-6">第三章：後端的運作邏輯與 Laravel 開發利器</h2>
+                </div>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                  <div class="lg:col-span-6 space-y-5">
+                    <h3 class="text-lg font-bold text-gold-900 font-serif"><i class="fa-solid fa-brain mr-2"></i> 1. 後端的大腦運作</h3>
+                    <p data-id="p3-1">
+                      我們前面比喻過，<strong>後端就像是一個「隱藏在幕後的行政人員」</strong>。這個人必須具備兩個核心能力：第一是「聽得懂前端遞給他的接力棒資訊」，第二是「擁有自主判斷的腦袋」，知道在什麼時間點、因為什麼邏輯，去資料庫拿取對應的資料。
+                    </p>
+                    <p data-id="p3-2">
+                      當行政人員（後端）決定去病歷櫃（資料庫）拿東西時，他不能使用人類語言，而必須透過一種專門與資料庫溝通的官方語言 —— <strong>SQL 語言</strong>。而存放病歷的病歷櫃系統，最常見的名詞就叫做 <strong>MySQL</strong>。
+                    </p>
+
+                    <h3 class="text-lg font-bold text-gold-900 font-serif"><i class="fa-solid fa-cubes mr-2"></i> 2. 經典組合：PHP + MySQL</h3>
+                    <p data-id="p3-3">
+                      在大學課程中，<strong>PHP 語言搭配 MySQL 資料庫</strong>是最經典、最普及的網頁後端技術，全球高達 80% 的網頁背後都是使用這個技術。
+                    </p>
+                    <div class="bg-gold-100/30 p-4 rounded-xl border border-gold-250/50 font-sans text-xs space-y-2">
+                      <p class="font-bold text-gold-900"><i class="fa-solid fa-scale-balanced mr-1"></i> PHP 語言的優缺點剖析：</p>
+                      <ul class="list-disc pl-4 space-y-1 text-stone-700">
+                        <li><strong>優點（開發極快）</strong>：開發速度非常驚人，資源開放且完全免費，且幾乎所有伺服器都默認支援，建置極其容易。</li>
+                        <li><strong>缺點（高併發瓶頸）</strong>：在極端的大流量、同一瞬間有數十萬人同時點擊時，弱型別的 PHP 效能較容易遇到瓶頸。</li>
+                      </ul>
+                    </div>
+                  </div>
+
+                  <div class="lg:col-span-6 space-y-5">
+                    <h3 class="text-lg font-bold text-gold-900 font-serif"><i class="fa-solid fa-wand-magic-sparkles"></i> 3. 升級版包裝：Laravel 框架</h3>
+                    <p data-id="p3-5">
+                      雖然 PHP 很好用，但原生寫法有時比較繁瑣。因此，軟體工程師 <strong>Taylor Otwell</strong> 在 2011 年以 PHP 為基礎，封裝開發了一套強大的工具包 ── <strong>Laravel</strong>。
+                    </p>
+
+                    <!-- Taylor Otwell Image Card -->
+                    <div class="flex items-center gap-4 bg-white border border-stone-200/80 p-4 rounded-2xl shadow-sm">
+                      <img src="https://github.com/taylorotwell.png" alt="Taylor Otwell" class="w-16 h-16 rounded-full border border-gold-300 object-cover">
+                      <div>
+                        <h4 class="font-sans font-bold text-stone-800 text-sm">Taylor Otwell</h4>
+                        <p class="text-[10px] text-stone-400 font-semibold uppercase tracking-wider">Laravel 創始人</p>
+                        <p class="text-stone-500 text-xs mt-1 leading-relaxed">他在 2011 年釋出 Laravel，立志讓後端 PHP 開發變得優雅、快樂且安全。</p>
+                      </div>
+                    </div>
+
+                    <!-- Features -->
+                    <div class="bg-stone-50 border border-stone-200/60 rounded-xl p-4 font-sans text-xs space-y-3 shadow-inner">
+                      <div class="flex items-center gap-2 text-stone-700">
+                        <i class="fa-solid fa-circle-check text-green-600"></i>
+                        <span><strong>MVC 架構與防範機制</strong>：讓畫面與邏輯分離，提高開發效率。</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- PAGE 4: CHAPTER 4 -->
+              <div id="page-content-4" class="page-content space-y-6 hidden">
+                <div class="space-y-2">
+                  <span class="text-xs font-serif font-bold text-gold-800 tracking-widest uppercase">Chapter 04</span>
+                  <h2 class="text-3xl font-black text-ink-900 tracking-wide font-serif mb-6">第四章：支撐後端運作的舞台：作業系統三國鼎立</h2>
+                </div>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                  <div class="lg:col-span-6 space-y-5">
+                    <p data-id="p4-1">
+                      前端與後端的資料交換、伺服器的代碼運算，這一切神奇的事情都無法在虛空中發生。它們需要一台實體或虛擬的電腦，而這台電腦必須安裝 <strong>作業系統 (Operating System, OS)</strong> 才能運作。
+                    </p>
+                    <p data-id="p4-2">
+                      快轉到 1990 年代至今，整個電腦與伺服器世界基本上就是由三個最著名的核心系統所主宰，形成了經典的「三國鼎立」局面：
+                    </p>
+
+                    <!-- OS Cards Grid -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
+                      <div class="bg-white border border-stone-200 p-4 rounded-2xl flex flex-col items-center text-center space-y-2 shadow-xs transition-transform hover:-translate-y-1">
+                        <i class="fa-brands fa-windows text-3xl text-sky-500"></i>
+                        <h4 class="font-bold text-stone-850 text-xs">Windows</h4>
+                        <p class="text-[10px] text-stone-500 leading-normal">佔據桌面約 70% 市佔率，大眾最為熟悉，軟體支援最廣泛，但商業授權昂貴。</p>
+                      </div>
+                      <div class="bg-white border border-stone-200 p-4 rounded-2xl flex flex-col items-center text-center space-y-2 shadow-xs transition-transform hover:-translate-y-1">
+                        <i class="fa-brands fa-apple text-3xl text-stone-750"></i>
+                        <h4 class="font-bold text-stone-850 text-xs">macOS</h4>
+                        <p class="text-[10px] text-stone-500 leading-normal">與蘋果高質感硬體裝置強烈綁定。是許多 UI/UX 設計師的愛用系統，介面精美。</p>
+                      </div>
+                      <div class="bg-white border border-stone-200 p-4 rounded-2xl flex flex-col items-center text-center space-y-2 shadow-xs transition-transform hover:-translate-y-1">
+                        <i class="fa-brands fa-linux text-3xl text-amber-700"></i>
+                        <h4 class="font-bold text-stone-850 text-xs">Linux</h4>
+                        <p class="text-[10px] text-stone-500 leading-normal">開源免費。主要採用輕量化「內核」架構，是後端主機絕對的無冕之王。</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="lg:col-span-6 space-y-5">
+                    <h3 class="text-lg font-bold text-gold-900 font-serif"><i class="fa-solid fa-server mr-2"></i> 為什麼後端伺服器都是 Linux 的天下？</h3>
+                    <p data-id="p4-3">
+                      雖然我們在個人電腦上很少看到 Linux，但在雲端運算與後端伺服器上，Linux 佔據了近乎 90% 的市場，原因在於：
+                    </p>
+
+                    <div class="space-y-4 font-sans text-xs">
+                      <div class="bg-[#FAF8F5] p-4.5 rounded-2xl border border-gold-200/50 space-y-1">
+                        <strong class="text-stone-800 text-sm flex items-center gap-2"><i class="fa-solid fa-shield-halved text-gold-800"></i> 1. 堅如磐石的超強穩定性 (Stability)</strong>
+                        <p class="text-stone-600 leading-relaxed">Linux 的設計允許它連續運行數年而不需要重啟，不會像 Windows 那樣經常因為更新、軟體崩潰或內存洩漏而藍屏死機。</p>
+                      </div>
+
+                      <div class="bg-[#FAF8F5] p-4.5 rounded-2xl border border-gold-200/50 space-y-1">
+                        <strong class="text-stone-800 text-sm flex items-center gap-2"><i class="fa-solid fa-feather text-gold-800"></i> 2. 極致輕量化與按需載入 (Lightweight)</strong>
+                        <p class="text-stone-600 leading-relaxed">Linux 是高度模組化的，只加載系統運作絕對必需的組件（內核）。例如：如果您只需要伺服器執行 3 個特定套件，Linux 就只會消耗對應的微小記憶體。</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- PAGE 5: CHAPTER 5 -->
+              <div id="page-content-5" class="page-content space-y-6 hidden">
+                <div class="space-y-2">
+                  <span class="text-xs font-serif font-bold text-gold-800 tracking-widest uppercase">Chapter 05</span>
+                  <h2 class="text-3xl font-black text-ink-900 tracking-wide font-serif mb-6">第五章：後台與後端的本質區別</h2>
+                </div>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                  <div class="lg:col-span-5 space-y-6">
+                    <p data-id="p5-1">
+                      在討論系統開發時，我們常聽到「後台 (Admin Panel)」與「後端 (Back-end)」。這兩者之所以在系統架構中必須做出明確的**權限分割 (Role Segregation)**，核心原因在於<strong>「資訊安全 (Security)」</strong>。
+                    </p>
+                    <p data-id="p5-2">
+                      我們不可能、也不可以讓一般的使用者去任意查看或修改資料庫中的所有原始數據。因此，我們必須將「使用者」與「管理人員」的操作環境進行物理性與邏輯上的分割：
+                    </p>
+                    <div class="bg-stone-50 p-4 rounded-xl border border-stone-200 text-xs font-sans space-y-2 leading-relaxed">
+                      <p class="font-bold text-stone-800"><i class="fa-solid fa-user-lock mr-1.5 text-gold-800"></i> 分層權限架構：</p>
+                      <ul class="list-disc pl-4 space-y-1.5 text-stone-600">
+                        <li><strong>第一層 (一般端 App)</strong>：一般使用者操作的介面（A 區塊），安全受限，僅能看到與修改自身被允許的資料。</li>
+                        <li><strong>第二層 (後台 Admin Panel)</strong>：專屬管理者操作的介面（B 區塊），能夠透過後端邏輯與資料庫進行深度但受監管的安全溝通。</li>
+                      </ul>
+                    </div>
+
+                    <!-- Embedded 3D Bear Layers Diagram -->
+                    <div class="border border-stone-200/70 rounded-2xl overflow-hidden shadow-md bg-white p-2">
+                      <img src="./bear_layers.png" alt="小熊系統架構分層" class="w-full h-auto object-cover rounded-xl">
+                      <div class="p-2.5 text-center bg-stone-50/50 border-t border-stone-100">
+                        <span class="text-xxs font-sans text-stone-500 font-semibold italic">圖 5.1：前端/App 介面、後台管理介面與資料庫底層權限關係</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="lg:col-span-7 space-y-4">
+                    <!-- Admin Panel (後台) Mockup -->
+                    <div class="p-4.5 bg-amber-50/40 border border-amber-200/60 rounded-2xl space-y-3 font-sans text-xs">
+                      <h4 class="font-bold text-stone-850 text-xs flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-yellow-500"></span> 第二層：後台管理介面 (Admin Panel)</h4>
+                      <p class="text-stone-600 text-xxs leading-relaxed">供擁有特定權限的管理員、客服操作的圖形介面，具備人性化操作與防錯防欄機制。</p>
+                      
+                      <!-- Visual Dashboard Mockup -->
+                      <div class="bg-white border border-stone-200 rounded-xl p-3 shadow-xs space-y-2">
+                        <div class="flex justify-between items-center pb-2 border-b text-[10px] font-bold text-stone-500 uppercase">
+                          <span>🛡️ 心靈機器人後台控制板 (Admin Dashboard)</span>
+                          <span class="text-green-600 flex items-center gap-1"><span class="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span>正常</span>
+                        </div>
+                        <div class="grid grid-cols-3 gap-2 text-center text-[10px]">
+                          <div class="bg-stone-50 p-1.5 rounded-lg border border-stone-150"><p class="text-stone-400">總用戶數</p><p class="font-bold text-stone-800">1,240 人</p></div>
+                          <div class="bg-stone-50 p-1.5 rounded-lg border border-stone-150"><p class="text-stone-400">今日對話數</p><p class="font-bold text-stone-800">382 次</p></div>
+                          <div class="bg-stone-50 p-1.5 rounded-lg border border-stone-150"><p class="text-stone-400">系統警告</p><p class="font-bold text-red-650">0 件</p></div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Database (資料庫) Table Mockup -->
+                    <div class="p-4.5 bg-red-50/30 border border-red-200/60 rounded-2xl space-y-3 font-sans text-xs">
+                      <h4 class="font-bold text-stone-850 text-xs flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-red-500"></span> 第三層：資料庫管理層 (Database)</h4>
+                      <p class="text-stone-600 text-xxs leading-relaxed">底層原始資料庫儲存庫。在這裡直接更動資料是極其危險且不可逆的。</p>
+                      
+                      <!-- Database Grid Table -->
+                      <div class="bg-stone-900 border border-stone-800 rounded-xl p-3 overflow-x-auto shadow-inner">
+                        <table class="w-full text-left font-mono text-[10px] text-stone-300">
+                          <thead>
+                            <tr class="border-b border-stone-800 text-stone-500 font-bold">
+                              <th class="pb-1 pr-2">id</th>
+                              <th class="pb-1 pr-2">name</th>
+                              <th class="pb-1 pr-2">birth_year</th>
+                              <th class="pb-1">emotion_status</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr class="border-b border-stone-800/40">
+                              <td class="py-1.5 pr-2">1</td>
+                              <td class="py-1.5 pr-2 text-stone-200 font-bold">小美</td>
+                              <td class="py-1.5 pr-2">民國 88 年</td>
+                              <td class="py-1.5 text-green-400">Joyful</td>
+                            </tr>
+                            <tr class="border-b border-stone-800/40">
+                              <td class="py-1.5 pr-2">2</td>
+                              <td class="py-1.5 pr-2 text-stone-200 font-bold">大雄</td>
+                              <td class="py-1.5 pr-2">民國 89 年</td>
+                              <td class="py-1.5 text-yellow-400">Anxious</td>
+                            </tr>
+                            <tr>
+                              <td class="py-1.5 pr-2">3</td>
+                              <td class="py-1.5 pr-2 text-stone-200 font-bold">阿華</td>
+                              <td class="py-1.5 pr-2">民國 91 年</td>
+                              <td class="py-1.5 text-red-400">Depressed</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Interactive Quiz Page 5 -->
+                <div class="mt-4 border-t border-stone-200/80 pt-5">
+                  <div class="quiz-card p-5 bg-stone-50 border border-stone-200/60 rounded-2xl space-y-4 shadow-sm" data-quiz="q2">
+                    <span class="text-xs font-bold text-gold-800 uppercase tracking-widest"><i class="fa-solid fa-circle-question mr-1.5"></i> 即堂隨測</span>
+                    <p class="text-sm font-semibold text-stone-850" data-id="p5-3">關於「後台 (Admin Panel)」與「資料庫 (Database)」的敘述，下列何者正確？</p>
+                    <div class="grid grid-cols-1 gap-2.5 text-xs font-sans">
+                      <button class="quiz-opt-btn w-full text-left p-3.5 rounded-xl border border-stone-200/85 hover:bg-gold-100/50 hover:border-gold-300 transition-all cursor-pointer" data-correct="false">A. 後台就是資料庫，兩者完全是一模一樣的東西。</button>
+                      <button class="quiz-opt-btn w-full text-left p-3.5 rounded-xl border border-stone-200/85 hover:bg-gold-100/50 hover:border-gold-300 transition-all cursor-pointer" data-correct="true">B. 後台是管理用的圖形介面，可安全地操作資料庫；資料庫是存放原始數據之處，直接操作極具危險性。(正確答案)</button>
+                      <button class="quiz-opt-btn w-full text-left p-3.5 rounded-xl border border-stone-200/85 hover:bg-gold-100/50 hover:border-gold-300 transition-all cursor-pointer" data-correct="false">C. 用戶端 (App一般端) 可以越過後台，隨意連上資料庫修改出生年份。</button>
+                    </div>
+                    <div class="quiz-feedback hidden text-xs p-3.5 rounded-xl font-bold"></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- PAGE 6: CHAPTER 6 (Database and Tables extension) -->
+              <div id="page-content-6" class="page-content space-y-6 hidden">
+                <div class="space-y-2">
+                  <span class="text-xs font-serif font-bold text-gold-800 tracking-widest uppercase">Chapter 06</span>
+                  <h2 class="text-3xl font-black text-ink-900 tracking-wide font-serif mb-6">第六章：深入探討資料庫與資料表</h2>
+                </div>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                  <!-- Left Text Column: Concept and analogies -->
+                  <div class="lg:col-span-6 space-y-5">
+                    <h3 class="text-lg font-bold text-gold-900 font-serif"><i class="fa-solid fa-folder-tree mr-2"></i> 1. 資料庫 (Database) 與資料表 (Data Table)</h3>
+                    <p data-id="p6-1">
+                      我們延續第一章「小診所病歷櫃」的比喻。<strong>資料庫 (Database)</strong> 本質上指的就是「整座病歷櫃」或「存放病歷櫃的房間」本身。
+                    </p>
+                    <p data-id="p6-2">
+                      而<strong>資料表 (Data Table)</strong>，則是櫃子裡「一格一格抽屜」或者「一疊疊依年份標記的病歷資料夾」。例如，我們的病歷櫃（資料庫）中，有專門放小孩子資料的「兒童病歷表」、放藥物庫存的「藥品表」，這每一個分類就是一張「資料表」。
+                    </p>
+                    <p data-id="p6-3">
+                      在實務中，資料庫櫃子有很多種類型，像是鐵櫃、木櫃或塑膠櫃。同樣地，軟體界也有多種資料庫系統，而 <strong>MySQL</strong> 就是其中一種最老牌、最容易上手且全球廣泛使用的「資料庫櫃子」。
+                    </p>
+
+                    <h3 class="text-lg font-bold text-gold-900 font-serif"><i class="fa-solid fa-link mr-2"></i> 2. 關係型資料庫的比喻（關係連動）</h3>
+                    <p data-id="p6-4">
+                      MySQL 屬於<strong>關係型資料庫 (Relational Database)</strong>。什麼是關係呢？我們可以用「父母與孩子」的關係來解釋：
+                    </p>
+                    <div class="bg-gold-100/30 p-5 rounded-2xl border border-gold-200/50 space-y-2 font-sans text-xs">
+                      <p class="font-bold text-gold-900"><i class="fa-solid fa-people-roof mr-1.5"></i> 一對多 (1-to-Many) 關係比喻：</p>
+                      <p class="text-stone-700 leading-relaxed">
+                        「一個父母（1）可以擁有好幾個孩子（Many），但是一個孩子在法律血緣上只會對應到一組父母（1）。」
+                      </p>
+                      <p class="text-stone-600 leading-relaxed">
+                        在資料庫中也是如此：例如「一位使用者」可以擁有「很多筆心理狀態記錄」，但這每一筆記錄都只屬於「該名特定的使用者」。資料表就是透過這種「關係 (Relationships)」互相連動對接的。
+                      </p>
+                    </div>
+                  </div>
+
+                  <!-- Right Column: Excel sheets and phpMyAdmin -->
+                  <div class="lg:col-span-6 space-y-5">
+                    <h3 class="text-lg font-bold text-gold-900 font-serif"><i class="fa-solid fa-file-excel mr-2"></i> 3. 它本質上就像 Excel 表格</h3>
+                    <p data-id="p6-5">
+                      別把資料庫想得太難，在概念上它其實非常像我們常用的 <strong>Excel 表格</strong> ── 都有著橫列 (Rows) 與直欄 (Columns) 結構。
+                    </p>
+                    <p data-id="p6-6">
+                      不過，因為直接用黑白指令碼操作資料庫容易打錯字，工程師開發了名為 <strong>phpMyAdmin</strong> 的圖形化網頁介面。它就像是網頁版的 Excel，讓設計師和開發者可以直接在瀏覽器上點擊、瀏覽與修改 MySQL 資料庫裡面的資料表。
+                    </p>
+
+                    <!-- Mockup phpMyAdmin Interface inside textbook -->
+                    <div class="border border-stone-200 rounded-2xl overflow-hidden shadow-sm bg-white p-3 space-y-2 text-xxs font-sans">
+                      <div class="flex justify-between items-center pb-2 border-b bg-stone-50 p-2 rounded-t-lg">
+                        <span class="font-bold text-stone-700"><i class="fa-solid fa-database text-gold-400 mr-1"></i> phpMyAdmin 4.9 (localhost)</span>
+                        <span class="text-stone-400">Database: <strong class="text-stone-650">clinic_db</strong></span>
+                      </div>
+                      
+                      <div class="flex gap-2">
+                        <!-- Left sidebar mock -->
+                        <div class="w-1/4 border-r pr-2 space-y-1 text-stone-500 font-mono text-[9px]">
+                          <p class="font-bold text-stone-700">Tables (資料表)</p>
+                          <p class="text-amber-800 bg-amber-50 rounded px-1"><i class="fa-solid fa-table mr-1"></i> patients</p>
+                          <p><i class="fa-solid fa-table mr-1"></i> doctors</p>
+                          <p><i class="fa-solid fa-table mr-1"></i> medicines</p>
+                        </div>
+                        
+                        <!-- Right table content mock -->
+                        <div class="flex-1 space-y-1.5">
+                          <div class="flex gap-1.5 text-[9px] text-stone-400">
+                            <span class="bg-stone-100 px-1 py-0.5 rounded border">🔍 瀏覽</span>
+                            <span class="bg-stone-100 px-1 py-0.5 rounded border">✏️ 結構</span>
+                            <span class="bg-stone-100 px-1 py-0.5 rounded border">➕ 插入</span>
+                          </div>
+                          <!-- Raw spreadsheet mockup -->
+                          <div class="bg-stone-50 border rounded p-1.5 font-mono text-[9px] text-stone-600">
+                            <div class="grid grid-cols-4 font-bold border-b pb-1 text-stone-700">
+                              <span>id</span><span>name</span><span>birth</span><span>cold?</span>
+                            </div>
+                            <div class="grid grid-cols-4 border-b py-1"><span>1</span><span>小熊</span><span>88</span><span>Yes</span></div>
+                            <div class="grid grid-cols-4 py-1"><span>2</span><span>大熊</span><span>90</span><span>No</span></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Interactive Quiz Page 6 -->
+                <div class="mt-4 border-t border-stone-200/80 pt-5">
+                  <div class="quiz-card p-5 bg-stone-50 border border-stone-200/60 rounded-2xl space-y-4 shadow-sm" data-quiz="q3">
+                    <span class="text-xs font-bold text-gold-800 uppercase tracking-widest"><i class="fa-solid fa-circle-question mr-1.5"></i> 即堂隨測</span>
+                    <p class="text-sm font-semibold text-stone-850" data-id="p6-7">在我們的診所比喻中，下列哪一個選項相當於「一格一格抽屜中分類存放的病歷資料夾（資料表）」？</p>
+                    <div class="grid grid-cols-1 gap-2.5 text-xs font-sans">
+                      <button class="quiz-opt-btn w-full text-left p-3.5 rounded-xl border border-stone-200/85 hover:bg-gold-100/50 hover:border-gold-300 transition-all cursor-pointer" data-correct="false">A. 整間放病歷櫃的房間 (Database)</button>
+                      <button class="quiz-opt-btn w-full text-left p-3.5 rounded-xl border border-stone-200/85 hover:bg-gold-100/50 hover:border-gold-300 transition-all cursor-pointer" data-correct="true">B. 抽屜內具體分類存放的個別病歷表 (Data Table) (正確答案)</button>
+                      <button class="quiz-opt-btn w-full text-left p-3.5 rounded-xl border border-stone-200/85 hover:bg-gold-100/50 hover:border-gold-300 transition-all cursor-pointer" data-correct="false">C. 負責打字管理資料庫的 phpMyAdmin 介面</button>
+                    </div>
+                    <div class="quiz-feedback hidden text-xs p-3.5 rounded-xl font-bold"></div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Page Footer info -->
+            <div class="mt-8 pt-4 border-t border-stone-200/40 flex justify-between items-center text-xs font-serif text-stone-500">
+              <span class="font-bold tracking-wider text-gold-800">設計師後端互動學習系統</span>
+              <span id="page-number-left" class="font-bold">頁碼: 1</span>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- Bottom Flipping Controls -->
+      <div class="w-full max-w-[96%] flex items-center justify-between mt-4 px-2">
+        <button id="prev-page" class="flex items-center gap-2 px-5 py-3 bg-white border border-stone-200/60 hover:bg-stone-50/50 hover:shadow-xs rounded-xl text-stone-700 text-sm font-semibold transition-all shadow-sm cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
+          <i class="fa-solid fa-chevron-left text-xs"></i> 上一頁
+        </button>
+        
+        <div class="text-xs font-medium text-stone-400 font-sans hidden sm:block">
+          可以使用左右方向鍵 <kbd class="px-1.5 py-0.5 bg-white border rounded shadow-sm text-xxs font-mono">←</kbd> <kbd class="px-1.5 py-0.5 bg-white border rounded shadow-sm text-xxs font-mono">→</kbd> 進行翻頁
+        </div>
+
+        <button id="next-page" class="flex items-center gap-2 px-5 py-3 bg-white border border-stone-200/60 hover:bg-stone-50/50 hover:shadow-xs rounded-xl text-stone-700 text-sm font-semibold transition-all shadow-sm cursor-pointer">
+          下一頁 <i class="fa-solid fa-chevron-right text-xs"></i>
+        </button>
+      </div>
+
+    </main>
+
+  </div>
+
+  <!-- JQuery Core Logic -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  
+  <script>
+    $(document).ready(function() {
+      // Setup Initial State
+      let currentPage = 1;
+      const totalPages = 6;
+      let activeColor = 'yellow';
+      let highlights = JSON.parse(localStorage.getItem('textbook-highlights') || '{}');
+      let notes = JSON.parse(localStorage.getItem('textbook-notes') || '{}');
+      let checklist = JSON.parse(localStorage.getItem('textbook-checklist') || '[]');
+
+      // Load saved checkboxes
+      checklist.forEach(id => {
+        $(`#${id}`).prop('checked', true);
+      });
+
+      // Load saved highlights
+      loadSavedHighlights();
+      loadNoteForPage(currentPage);
+
+      // --- SIDEBAR TOGGLE ---
+      $('#toggle-sidebar').click(function() {
+        $('#sidebar').toggleClass('-translate-x-full');
+      });
+
+      // --- SIDEBAR TABS ---
+      $('.sidebar-tab').click(function() {
+        const tab = $(this).data('tab');
+        $('.sidebar-tab').removeClass('border-gold-800 text-gold-800').addClass('border-transparent text-stone-500 hover:text-stone-800');
+        $(this).addClass('border-gold-800 text-gold-800').removeClass('border-transparent text-stone-500 hover:text-stone-800');
+        
+        $('.tab-pane').addClass('hidden');
+        $(`#tab-${tab}`).removeClass('hidden');
+      });
+
+      // --- PAGE NAVIGATION ---
+      function goToPage(page) {
+        if (page < 1 || page > totalPages) return;
+        
+        currentPage = page;
+        
+        // Hide all page content
+        $('.page-content').addClass('hidden').removeClass('page-transition-active');
+        
+        // Show current page content with micro-transition
+        const $currentPageContent = $(`#page-content-${currentPage}`);
+        $currentPageContent.removeClass('hidden');
+        setTimeout(() => {
+          $currentPageContent.addClass('page-transition-active');
+        }, 10);
+
+        // Update footer page numbers
+        $('#page-number-left').text(`頁碼: ${currentPage}`);
+        $('#page-indicator').text(`${currentPage} / ${totalPages}`);
+        
+        // Update reading progress bar
+        const percent = (currentPage / totalPages) * 100;
+        $('#reading-progress-bar').css('width', `${percent}%`);
+
+        // Enable/Disable next-prev buttons
+        $('#prev-page').prop('disabled', currentPage === 1);
+        if (currentPage === totalPages) {
+          $('#next-page').html('完成閱讀 <i class="fa-solid fa-check ml-1"></i>').addClass('bg-gold-800 text-white border-transparent hover:bg-gold-900').removeClass('bg-white text-stone-700 border-stone-200');
+        } else {
+          $('#next-page').html('下一頁 <i class="fa-solid fa-chevron-right text-xs"></i>').removeClass('bg-gold-800 text-white border-transparent hover:bg-gold-900').addClass('bg-white text-stone-700 border-stone-200');
+        }
+
+        // TOC Active Class Update
+        $('.toc-item').removeClass('active bg-gold-100/50 text-gold-900 border-l-4 border-gold-800 font-bold').addClass('text-stone-600 border-transparent').removeClass('hover:text-stone-900');
+        $(`.toc-item[data-page="${currentPage}"]`).addClass('active bg-gold-100/50 text-gold-900 border-l-4 border-gold-800 font-bold').removeClass('text-stone-600 border-transparent');
+
+        // Load Note for new page
+        loadNoteForPage(currentPage);
+
+        // Scroll main panel to top
+        $('main').animate({ scrollTop: 0 }, 300);
+      }
+
+      // Next / Prev Button click handlers
+      $('#prev-page').click(function() {
+        goToPage(currentPage - 1);
+      });
+
+      $('#next-page').click(function() {
+        if (currentPage === totalPages) {
+          alert('恭喜您完成所有章節的閱讀！');
+        } else {
+          goToPage(currentPage + 1);
+        }
+      });
+
+      // TOC Link click handlers
+      $('.toc-item').click(function(e) {
+        e.preventDefault();
+        const page = parseInt($(this).data('page'));
+        goToPage(page);
+        
+        // On mobile, auto close sidebar after clicking TOC
+        if ($(window).width() < 1024) {
+          $('#sidebar').addClass('-translate-x-full');
+        }
+      });
+
+      // Keyboard navigation
+      $(document).keydown(function(e) {
+        if (e.target.nodeName === 'TEXTAREA' || e.target.nodeName === 'INPUT') return;
+        if (e.which === 37) { // Left arrow
+          goToPage(currentPage - 1);
+        } else if (e.which === 39) { // Right arrow
+          goToPage(currentPage + 1);
+        }
+      });
+
+      // --- HIGHLIGHTER FUNCTIONALITY ---
+      $('.hl-color-btn').click(function() {
+        $('.hl-color-btn').removeClass('ring-2 ring-gold-300 ring-offset-0 scale-110');
+        $(this).addClass('ring-2 ring-gold-300 ring-offset-0 scale-110');
+        activeColor = $(this).data('color');
+      });
+
+      // Click on text paragraphs to highlight/unhighlight
+      $(document).on('click', '.highlightable-text p, .highlightable-text li', function() {
+        const $element = $(this);
+        const paragraphId = $element.attr('data-id');
+        
+        if (!paragraphId) return;
+
+        // Toggle logic
+        if ($element.hasClass(`hl-${activeColor}`)) {
+          $element.removeClass(`hl-yellow hl-green hl-blue`);
+          delete highlights[paragraphId];
+        } else {
+          $element.removeClass(`hl-yellow hl-green hl-blue`).addClass(`hl-${activeColor}`);
+          highlights[paragraphId] = {
+            color: activeColor,
+            text: $element.text().trim(),
+            page: currentPage
+          };
+        }
+
+        localStorage.setItem('textbook-highlights', JSON.stringify(highlights));
+        updateHighlightsUI();
+      });
+
+      // Clear all highlights
+      $('#clear-highlights').click(function() {
+        if (confirm('您確定要清除所有的重點劃線嗎？')) {
+          $('.highlightable-text p, .highlightable-text li').removeClass('hl-yellow hl-green hl-blue');
+          highlights = {};
+          localStorage.removeItem('textbook-highlights');
+          updateHighlightsUI();
+        }
+      });
+
+      function loadSavedHighlights() {
+        $.each(highlights, function(id, data) {
+          $(`[data-id="${id}"]`).addClass(`hl-${data.color}`);
+        });
+        updateHighlightsUI();
+      }
+
+      function updateHighlightsUI() {
+        const $list = $('#highlights-list');
+        $list.empty();
+
+        const count = Object.keys(highlights).length;
+        if (count === 0) {
+          $list.append('<p class="text-xs text-stone-400 text-center py-8">尚無 any 劃線紀錄。請在課本中直接點擊段落進行重點劃線！</p>');
+          return;
+        }
+
+        $.each(highlights, function(id, data) {
+          let dotColorClass = 'bg-yellow-300';
+          if (data.color === 'green') dotColorClass = 'bg-green-300';
+          if (data.color === 'blue') dotColorClass = 'bg-blue-300';
+
+          const itemHtml = `
+            <div class="p-3.5 bg-stone-50 border border-stone-200/70 rounded-xl space-y-1.5 relative group hover:shadow-xs transition-all" data-target-id="${id}">
+              <div class="flex items-center justify-between">
+                <span class="flex items-center gap-1.5 text-xxs font-bold text-stone-500 font-serif">
+                  <span class="w-2.5 h-2.5 rounded-full ${dotColorClass}"></span>
+                  p.${data.page} 頁
+                </span>
+                <button class="delete-single-hl text-stone-400 hover:text-red-650 transition-colors opacity-0 group-hover:opacity-100" data-id="${id}">
+                  <i class="fa-solid fa-xmark text-xs"></i>
+                </button>
+              </div>
+              <p class="text-xs font-serif text-stone-700 line-clamp-3 leading-relaxed italic cursor-pointer go-to-marked-para">${data.text}</p>
+            </div>
+          `;
+          $list.append(itemHtml);
+        });
+      }
+
+      // Clicking highlight list item to navigate to page
+      $(document).on('click', '.go-to-marked-para', function() {
+        const paraId = $(this).closest('[data-target-id]').data('target-id');
+        const data = highlights[paraId];
+        if (data) {
+          goToPage(data.page);
+          // Highlight flash
+          setTimeout(() => {
+            $(`[data-id="${paraId}"]`).addClass('ring-2 ring-gold-400 ring-offset-2');
+            setTimeout(() => {
+              $(`[data-id="${paraId}"]`).removeClass('ring-2 ring-gold-400 ring-offset-2');
+            }, 1000);
+          }, 350);
+        }
+      });
+
+      // Deleting highlight from list
+      $(document).on('click', '.delete-single-hl', function(e) {
+        e.stopPropagation();
+        const id = $(this).data('id');
+        $(`[data-id="${id}"]`).removeClass('hl-yellow hl-green hl-blue');
+        delete highlights[id];
+        localStorage.setItem('textbook-highlights', JSON.stringify(highlights));
+        updateHighlightsUI();
+      });
+
+      // --- NOTE TAKING LOGIC ---
+      $('#note-input').on('input', function() {
+        const text = $(this).val();
+        notes[currentPage] = text;
+        localStorage.setItem('textbook-notes', JSON.stringify(notes));
+      });
+
+      function loadNoteForPage(page) {
+        const text = notes[page] || '';
+        $('#note-input').val(text);
+      }
+
+      $('#clear-note').click(function() {
+        if (confirm('您確定要清除當前頁面的筆記嗎？')) {
+          $('#note-input').val('');
+          delete notes[currentPage];
+          localStorage.setItem('textbook-notes', JSON.stringify(notes));
+        }
+      });
+
+      $('#download-note').click(function() {
+        const markdownContent = Object.keys(notes).map(p => `## 第 ${p} 頁筆記\n\n${notes[p]}\n`).join('\n');
+        const blob = new Blob([markdownContent], { type: 'text/markdown;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `後端探索隨堂筆記.md`;
+        a.click();
+        URL.revokeObjectURL(url);
+      });
+
+      // --- FONT SIZE ADJUSTMENT ---
+      let fontScale = 100;
+      $('#font-inc').click(function() {
+        if (fontScale < 130) {
+          fontScale += 10;
+          $('#book-content-container').css('font-size', `${18 * (fontScale / 100)}px`);
+        }
+      });
+
+      // --- QUIZ GAME LOGIC ---
+      $('.quiz-opt-btn').click(function() {
+        const $btn = $(this);
+        const $card = $btn.closest('.quiz-card');
+        const isCorrect = $btn.data('correct') === true;
+        const $feedback = $card.find('.quiz-feedback');
+        
+        $card.find('.quiz-opt-btn').prop('disabled', true).removeClass('bg-gold-100/50 border-gold-300');
+        
+        if (isCorrect) {
+          $btn.addClass('bg-green-50 border-green-400 text-green-800');
+          $feedback.removeClass('hidden').addClass('bg-green-50/70 text-green-800 border border-green-200')
+            .html('<i class="fa-solid fa-circle-check mr-1.5"></i><strong>答對了！</strong> 資料庫與資料表有著明顯的層級包含關係。');
+        } else {
+          $btn.addClass('bg-red-50 border-red-400 text-red-800');
+          $feedback.removeClass('hidden').addClass('bg-red-50/70 text-red-800 border border-red-200')
+            .html('<i class="fa-solid fa-circle-xmark mr-1.5"></i><strong>答案錯誤。</strong> 再看看上面的診所櫃子與抽屜的對應關係喔！');
+        }
+      });
+
+      // --- CHECKLIST SAVER ---
+      $('input[type="checkbox"]').change(function() {
+        const id = $(this).attr('id');
+        if (this.checked) {
+          checklist.push(id);
+        } else {
+          checklist = checklist.filter(item => item !== id);
+        }
+        localStorage.setItem('textbook-checklist', JSON.stringify(checklist));
+      });
+
+      // --- TOC SEARCH FILTER ---
+      $('#search-toc').on('input', function() {
+        const query = $(this).val().toLowerCase();
+        $('.toc-item').each(function() {
+          const text = $(this).text().toLowerCase();
+          if (text.indexOf(query) > -1) {
+            $(this).show();
+          } else {
+            $(this).hide();
+          }
+        });
+      });
+
+      // --- BOOKMARK CURRENT PAGE ---
+      let bookmarkedPages = JSON.parse(localStorage.getItem('textbook-bookmarks') || '[]');
+      
+      function updateBookmarkIcon() {
+        if (bookmarkedPages.includes(currentPage)) {
+          $('#bookmark-icon').removeClass('fa-regular').addClass('fa-solid text-gold-800');
+          $('#bookmark-page span').text('已加書籤');
+        } else {
+          $('#bookmark-icon').removeClass('fa-solid text-gold-800').addClass('fa-regular');
+          $('#bookmark-page span').text('加入書籤');
+        }
+      }
+
+      updateBookmarkIcon();
+
+      $('#bookmark-page').click(function() {
+        const idx = bookmarkedPages.indexOf(currentPage);
+        if (idx > -1) {
+          bookmarkedPages.splice(idx, 1);
+        } else {
+          bookmarkedPages.push(currentPage);
+        }
+        localStorage.setItem('textbook-bookmarks', JSON.stringify(bookmarkedPages));
+        updateBookmarkIcon();
+      });
+
+      // Update bookmark icon when page transitions
+      $(document).on('page-changed', function() {
+        updateBookmarkIcon();
+      });
+      
+      const originalGoToPage = goToPage;
+      goToPage = function(page) {
+        originalGoToPage(page);
+        $(document).trigger('page-changed');
+      };
+
+    });
+  </script>
+</body>
+</html>
