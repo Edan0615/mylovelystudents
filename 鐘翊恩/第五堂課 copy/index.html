@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第五堂課：DOM 操作與事件監聽</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Noto Sans TC"', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            900: '#0c4a6e',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #f8fafc;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+        }
+        .code-block {
+            background-color: #1e293b;
+            color: #e2e8f0;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            font-family: monospace;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body class="text-slate-800 antialiased min-h-screen pb-20">
+
+    <!-- Header -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm">
+        <div class="max-w-5xl mx-auto px-6 py-4 flex justify-between items-center">
+            <h1 class="text-xl font-bold text-slate-800 flex items-center gap-2">
+                <span class="w-8 h-8 rounded bg-brand-500 text-white flex items-center justify-center text-sm font-black shadow-md">KB</span>
+                Tutorials
+            </h1>
+            <nav class="text-sm font-medium text-slate-500">
+                <span>蘇品樺 / 第五堂課</span>
+            </nav>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-6 mt-12 space-y-16">
+        
+        <!-- Title Section -->
+        <div class="text-center space-y-4">
+            <p class="text-brand-600 font-semibold tracking-wide text-sm uppercase">Lesson 5</p>
+            <h2 class="text-4xl md:text-5xl font-extrabold tracking-tight text-slate-900">網頁的靈魂：DOM 操作與事件</h2>
+            <p class="text-lg text-slate-500 max-w-2xl mx-auto mt-4 leading-relaxed">從基礎邏輯跨越到視覺互動，學習如何用 JavaScript 操控網頁元素，為網頁注入生命力。</p>
+        </div>
+
+        <!-- Section: 寫與想 -->
+        <section class="glass-panel rounded-2xl p-8 md:p-10 relative overflow-hidden group hover:shadow-lg transition-shadow duration-300">
+            <div class="absolute top-0 left-0 w-1 h-full bg-brand-500"></div>
+            <div class="flex items-start gap-6">
+                <div class="hidden md:flex w-16 h-16 rounded-full bg-brand-50 items-center justify-center shrink-0">
+                    <svg class="w-8 h-8 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path></svg>
+                </div>
+                <div>
+                    <h3 class="text-2xl font-bold mb-4 text-slate-900">程式設計的核心：「想」與「寫」</h3>
+                    <p class="text-slate-600 leading-relaxed text-lg mb-4">
+                        在學習寫程式的過程中，我們往往會把注意力放在語法上，但其實寫程式可以分為兩個層次：
+                    </p>
+                    <div class="grid md:grid-cols-2 gap-6 mt-6">
+                        <div class="bg-slate-50 p-6 rounded-xl border border-slate-100">
+                            <h4 class="text-xl font-bold text-slate-800 mb-2 flex items-center gap-2">
+                                <span class="text-brand-500">💡</span> 想 (Thinking)
+                            </h4>
+                            <p class="text-slate-600">這是解決問題的關鍵。你必須思考：我要達到什麼目的？這需要什麼邏輯？我應該使用什麼工具或函式？這是在寫下任何一行程式碼之前就必須進行的工作。</p>
+                        </div>
+                        <div class="bg-slate-50 p-6 rounded-xl border border-slate-100">
+                            <h4 class="text-xl font-bold text-slate-800 mb-2 flex items-center gap-2">
+                                <span class="text-slate-500">⌨️</span> 寫 (Writing)
+                            </h4>
+                            <p class="text-slate-600">將「想」出來的邏輯，翻譯成電腦看得懂的程式碼。語法查得到，但邏輯需要自己建構。我們現在要學的 DOM 操作，就是豐富我們「寫」的工具箱。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section: 溫故知新 -->
+        <section class="glass-panel rounded-2xl p-8 md:p-10 hover:shadow-lg transition-shadow duration-300">
+            <h3 class="text-2xl font-bold mb-4 text-slate-900 flex items-center gap-3">
+                <svg class="w-6 h-6 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                前情提要：第四堂課
+            </h3>
+            <p class="text-slate-600 leading-relaxed text-lg">
+                在第四堂課中，我們專注於 <strong>JavaScript 的核心邏輯</strong>。我們學習了變數、判斷式，以及最重要的 <code class="bg-slate-100 text-brand-600 px-2 py-0.5 rounded text-sm">for</code> 與 <code class="bg-slate-100 text-brand-600 px-2 py-0.5 rounded text-sm">while</code> 迴圈。這些是程式運作的大腦。<br>
+                今天，我們要帶著這些邏輯，開始學習 <strong>DOM 操作</strong>，讓程式能真正與使用者的畫面產生互動！
+            </p>
+        </section>
+
+        <!-- Section: DOM 選取器 -->
+        <section>
+            <h3 class="text-3xl font-bold mb-8 text-slate-900 text-center">DOM 元素選取器大全</h3>
+            
+            <div class="space-y-6">
+                <!-- getElementById -->
+                <div class="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-slate-200">
+                    <div class="flex justify-between items-start mb-4">
+                        <h4 class="text-xl font-bold text-slate-800"><code class="text-brand-600 bg-brand-50 px-2 py-1 rounded">document.getElementById()</code></h4>
+                        <span class="bg-slate-100 text-slate-600 text-xs px-2 py-1 rounded font-medium uppercase tracking-wider">最快、最基本</span>
+                    </div>
+                    <p class="text-slate-600 mb-4">透過 HTML 標籤的 <code class="font-bold text-slate-700">id</code> 屬性來尋找元素。因為在一個頁面中 ID 必須是唯一的，所以這個方法只會回傳一個元素。</p>
+                    <div class="code-block">
+                        <span class="text-slate-400">// HTML: &lt;div id="my-title"&gt;標題&lt;/div&gt;</span><br>
+                        <span class="text-purple-400">const</span> title <span class="text-slate-300">=</span> <span class="text-blue-400">document</span>.<span class="text-yellow-200">getElementById</span>(<span class="text-green-300">'my-title'</span>);
+                    </div>
+                </div>
+
+                <!-- getElementsByClassName & TagName -->
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+                        <h4 class="text-lg font-bold text-slate-800 mb-3"><code class="text-brand-600 bg-brand-50 px-2 py-1 rounded">getElementsByClassName()</code></h4>
+                        <p class="text-slate-600 text-sm mb-4">透過 <code class="font-bold text-slate-700">class</code> 名稱來尋找，會回傳所有符合的元素集合 (HTMLCollection)。</p>
+                        <div class="code-block text-sm">
+                            <span class="text-purple-400">const</span> items <span class="text-slate-300">=</span> <span class="text-blue-400">document</span>.<span class="text-yellow-200">getElementsByClassName</span>(<span class="text-green-300">'list-item'</span>);
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+                        <h4 class="text-lg font-bold text-slate-800 mb-3"><code class="text-brand-600 bg-brand-50 px-2 py-1 rounded">getElementsByTagName()</code></h4>
+                        <p class="text-slate-600 text-sm mb-4">透過 HTML 標籤名稱 (如 div, p, a) 來尋找，同樣回傳元素集合。</p>
+                        <div class="code-block text-sm">
+                            <span class="text-purple-400">const</span> links <span class="text-slate-300">=</span> <span class="text-blue-400">document</span>.<span class="text-yellow-200">getElementsByTagName</span>(<span class="text-green-300">'a'</span>);
+                        </div>
+                    </div>
+                </div>
+
+                <!-- querySelector -->
+                <div class="bg-white rounded-2xl p-6 md:p-8 shadow-sm border-l-4 border-l-brand-500 border-t border-r border-b border-slate-200">
+                    <div class="flex justify-between items-start mb-4">
+                        <h4 class="text-xl font-bold text-slate-800"><code class="text-brand-600 bg-brand-50 px-2 py-1 rounded">document.querySelector()</code></h4>
+                        <span class="bg-brand-100 text-brand-700 text-xs px-2 py-1 rounded font-bold uppercase tracking-wider flex items-center gap-1">⭐ 最強大推薦</span>
+                    </div>
+                    <p class="text-slate-600 mb-4">現代開發最常用的方法！你可以直接傳入 <strong>CSS 選擇器</strong>，它會回傳「第一個」找到的元素。非常直覺且強大。</p>
+                    <div class="code-block mb-4">
+                        <span class="text-slate-400">// 找 ID</span><br>
+                        <span class="text-blue-400">document</span>.<span class="text-yellow-200">querySelector</span>(<span class="text-green-300">'#my-title'</span>);<br><br>
+                        <span class="text-slate-400">// 找 Class</span><br>
+                        <span class="text-blue-400">document</span>.<span class="text-yellow-200">querySelector</span>(<span class="text-green-300">'.list-item'</span>);<br><br>
+                        <span class="text-slate-400">// 找複雜結構 (類別為 container 下的第一個 a 標籤)</span><br>
+                        <span class="text-blue-400">document</span>.<span class="text-yellow-200">querySelector</span>(<span class="text-green-300">'.container a'</span>);
+                    </div>
+                    
+                    <h4 class="text-lg font-bold text-slate-800 mt-6 mb-2"><code class="text-brand-600 bg-brand-50 px-2 py-1 rounded">document.querySelectorAll()</code></h4>
+                    <p class="text-slate-600 mb-4">如果你的 CSS 選擇器會對應到多個元素，且你想要一次把他們全部抓出來（回傳 NodeList 陣列），就使用這個。</p>
+                    <div class="code-block">
+                        <span class="text-purple-400">const</span> allItems <span class="text-slate-300">=</span> <span class="text-blue-400">document</span>.<span class="text-yellow-200">querySelectorAll</span>(<span class="text-green-300">'.list-item'</span>);
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Section: 事件監聽 -->
+        <section class="mb-20">
+            <h3 class="text-3xl font-bold mb-8 text-slate-900 text-center">讓網頁活起來：事件監聽</h3>
+            <div class="bg-slate-900 rounded-3xl p-8 md:p-12 shadow-2xl text-white relative overflow-hidden">
+                <!-- Decorative background -->
+                <div class="absolute -right-20 -top-20 w-64 h-64 bg-brand-500 rounded-full blur-3xl opacity-20 pointer-events-none"></div>
+                
+                <h4 class="text-2xl font-bold mb-4 flex items-center gap-3">
+                    <span class="bg-brand-500 p-2 rounded-lg">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122"></path></svg>
+                    </span>
+                    <code class="text-brand-300">addEventListener()</code>
+                </h4>
+                <p class="text-slate-300 text-lg mb-8 max-w-2xl">
+                    找到元素後，下一步就是要幫它加上「耳朵」，讓它能隨時監聽使用者的動作（如點擊、輸入等），並做出相對應的反應。
+                </p>
+
+                <div class="bg-slate-800 rounded-xl p-6 border border-slate-700">
+                    <p class="text-slate-400 text-sm mb-4 uppercase tracking-widest font-bold">語法結構</p>
+                    <div class="font-mono text-lg text-slate-200 mb-6">
+                        element.<span class="text-yellow-400">addEventListener</span>(<span class="text-green-400">'事件名稱'</span>, <span class="text-purple-400">function() {</span><br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;<span class="text-slate-400">// 當事件發生時，要執行的程式碼</span><br>
+                        <span class="text-purple-400">}</span>);
+                    </div>
+                </div>
+
+                <div class="mt-10">
+                    <p class="text-slate-400 text-sm mb-4 uppercase tracking-widest font-bold">互動演示 (點擊按鈕試試看)</p>
+                    <div class="flex items-center gap-6">
+                        <button id="demo-btn" class="bg-white text-slate-900 px-6 py-3 rounded-lg font-bold hover:bg-brand-50 transition-colors shadow-lg active:scale-95">
+                            點擊我
+                        </button>
+                        <div id="demo-result" class="text-brand-300 font-mono text-lg">等待點擊...</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Script for demo -->
+    <script>
+        $(document).ready(function() {
+            // Demo for addEventListener using vanilla JS to show the concept
+            const demoBtn = document.querySelector('#demo-btn');
+            const demoResult = document.querySelector('#demo-result');
+            let clickCount = 0;
+
+            demoBtn.addEventListener('click', function() {
+                clickCount++;
+                demoResult.textContent = `按鈕被點擊了 ${clickCount} 次！`;
+                demoResult.classList.add('text-yellow-300');
+            });
+        });
+    </script>
+</body>
+</html>
