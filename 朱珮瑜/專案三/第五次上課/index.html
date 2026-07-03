@@ -1,0 +1,1142 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laravel 核心開發 - 互動式白色課本</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- jQuery CDN -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'Noto Sans TC', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        book: {
+                            paper: '#FBFBFA',
+                            card: '#FFFFFF',
+                            ink: '#1C1917',
+                            muted: '#78716C',
+                            accent: '#2563EB',
+                            accentLg: '#EFF6FF',
+                            border: '#E7E5E4'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #F5F5F4;
+            color: #1C1917;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #E7E5E4;
+            border-radius: 3px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #D6D3D1;
+        }
+    </style>
+</head>
+
+<body class="font-sans antialiased selection:bg-blue-100 selection:text-blue-900">
+
+    <!-- Header Navigation -->
+    <header class="sticky top-0 z-40 w-full bg-book-card/85 backdrop-blur-md border-b border-book-border py-4 px-6 md:px-12 flex justify-between items-center transition-all duration-300">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-book-ink flex items-center justify-center text-white font-bold text-lg shadow-sm">
+                <i class="fa-solid fa-book-open"></i>
+            </div>
+            <div>
+                <h1 class="text-lg font-bold tracking-tight text-book-ink">Laravel 基礎開發</h1>
+                <p class="text-xs text-book-muted font-medium">白色電子課本 · 精裝互動版</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-4">
+            <span class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-emerald-50 text-emerald-700 rounded-full border border-emerald-200">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Ready for AI Co-Pilot
+            </span>
+            <button id="toggle-quiz" class="flex items-center gap-2 px-4 py-2 bg-book-ink text-white rounded-lg text-sm font-medium hover:bg-stone-800 transition shadow-sm">
+                <i class="fa-solid fa-graduation-cap"></i> 挑戰小測驗
+            </button>
+        </div>
+    </header>
+
+    <div class="max-w-7xl mx-auto px-4 md:px-8 py-8 flex flex-col lg:flex-row gap-8">
+        
+        <!-- Left Sidebar (Navigation & AI Quick Prompts) -->
+        <aside class="w-full lg:w-80 shrink-0">
+            <div class="sticky top-24 space-y-6">
+                <!-- Chapter Selector Menu -->
+                <div class="bg-book-card border border-book-border rounded-2xl p-5 shadow-sm">
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-book-muted mb-4 px-1">課本目錄</h3>
+                    <nav class="space-y-1" id="toc-nav">
+                        <a href="#section-restful" class="toc-item active flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-book-accent bg-book-accentLg transition">
+                            <span class="w-6 h-6 rounded-md bg-blue-100 flex items-center justify-center text-xs text-blue-600 font-bold">1</span>
+                            RESTful API & HTTP
+                        </a>
+                        <a href="#section-routing" class="toc-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-stone-600 hover:bg-stone-50 hover:text-stone-900 transition">
+                            <span class="w-6 h-6 rounded-md bg-stone-100 flex items-center justify-center text-xs text-stone-600 font-bold">2</span>
+                            web.php 路由管理
+                        </a>
+                        <a href="#section-controllers" class="toc-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-stone-600 hover:bg-stone-50 hover:text-stone-900 transition">
+                            <span class="w-6 h-6 rounded-md bg-stone-100 flex items-center justify-center text-xs text-stone-600 font-bold">3</span>
+                            Controller 控制器
+                        </a>
+                        <a href="#section-migrations" class="toc-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-stone-600 hover:bg-stone-50 hover:text-stone-900 transition">
+                            <span class="w-6 h-6 rounded-md bg-stone-100 flex items-center justify-center text-xs text-stone-600 font-bold">4</span>
+                            Migration 資料庫遷移
+                        </a>
+                        <a href="#section-blade" class="toc-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-stone-600 hover:bg-stone-50 hover:text-stone-900 transition">
+                            <span class="w-6 h-6 rounded-md bg-stone-100 flex items-center justify-center text-xs text-stone-600 font-bold">5</span>
+                            Blade 模板引擎
+                        </a>
+                    </nav>
+                </div>
+
+                <!-- AI Co-Pilot Tipbox -->
+                <div class="bg-stone-900 text-white rounded-2xl p-5 shadow-lg relative overflow-hidden">
+                    <div class="absolute -right-8 -bottom-8 w-24 h-24 bg-white/5 rounded-full blur-xl"></div>
+                    <div class="flex items-center gap-2 text-yellow-400 text-sm font-semibold mb-3">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                        <span>AI 學習心法</span>
+                    </div>
+                    <p class="text-xs text-stone-300 leading-relaxed mb-4">
+                        本書特別設計了 <strong>「給 AI 的 Prompt 指令範本」</strong>。學會基本觀念後，直接將範本複製給 ChatGPT 或 Claude，就能光速幫你寫出代碼！
+                    </p>
+                    <div class="border-t border-stone-800 pt-3">
+                        <span class="text-[10px] text-stone-400 block uppercase font-bold tracking-wider">學習心態</span>
+                        <span class="text-xs text-stone-200 font-medium">了解結構 -> 善用 AI 生成 -> 進行除錯與組裝</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Right Content Area -->
+        <main class="flex-1 space-y-12">
+            
+            <!-- Welcome Intro Card -->
+            <section class="bg-book-card border border-book-border rounded-3xl p-8 md:p-10 shadow-sm relative overflow-hidden">
+                <div class="absolute right-0 top-0 w-48 h-48 bg-gradient-to-bl from-blue-50 to-transparent rounded-full -mr-16 -mt-16 -z-10"></div>
+                <span class="px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-xs font-semibold border border-blue-100">學前引言</span>
+                <h2 class="text-3xl font-extrabold tracking-tight text-book-ink mt-3">如何用 AI 輕鬆駕馭 Laravel？</h2>
+                <p class="text-stone-600 leading-relaxed mt-4 text-base">
+                    Laravel 是目前全世界最受歡迎的 PHP 開發框架，其優美流暢的語法結構，就像在寫英文句子一樣。
+                    這本<strong>白色課本</strong>將帶你快速掌握 Laravel 的五大核心拼圖。讀完後，你不需要死記硬背，只要知道「有這個東西」，就能利用我們為你寫好的 AI Prompt 指令，指揮 AI 幫你寫出完美的程式碼！
+                </p>
+            </section>
+
+            <!-- Interface Design Conceptual Link Box -->
+            <section class="bg-indigo-50/30 border border-indigo-100/80 rounded-3xl p-8 md:p-10 shadow-sm space-y-6 relative overflow-hidden">
+                <div class="absolute right-4 top-4 text-indigo-200/50 text-6xl pointer-events-none">
+                    <i class="fa-solid fa-palette"></i>
+                </div>
+                <span class="px-3 py-1 bg-indigo-50 text-indigo-700 rounded-full text-xs font-semibold border border-indigo-100">設計心法補充</span>
+                <h3 class="text-xl font-bold tracking-tight text-indigo-950 mt-1">
+                    思考：為什麼學習後端，也是在設計「使用者介面 (UI/UX)」？
+                </h3>
+                <p class="text-xs text-indigo-900/80 leading-relaxed">
+                    介面設計不只是畫出漂亮的 Figma 畫面，更是在定義系統與使用者的互動方式。懂後端的設計師，能規劃出真正合理且體驗順暢的流程。以下是我們這堂課的技術，如何與<strong>介面設計</strong>產生深刻關聯：
+                </p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                    <div class="bg-white/80 backdrop-blur-sm p-4 rounded-xl border border-indigo-50 space-y-1">
+                        <span class="text-xs font-bold text-indigo-950 flex items-center gap-1.5">
+                            <i class="fa-solid fa-link text-indigo-600"></i>
+                            1. RESTful API & 路由 ➔ API 介面設計 (DX)
+                        </span>
+                        <p class="text-[11px] text-stone-500 leading-relaxed">
+                            網址 (URL) 其實就是前端或開發者跟後端溝通的「文字介面」。乾淨、有規律的路由（如 <code>GET /students</code>）能提供極佳的<strong>開發者體驗 (Developer Experience)</strong>，讓串接過程順暢無阻。
+                        </p>
+                    </div>
+                    <div class="bg-white/80 backdrop-blur-sm p-4 rounded-xl border border-indigo-50 space-y-1">
+                        <span class="text-xs font-bold text-indigo-950 flex items-center gap-1.5">
+                            <i class="fa-solid fa-circle-exclamation text-indigo-600"></i>
+                            2. Controller ➔ 互動體驗 (UX) 設計
+                        </span>
+                        <p class="text-[11px] text-stone-500 leading-relaxed">
+                            Controller 掌握了流程。當表單輸入錯誤時退回並顯示「紅色錯誤提示」，或成功後引導至新畫面並顯示「綠色成功彈窗」，這些<strong>回饋機制 (Feedback)</strong> 都是 UX 互動設計的核心。
+                        </p>
+                    </div>
+                    <div class="bg-white/80 backdrop-blur-sm p-4 rounded-xl border border-indigo-50 space-y-1">
+                        <span class="text-xs font-bold text-indigo-950 flex items-center gap-1.5">
+                            <i class="fa-solid fa-table-cells text-indigo-600"></i>
+                            3. Migration ➔ 資訊架構 (IA) 與輸入元件
+                        </span>
+                        <p class="text-[11px] text-stone-500 leading-relaxed">
+                            資料庫欄位直接決定了介面元件：<code>boolean</code> 欄位對應 UI 的 <strong>Toggle 開關</strong>；<code>date</code> 欄位對應 **日曆選取器**。Migration 實質上就是在為介面做資訊架構與輸入限制的底層規劃。
+                        </p>
+                    </div>
+                    <div class="bg-white/80 backdrop-blur-sm p-4 rounded-xl border border-indigo-50 space-y-1">
+                        <span class="text-xs font-bold text-indigo-950 flex items-center gap-1.5">
+                            <i class="fa-solid fa-compass-drafting text-indigo-600"></i>
+                            4. Blade 模板 ➔ 元件化與視覺一致性
+                        </span>
+                        <p class="text-[11px] text-stone-500 leading-relaxed">
+                            Blade 的主外框繼承（Layouts）與元件封裝，概念完全對應 Figma 的 **Components（元件）**。透過將重複的按鈕與卡片模組化，能大幅確保軟體產品的視覺一致性與開發效率。
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 1. RESTful API & HTTP Section -->
+            <section id="section-restful" class="scroll-mt-24 bg-book-card border border-book-border rounded-3xl p-8 md:p-10 shadow-sm space-y-6">
+                <div class="flex items-center gap-3 border-b border-stone-100 pb-5">
+                    <div class="w-12 h-12 rounded-2xl bg-rose-50 flex items-center justify-center text-rose-600">
+                        <i class="fa-solid fa-cloud-arrow-down text-xl"></i>
+                    </div>
+                    <div>
+                        <span class="text-xs text-rose-600 font-bold uppercase tracking-wider">Chapter 01</span>
+                        <h2 class="text-2xl font-bold text-book-ink">RESTful API 設計與 HTTP 基礎</h2>
+                    </div>
+                </div>
+
+                <p class="text-stone-600 leading-relaxed text-sm">
+                    <strong>RESTful API</strong> 是一種引領現代網頁設計的架構風格，也是「前後端分離」的核心。它利用標準的 HTTP 方法，搭配直觀、語意化的資源網址 (URL) 來操作資料。
+                </p>
+
+                <!-- HTTP & HTTPS Introduction Box -->
+                <div class="bg-blue-50/40 border border-blue-100/80 rounded-2xl p-5 space-y-3">
+                    <h4 class="text-sm font-bold text-blue-900 flex items-center gap-2">
+                        <i class="fa-solid fa-network-wired text-blue-600"></i>
+                        什麼是 HTTP？(用生活例子秒懂)
+                    </h4>
+                    <p class="text-xs text-stone-600 leading-relaxed">
+                        <strong>HTTP</strong> (超文字傳輸協定) 是網頁世界的「<strong>溝通語言與約定</strong>」。<br>
+                        想像我們兩個人要開會溝通，如果一個人講中文、另一個講英文，卻沒有事先說好要用哪種語言，就完全無法交流。<strong>HTTP 就是大家說好在網路上傳遞資料的「語言協定」</strong>。瀏覽器與伺服器之間只要都遵守 HTTP 的規範，就能互相聽懂、順利傳遞網頁與圖片。
+                    </p>
+                    <div class="border-t border-blue-100 pt-2 flex flex-col md:flex-row gap-3">
+                        <div class="flex-1">
+                            <span class="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded mr-1">HTTPS</span>
+                            <span class="text-xs text-stone-500"><strong>HTTP + S (Secure 安全版)</strong>。把原本傳送的語言「加密」，防止中間有人偷聽或修改，是現代所有網站的基本標準。</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RESTful Mapping Table -->
+                <div class="space-y-3">
+                    <h3 class="text-sm font-bold text-stone-800 flex items-center gap-2">
+                        <span class="w-1.5 h-3 bg-rose-500 rounded-sm"></span>
+                        RESTful 資源動作對照表 (Resource Actions Mapping)
+                    </h3>
+                    <p class="text-xs text-stone-500">
+                        在 Laravel 中，當我們宣告一個資源路由（例如學生資料 <code>students</code>），會自動對應 7 個標準的 Controller 動作方法：
+                    </p>
+                    <div class="border border-book-border rounded-xl overflow-hidden shadow-sm">
+                        <table class="w-full text-left text-xs border-collapse">
+                            <thead>
+                                <tr class="bg-stone-50 border-b border-book-border text-stone-700 font-bold">
+                                    <th class="p-3">HTTP 方法</th>
+                                    <th class="p-3">URI (路徑)</th>
+                                    <th class="p-3">Action (對應方法)</th>
+                                    <th class="p-3">Route Name (路由名稱)</th>
+                                    <th class="p-3">功能描述說明</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-stone-100 text-stone-600 bg-white">
+                                <tr class="hover:bg-stone-50/50 transition">
+                                    <td class="p-3"><span class="px-2 py-0.5 bg-blue-50 text-blue-700 rounded font-mono font-bold">GET</span></td>
+                                    <td class="p-3 font-mono">/students</td>
+                                    <td class="p-3 font-semibold text-stone-800 font-mono">index</td>
+                                    <td class="p-3 font-mono text-stone-400">students.index</td>
+                                    <td class="p-3">取得並顯示所有學生名單頁面 (R)</td>
+                                </tr>
+                                <tr class="hover:bg-stone-50/50 transition">
+                                    <td class="p-3"><span class="px-2 py-0.5 bg-blue-50 text-blue-700 rounded font-mono font-bold">GET</span></td>
+                                    <td class="p-3 font-mono">/students/create</td>
+                                    <td class="p-3 font-semibold text-stone-800 font-mono">create</td>
+                                    <td class="p-3 font-mono text-stone-400">students.create</td>
+                                    <td class="p-3">回傳「新增學生」的 HTML 輸入表單頁面</td>
+                                </tr>
+                                <tr class="hover:bg-stone-50/50 transition">
+                                    <td class="p-3"><span class="px-2 py-0.5 bg-emerald-50 text-emerald-700 rounded font-mono font-bold">POST</span></td>
+                                    <td class="p-3 font-mono">/students</td>
+                                    <td class="p-3 font-semibold text-stone-800 font-mono">store</td>
+                                    <td class="p-3 font-mono text-stone-400">students.store</td>
+                                    <td class="p-3">將表單提交的資料「寫入 / 新增」到資料庫 (C)</td>
+                                </tr>
+                                <tr class="hover:bg-stone-50/50 transition">
+                                    <td class="p-3"><span class="px-2 py-0.5 bg-blue-50 text-blue-700 rounded font-mono font-bold">GET</span></td>
+                                    <td class="p-3 font-mono">/students/{student}</td>
+                                    <td class="p-3 font-semibold text-stone-800 font-mono">show</td>
+                                    <td class="p-3 font-mono text-stone-400">students.show</td>
+                                    <td class="p-3">顯示特定一筆學生的詳細詳細資料頁面 (R)</td>
+                                </tr>
+                                <tr class="hover:bg-stone-50/50 transition">
+                                    <td class="p-3"><span class="px-2 py-0.5 bg-blue-50 text-blue-700 rounded font-mono font-bold">GET</span></td>
+                                    <td class="p-3 font-mono">/students/{student}/edit</td>
+                                    <td class="p-3 font-semibold text-stone-800 font-mono">edit</td>
+                                    <td class="p-3 font-mono text-stone-400">students.edit</td>
+                                    <td class="p-3">回傳「編輯資料」的 HTML 修改表單頁面</td>
+                                </tr>
+                                <tr class="hover:bg-stone-50/50 transition">
+                                    <td class="p-3"><span class="px-2 py-0.5 bg-amber-50 text-amber-700 rounded font-mono font-bold">PUT/PATCH</span></td>
+                                    <td class="p-3 font-mono">/students/{student}</td>
+                                    <td class="p-3 font-semibold text-stone-800 font-mono">update</td>
+                                    <td class="p-3 font-mono text-stone-400">students.update</td>
+                                    <td class="p-3">接收編輯資料表單，進行資料「更新」動作 (U)</td>
+                                </tr>
+                                <tr class="hover:bg-stone-50/50 transition">
+                                    <td class="p-3"><span class="px-2 py-0.5 bg-rose-50 text-rose-700 rounded font-mono font-bold">DELETE</span></td>
+                                    <td class="p-3 font-mono">/students/{student}</td>
+                                    <td class="p-3 font-semibold text-stone-800 font-mono">destroy</td>
+                                    <td class="p-3 font-mono text-stone-400">students.destroy</td>
+                                    <td class="p-3">執行將特定學生資料「刪除」的動作 (D)</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- AI Prompt Tips for RESTful API -->
+                <div class="bg-rose-50 border border-rose-100 rounded-2xl p-5 space-y-3">
+                    <div class="flex items-center gap-2 text-rose-800 text-sm font-bold">
+                        <i class="fa-solid fa-robot"></i>
+                        <span>這段如何請 AI 幫你寫？(Prompt 範本)</span>
+                    </div>
+                    <div class="relative">
+                        <textarea readonly class="w-full text-xs font-mono bg-white border border-rose-200 rounded-lg p-3 text-stone-700 focus:outline-none resize-none h-20">我想要在我的 Laravel 專案中，規劃一組符合 RESTful 標準的「商品管理 (Product)」架構。
+1. 請幫我寫出對應的 `routes/web.php` 資源路由宣告。
+2. 請列出 ProductController 需要實作的 7 個標準 CRUD 動作方法名稱與功能描述。
+3. 說明在 web.php 路由中如何設定這組資源路由。</textarea>
+                        <button class="copy-textarea-btn absolute bottom-3 right-3 px-3 py-1.5 text-xs bg-rose-600 hover:bg-rose-700 text-white rounded-lg font-medium shadow-sm transition"><i class="fa-regular fa-copy mr-1"></i> 複製 Prompt</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. Web.php Routing Section -->
+            <section id="section-routing" class="scroll-mt-24 bg-book-card border border-book-border rounded-3xl p-8 md:p-10 shadow-sm space-y-6">
+                <div class="flex items-center gap-3 border-b border-stone-100 pb-5">
+                    <div class="w-12 h-12 rounded-2xl bg-blue-50 flex items-center justify-center text-blue-600">
+                        <i class="fa-solid fa-route text-xl"></i>
+                    </div>
+                    <div>
+                        <span class="text-xs text-book-accent font-bold uppercase tracking-wider">Chapter 02</span>
+                        <h2 class="text-2xl font-bold text-book-ink">web.php 路由管理</h2>
+                    </div>
+                </div>
+
+                <p class="text-stone-600 leading-relaxed text-sm">
+                    路由路徑（Route）就像是網站的門牌號碼。當瀏覽器發出請求時，<code>routes/web.php</code> 決定該由誰來處理。
+                </p>
+
+                <!-- HTTP Methods Tab Layout -->
+                <div class="border border-book-border rounded-xl overflow-hidden bg-book-paper">
+                    <div class="bg-stone-100 px-4 py-2 border-b border-book-border flex items-center justify-between">
+                        <span class="text-xs font-bold text-stone-500 uppercase tracking-wider">常見的 HTTP 方法 (Methods)</span>
+                        <span class="text-[10px] bg-stone-200 text-stone-600 px-2 py-0.5 rounded font-mono">routes/web.php</span>
+                    </div>
+                    <div class="p-5 space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-2" id="route-tabs">
+                            <button data-target="route-get" class="tab-btn px-4 py-3 rounded-lg text-left text-sm font-semibold border-2 border-blue-500 bg-blue-50/50 text-blue-700 transition">
+                                <span class="block text-xs text-blue-500 uppercase font-mono">GET</span>
+                                取得資料 / 網頁
+                            </button>
+                            <button data-target="route-post" class="tab-btn px-4 py-3 rounded-lg text-left text-sm font-semibold border border-stone-200 bg-white hover:bg-stone-50 text-stone-700 transition">
+                                <span class="block text-xs text-emerald-600 uppercase font-mono">POST</span>
+                                提交 / 新增資料
+                            </button>
+                            <button data-target="route-patch" class="tab-btn px-4 py-3 rounded-lg text-left text-sm font-semibold border border-stone-200 bg-white hover:bg-stone-50 text-stone-700 transition">
+                                <span class="block text-xs text-amber-600 uppercase font-mono">PUT / PATCH</span>
+                                更新 / 修改資料
+                            </button>
+                            <button data-target="route-delete" class="tab-btn px-4 py-3 rounded-lg text-left text-sm font-semibold border border-stone-200 bg-white hover:bg-stone-50 text-stone-700 transition">
+                                <span class="block text-xs text-rose-600 uppercase font-mono">DELETE</span>
+                                刪除資料
+                            </button>
+                        </div>
+
+                        <!-- Tab Contents -->
+                        <div id="route-tabs-content" class="mt-4">
+                            <!-- GET content -->
+                            <div id="route-get" class="tab-pane space-y-3">
+                                <p class="text-xs text-stone-600 leading-relaxed">
+                                    當使用者在網址列輸入網址，或者點擊連結時，送出的都是 <strong>GET</strong> 請求。用於「讀取」資源。
+                                </p>
+                                <div class="relative">
+                                    <pre class="bg-stone-900 text-stone-200 p-4 rounded-lg font-mono text-xs overflow-x-auto"><code>// 簡單回傳視圖 (Blade)
+Route::get('/welcome', function () {
+    return view('welcome');
+});
+
+// 指向 Controller 處理
+Route::get('/students', [StudentController::class, 'index']);</code></pre>
+                                    <button class="copy-btn absolute top-2 right-2 px-2 py-1 text-[10px] bg-stone-800 text-stone-400 hover:text-white rounded border border-stone-700"><i class="fa-regular fa-copy"></i> 複製</button>
+                                </div>
+                            </div>
+                            
+                            <!-- POST content -->
+                            <div id="route-post" class="tab-pane hidden space-y-3">
+                                <p class="text-xs text-stone-600 leading-relaxed">
+                                    當使用者填寫表單並按下「送出」時，使用 <strong>POST</strong> 請求。在 Laravel 中，POST 請求表單內必須包含 <code>@csrf</code> 保護標記，否則會報錯（419 page expired）。
+                                </p>
+                                <div class="relative">
+                                    <pre class="bg-stone-900 text-stone-200 p-4 rounded-lg font-mono text-xs overflow-x-auto"><code>// 新增學生資料的處理路由
+Route::post('/students', [StudentController::class, 'store']);</code></pre>
+                                    <button class="copy-btn absolute top-2 right-2 px-2 py-1 text-[10px] bg-stone-800 text-stone-400 hover:text-white rounded border border-stone-700"><i class="fa-regular fa-copy"></i> 複製</button>
+                                </div>
+                            </div>
+
+                            <!-- PATCH content -->
+                            <div id="route-patch" class="tab-pane hidden space-y-3">
+                                <p class="text-xs text-stone-600 leading-relaxed">
+                                    <strong>PUT</strong> 用於替換整筆資源，而 <strong>PATCH</strong> 用於修改部分欄位。在 HTML 表單中，因為瀏覽器只支援 GET 與 POST，所以需要透過 <code>@method('PATCH')</code> 進行偽裝。
+                                </p>
+                                <div class="relative">
+                                    <pre class="bg-stone-900 text-stone-200 p-4 rounded-lg font-mono text-xs overflow-x-auto"><code>// 修改 ID 為 5 的學生資料
+Route::patch('/students/{id}', [StudentController::class, 'update']);</code></pre>
+                                    <button class="copy-btn absolute top-2 right-2 px-2 py-1 text-[10px] bg-stone-800 text-stone-400 hover:text-white rounded border border-stone-700"><i class="fa-regular fa-copy"></i> 複製</button>
+                                </div>
+                            </div>
+
+                            <!-- DELETE content -->
+                            <div id="route-delete" class="tab-pane hidden space-y-3">
+                                <p class="text-xs text-stone-600 leading-relaxed">
+                                    <strong>DELETE</strong> 用於移除伺服器上的某個資源。與 PATCH 相同，在 HTML 表單中需要寫成 POST，再利用 <code>@method('DELETE')</code> 偽裝。
+                                </p>
+                                <div class="relative">
+                                    <pre class="bg-stone-900 text-stone-200 p-4 rounded-lg font-mono text-xs overflow-x-auto"><code>// 刪除 ID 為 5 的學生資料
+Route::delete('/students/{id}', [StudentController::class, 'destroy']);</code></pre>
+                                    <button class="copy-btn absolute top-2 right-2 px-2 py-1 text-[10px] bg-stone-800 text-stone-400 hover:text-white rounded border border-stone-700"><i class="fa-regular fa-copy"></i> 複製</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AI Prompt Tips for Routing -->
+                <div class="bg-blue-50 border border-blue-100 rounded-2xl p-5 space-y-3">
+                    <div class="flex items-center gap-2 text-blue-700 text-sm font-bold">
+                        <i class="fa-solid fa-robot"></i>
+                        <span>這段如何請 AI 幫你寫？(Prompt 範本)</span>
+                    </div>
+                    <div class="relative">
+                        <textarea readonly class="w-full text-xs font-mono bg-white border border-blue-200 rounded-lg p-3 text-stone-700 focus:outline-none resize-none h-20">我想要在 Laravel 的 web.php 中建立一組學生成績管理系統的路由。需要有：
+1. 列表頁面 (GET /students)
+2. 新增學生表單與儲存動作 (GET /students/create & POST /students)
+3. 編輯表單與更新動作 (GET /students/{id}/edit & PATCH /students/{id})
+4. 刪除學生 (DELETE /students/{id})
+請寫出這些路由的代碼，並指向 StudentController。</textarea>
+                        <button class="copy-textarea-btn absolute bottom-3 right-3 px-3 py-1.5 text-xs bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium shadow-sm transition"><i class="fa-regular fa-copy mr-1"></i> 複製 Prompt</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. Controller Section -->
+            <section id="section-controllers" class="scroll-mt-24 bg-book-card border border-book-border rounded-3xl p-8 md:p-10 shadow-sm space-y-6">
+                <div class="flex items-center gap-3 border-b border-stone-100 pb-5">
+                    <div class="w-12 h-12 rounded-2xl bg-amber-50 flex items-center justify-center text-amber-600">
+                        <i class="fa-solid fa-gears text-xl"></i>
+                    </div>
+                    <div>
+                        <span class="text-xs text-amber-600 font-bold uppercase tracking-wider">Chapter 03</span>
+                        <h2 class="text-2xl font-bold text-book-ink">Controller 控制器</h2>
+                    </div>
+                </div>
+
+                <p class="text-stone-600 leading-relaxed text-sm">
+                    <strong>Controller</strong> 是網站的「大腦」。它負責接收路由送來的請求，去資料庫撈取資料，處理邏輯，最後把資料塞進 Blade 視圖並呈現在使用者眼前。
+                </p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="border border-book-border p-5 rounded-2xl bg-book-paper space-y-3">
+                        <h4 class="text-sm font-bold text-stone-800 flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+                            1. Resource 資源控制器
+                        </h4>
+                        <p class="text-xs text-stone-600 leading-relaxed">
+                            一次幫你生成 CRUD (增刪改查) 所需的 7 個標準方法，自動對應我們 Chapter 01 介紹的 RESTful 規範。
+                        </p>
+                        <div class="bg-stone-900 text-stone-300 p-3 rounded-lg text-xs font-mono">
+                            php artisan make:controller StudentController --resource
+                        </div>
+                    </div>
+
+                    <div class="border border-book-border p-5 rounded-2xl bg-book-paper space-y-3">
+                        <h4 class="text-sm font-bold text-stone-800 flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-purple-500"></span>
+                            2. Single Action Controller
+                        </h4>
+                        <p class="text-xs text-stone-600 leading-relaxed">
+                            如果這個 Controller 只需要處理「一件事」（例如：發送電子報），可以使用 <code>__invoke</code> 單一方法控制器。
+                        </p>
+                        <div class="bg-stone-900 text-stone-300 p-3 rounded-lg text-xs font-mono">
+                            php artisan make:controller SendNewsletterController --invokable
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detailed list explaining the 7 methods in text -->
+                <div class="bg-stone-50 border border-book-border rounded-2xl p-6 space-y-4">
+                    <h3 class="text-sm font-bold text-stone-800 flex items-center gap-2">
+                        <i class="fa-solid fa-list-check text-indigo-600"></i>
+                        資源控制器 (Resource Controller) 的 7 個方法功能詳細說明
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs text-stone-600">
+                        <div class="space-y-3">
+                            <div class="p-3 bg-white border border-stone-200 rounded-xl space-y-1">
+                                <span class="font-bold text-stone-800 font-mono text-xs text-blue-600">1. index() - 列表頁面</span>
+                                <p class="leading-relaxed">負責至資料庫撈取<strong>所有或分頁資料</strong>，並將資料陣列傳遞至前台 Blade 視圖中，印出列表畫面。</p>
+                            </div>
+                            <div class="p-3 bg-white border border-stone-200 rounded-xl space-y-1">
+                                <span class="font-bold text-stone-800 font-mono text-xs text-blue-600">2. create() - 新增表單</span>
+                                <p class="leading-relaxed">不處理任何資料庫寫入。純粹回傳一個<strong>空白的 HTML 輸入表單頁面</strong>，供使用者填寫資料。</p>
+                            </div>
+                            <div class="p-3 bg-white border border-stone-200 rounded-xl space-y-1">
+                                <span class="font-bold text-stone-800 font-mono text-xs text-emerald-600">3. store(Request $request) - 執行儲存</span>
+                                <p class="leading-relaxed">接收來自 create 表單送出的 POST 資料，執行欄位格式<strong>驗證 (Validation)</strong>，隨後寫入資料庫並重新導向頁面。</p>
+                            </div>
+                            <div class="p-3 bg-white border border-stone-200 rounded-xl space-y-1">
+                                <span class="font-bold text-stone-800 font-mono text-xs text-blue-600">4. show($id) - 詳細頁面</span>
+                                <p class="leading-relaxed">依據傳入的特定 ID，去資料庫找尋<strong>單一筆特定資料</strong>（如指定學生的個人資訊），並將該筆資料單獨呈現在頁面上。</p>
+                            </div>
+                        </div>
+                        <div class="space-y-3">
+                            <div class="p-3 bg-white border border-stone-200 rounded-xl space-y-1">
+                                <span class="font-bold text-stone-800 font-mono text-xs text-blue-600">5. edit($id) - 編輯表單</span>
+                                <p class="leading-relaxed">依據特定 ID 撈出舊資料，並回傳一個<strong>帶有舊資料欄位值（Value）的 HTML 修改表單頁面</strong>供使用者修改。</p>
+                            </div>
+                            <div class="p-3 bg-white border border-stone-200 rounded-xl space-y-1">
+                                <span class="font-bold text-stone-800 font-mono text-xs text-amber-600">6. update(Request $request, $id) - 執行更新</span>
+                                <p class="leading-relaxed">接收來自 edit 表單送出的 PUT/PATCH 修改資料，進行欄位驗證後，直接<strong>修改/更新資料庫內對應的資料欄位</strong>。</p>
+                            </div>
+                            <div class="p-3 bg-white border border-stone-200 rounded-xl space-y-1">
+                                <span class="font-bold text-stone-800 font-mono text-xs text-rose-600">7. destroy($id) - 執行刪除</span>
+                                <p class="leading-relaxed">依據傳入的特定 ID，直接呼叫資料庫<strong>刪除該筆記錄</strong>，執行成功後重新導向至列表頁面並附帶成功訊息。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="border border-book-border rounded-xl overflow-hidden bg-book-paper">
+                    <div class="bg-stone-100 px-4 py-2 border-b border-book-border flex items-center justify-between">
+                        <span class="text-xs font-bold text-stone-500 uppercase tracking-wider">資源控制器 7 個預設方法範例</span>
+                        <span class="text-[10px] bg-stone-200 text-stone-600 px-2 py-0.5 rounded font-mono">app/Http/Controllers/StudentController.php</span>
+                    </div>
+                    <div class="p-5 relative">
+                        <pre class="bg-stone-900 text-stone-200 p-4 rounded-lg font-mono text-xs overflow-x-auto"><code>namespace App\Http\Controllers;
+
+use App\Models\Student;
+use Illuminate\Http\Request;
+
+class StudentController extends Controller
+{
+    // 1. 列表頁面：GET /students (對應 index)
+    public function index()
+    {
+        $students = Student::all(); 
+        return view('students.index', compact('students'));
+    }
+
+    // 2. 新增表單：GET /students/create (對應 create)
+    public function create()
+    {
+        return view('students.create'); // 回傳新增學生資料的表單畫面
+    }
+
+    // 3. 儲存動作：POST /students (對應 store)
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|max:50',
+            'score' => 'required|integer|min:0|max:100',
+        ]);
+
+        Student::create($validated); 
+        return redirect()->route('students.index')->with('success', '建立學生成功！');
+    }
+
+    // 4. 詳細頁面：GET /students/{id} (對應 show)
+    public function show($id)
+    {
+        $student = Student::findOrFail($id); // 找尋該學生，找不到則丟出 404 錯誤
+        return view('students.show', compact('student'));
+    }
+
+    // 5. 編輯表單：GET /students/{id}/edit (對應 edit)
+    public function edit($id)
+    {
+        $student = Student::findOrFail($id);
+        return view('students.edit', compact('student'));
+    }
+
+    // 6. 更新動作：PUT/PATCH /students/{id} (對應 update)
+    public function update(Request $request, $id)
+    {
+        $validated = $request->validate([
+            'name' => 'required|max:50',
+            'score' => 'required|integer|min:0|max:100',
+        ]);
+
+        $student = Student::findOrFail($id);
+        $student->update($validated); // 更新資料庫資料
+
+        return redirect()->route('students.index')->with('success', '資料更新成功！');
+    }
+
+    // 7. 刪除動作：DELETE /students/{id} (對應 destroy)
+    public function destroy($id)
+    {
+        $student = Student::findOrFail($id);
+        $student->delete(); // 刪除資料
+
+        return redirect()->route('students.index')->with('success', '學生已成功刪除！');
+    }
+}</code></pre>
+                        <button class="copy-btn absolute top-7 right-7 px-2 py-1 text-[10px] bg-stone-800 text-stone-400 hover:text-white rounded border border-stone-700"><i class="fa-regular fa-copy"></i> 複製</button>
+                    </div>
+                </div>
+
+                <!-- AI Prompt Tips for Controller -->
+                <div class="bg-amber-50/70 border border-amber-100 rounded-2xl p-5 space-y-3">
+                    <div class="flex items-center gap-2 text-amber-800 text-sm font-bold">
+                        <i class="fa-solid fa-robot"></i>
+                        <span>這段如何請 AI 幫你寫？(Prompt 範本)</span>
+                    </div>
+                    <div class="relative">
+                        <textarea readonly class="w-full text-xs font-mono bg-white border border-amber-200 rounded-lg p-3 text-stone-700 focus:outline-none resize-none h-20">我想要寫一個 Laravel 的 StudentController 控制器。請幫我實作：
+1. index 方法：撈取所有學生 (Student model) 並傳送到 'students.index' 視圖。
+2. store 方法：驗證 name 欄位為必填、score 欄位為必填且介於 0 到 100 之間。驗證過關後寫入 Student Model，然後重導向回學生列表，並附帶一個 session 成功訊息。</textarea>
+                        <button class="copy-textarea-btn absolute bottom-3 right-3 px-3 py-1.5 text-xs bg-amber-600 hover:bg-amber-700 text-white rounded-lg font-medium shadow-sm transition"><i class="fa-regular fa-copy mr-1"></i> 複製 Prompt</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. Migration Section -->
+            <section id="section-migrations" class="scroll-mt-24 bg-book-card border border-book-border rounded-3xl p-8 md:p-10 shadow-sm space-y-6">
+                <div class="flex items-center gap-3 border-b border-stone-100 pb-5">
+                    <div class="w-12 h-12 rounded-2xl bg-emerald-50 flex items-center justify-center text-emerald-600">
+                        <i class="fa-solid fa-database text-xl"></i>
+                    </div>
+                    <div>
+                        <span class="text-xs text-emerald-600 font-bold uppercase tracking-wider">Chapter 04</span>
+                        <h2 class="text-2xl font-bold text-book-ink">Migration 資料庫遷移</h2>
+                    </div>
+                </div>
+
+                <p class="text-stone-600 leading-relaxed text-sm">
+                    <strong>Migration</strong> 就像是資料庫的「版本控制系統」(Git)。它用程式碼記錄了資料表的建立與欄位修改，讓團隊所有人的資料庫結構都能完全一致。
+                </p>
+
+                <!-- Command Cards -->
+                <div>
+                    <h3 class="text-xs font-bold text-stone-500 uppercase tracking-wider mb-3">資料庫遷移常用指令</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        <div class="border border-book-border rounded-xl p-4 bg-book-paper flex flex-col justify-between">
+                            <span class="text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-1 rounded w-fit mb-2">1. 建立 Migration</span>
+                            <p class="text-xs text-stone-500 mb-3">建立一個名為 <code>students</code> 的資料表遷移檔。</p>
+                            <code class="text-xs bg-stone-900 text-stone-300 p-2 rounded block overflow-x-auto">php artisan make:migration create_students_table</code>
+                        </div>
+                        <div class="border border-book-border rounded-xl p-4 bg-book-paper flex flex-col justify-between">
+                            <span class="text-xs font-bold text-blue-700 bg-blue-50 px-2 py-1 rounded w-fit mb-2">2. 執行遷移</span>
+                            <p class="text-xs text-stone-500 mb-3">將所有尚未執行的遷移檔套用到資料庫中。</p>
+                            <code class="text-xs bg-stone-900 text-stone-300 p-2 rounded block overflow-x-auto">php artisan migrate</code>
+                        </div>
+                        <div class="border border-book-border rounded-xl p-4 bg-book-paper flex flex-col justify-between">
+                            <span class="text-xs font-bold text-rose-700 bg-rose-50 px-2 py-1 rounded w-fit mb-2">3. 倒回重來</span>
+                            <p class="text-xs text-stone-500 mb-3">還原上一次執行過的 migration 動作。</p>
+                            <code class="text-xs bg-stone-900 text-stone-300 p-2 rounded block overflow-x-auto">php artisan migrate:rollback</code>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Migration Column Types Table -->
+                <div class="space-y-3">
+                    <h3 class="text-sm font-bold text-stone-800 flex items-center gap-2">
+                        <span class="w-1.5 h-3 bg-emerald-500 rounded-sm"></span>
+                        常見 Migration 欄位型態與修飾詞對照表
+                    </h3>
+                    <div class="border border-book-border rounded-xl overflow-hidden shadow-sm">
+                        <table class="w-full text-left text-xs border-collapse">
+                            <thead>
+                                <tr class="bg-stone-50 border-b border-book-border text-stone-700 font-bold">
+                                    <th class="p-3">Migration 語法寫法</th>
+                                    <th class="p-3">對應 SQL 資料型態</th>
+                                    <th class="p-3">常見用途說明</th>
+                                    <th class="p-3">常用搭配修飾詞 (Modifiers)</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-stone-100 text-stone-600 bg-white">
+                                <tr class="hover:bg-stone-50/50 transition">
+                                    <td class="p-3 font-mono text-emerald-600 font-semibold">$table-&gt;id()</td>
+                                    <td class="p-3 font-mono">BIGINT AUTO_INCREMENT</td>
+                                    <td class="p-3">自動遞增的主鍵 ID。每張表必備的首個欄位。</td>
+                                    <td class="p-3 text-stone-400">無</td>
+                                </tr>
+                                <tr class="hover:bg-stone-50/50 transition">
+                                    <td class="p-3 font-mono text-emerald-600 font-semibold">$table-&gt;string('name', 50)</td>
+                                    <td class="p-3 font-mono">VARCHAR(50)</td>
+                                    <td class="p-3">儲存長度受限的短文字。如：姓名、電話、密碼。</td>
+                                    <td class="p-3 font-mono text-stone-500">->unique() <span class="text-stone-400">欄位值不可重複</span></td>
+                                </tr>
+                                <tr class="hover:bg-stone-50/50 transition">
+                                    <td class="p-3 font-mono text-emerald-600 font-semibold">$table-&gt;integer('score')</td>
+                                    <td class="p-3 font-mono">INT</td>
+                                    <td class="p-3">儲存一般整數。如：年齡、分數、庫存數量。</td>
+                                    <td class="p-3 font-mono text-stone-500">->default(0) <span class="text-stone-400">設定預設值</span></td>
+                                </tr>
+                                <tr class="hover:bg-stone-50/50 transition">
+                                    <td class="p-3 font-mono text-emerald-600 font-semibold">$table-&gt;text('biography')</td>
+                                    <td class="p-3 font-mono">TEXT</td>
+                                    <td class="p-3">儲存長篇文字、大段落。如：文章內文、備註說明。</td>
+                                    <td class="p-3 font-mono text-stone-500">->nullable() <span class="text-stone-400">允許欄位為空 (NULL)</span></td>
+                                </tr>
+                                <tr class="hover:bg-stone-50/50 transition">
+                                    <td class="p-3 font-mono text-emerald-600 font-semibold">$table-&gt;boolean('is_active')</td>
+                                    <td class="p-3 font-mono">TINYINT(1)</td>
+                                    <td class="p-3">儲存布林值（真/假，1/0）。如：開關狀態、是否已讀。</td>
+                                    <td class="p-3 font-mono text-stone-500">->default(true)</td>
+                                </tr>
+                                <tr class="hover:bg-stone-50/50 transition">
+                                    <td class="p-3 font-mono text-emerald-600 font-semibold">$table-&gt;decimal('price', 8, 2)</td>
+                                    <td class="p-3 font-mono">DECIMAL(8, 2)</td>
+                                    <td class="p-3">高精度小數。適合儲存金錢、比例（共 8 位，包含 2 位小數）。</td>
+                                    <td class="p-3 font-mono text-stone-500">->default(0.00)</td>
+                                </tr>
+                                <tr class="hover:bg-stone-50/50 transition">
+                                    <td class="p-3 font-mono text-emerald-600 font-semibold">$table-&gt;date('published_at')</td>
+                                    <td class="p-3 font-mono">DATE</td>
+                                    <td class="p-3">僅儲存日期（年-月-日）。如：生日、出刊日期。</td>
+                                    <td class="p-3 font-mono text-stone-500">->nullable()</td>
+                                </tr>
+                                <tr class="hover:bg-stone-50/50 transition">
+                                    <td class="p-3 font-mono text-emerald-600 font-semibold">$table-&gt;foreignId('user_id')</td>
+                                    <td class="p-3 font-mono">BIGINT (FOREIGN KEY)</td>
+                                    <td class="p-3">建立資料庫外鍵關聯。與另一張表的主鍵連線。</td>
+                                    <td class="p-3 font-mono text-stone-500">->constrained()->onDelete('cascade')</td>
+                                </tr>
+                                <tr class="hover:bg-stone-50/50 transition">
+                                    <td class="p-3 font-mono text-emerald-600 font-semibold">$table-&gt;timestamps()</td>
+                                    <td class="p-3 font-mono">TIMESTAMP (2 columns)</td>
+                                    <td class="p-3">自動建立 `created_at` 與 `updated_at` 記錄寫入與修改時間。</td>
+                                    <td class="p-3 text-stone-400">無</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Column Types Code Snippet -->
+                <div class="border border-book-border rounded-xl overflow-hidden bg-book-paper">
+                    <div class="bg-stone-100 px-4 py-2 border-b border-book-border flex items-center justify-between">
+                        <span class="text-xs font-bold text-stone-500 uppercase tracking-wider">常用欄位型態與結構範例</span>
+                        <span class="text-[10px] bg-stone-200 text-stone-600 px-2 py-0.5 rounded font-mono">database/migrations/xxxx_create_students_table.php</span>
+                    </div>
+                    <div class="p-5 space-y-4">
+                        <p class="text-xs text-stone-600">
+                            在 <code>up()</code> 方法中定義你的資料表與欄位型態：
+                        </p>
+                        <div class="relative">
+                            <pre class="bg-stone-900 text-stone-200 p-4 rounded-lg font-mono text-xs overflow-x-auto"><code>Schema::create('students', function (Blueprint $table) {
+    $table->id();                                  // 自動遞增的 ID 主鍵 (BigInteger)
+    $table->string('name', 50);                    // 字串欄位 (VARCHAR)，長度 50
+    $table->integer('score')->default(0);          // 整數欄位，預設值為 0
+    $table->text('biography')->nullable();         // 長文字欄位，允許為空值 (NULL)
+    $table->boolean('is_active')->default(true);   // 布林值，預設為 true
+    
+    // 外部鍵關聯：這名學生屬於某個班級 (classes 資料表)
+    $table->foreignId('class_id')->constrained()->onDelete('cascade');
+    
+    $table->timestamps();                          // 自動建立 created_at 與 updated_at
+});</code></pre>
+                            <button class="copy-btn absolute top-2 right-2 px-2 py-1 text-[10px] bg-stone-800 text-stone-400 hover:text-white rounded border border-stone-700"><i class="fa-regular fa-copy"></i> 複製</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AI Prompt Tips for Migration -->
+                <div class="bg-emerald-50/70 border border-emerald-100 rounded-2xl p-5 space-y-3">
+                    <div class="flex items-center gap-2 text-emerald-800 text-sm font-bold">
+                        <i class="fa-solid fa-robot"></i>
+                        <span>這段如何請 AI 幫你寫？(Prompt 範本)</span>
+                    </div>
+                    <div class="relative">
+                        <textarea readonly class="w-full text-xs font-mono bg-white border border-emerald-200 rounded-lg p-3 text-stone-700 focus:outline-none resize-none h-20">我想要在 Laravel 中設計一個 students 資料表的 Migration 欄位。包含：
+1. id 主鍵
+2. name (字串，不超過 100 字)
+3. birthday (日期格式)
+4. email (不重複的字串)
+5. remark (長文字，可為 null)
+6. class_id 關聯到 classes 資料表的 id (外鍵，且設為級聯刪除 cascade)
+7. timestamps 常規時間欄位
+請幫我寫出 Schema::create 的程式碼。</textarea>
+                        <button class="copy-textarea-btn absolute bottom-3 right-3 px-3 py-1.5 text-xs bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-medium shadow-sm transition"><i class="fa-regular fa-copy mr-1"></i> 複製 Prompt</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 5. Blade Template Section -->
+            <section id="section-blade" class="scroll-mt-24 bg-book-card border border-book-border rounded-3xl p-8 md:p-10 shadow-sm space-y-6">
+                <div class="flex items-center gap-3 border-b border-stone-100 pb-5">
+                    <div class="w-12 h-12 rounded-2xl bg-purple-50 flex items-center justify-center text-purple-600">
+                        <i class="fa-solid fa-palette text-xl"></i>
+                    </div>
+                    <div>
+                        <span class="text-xs text-purple-600 font-bold uppercase tracking-wider">Chapter 05</span>
+                        <h2 class="text-2xl font-bold text-book-ink">Blade 模板引擎</h2>
+                    </div>
+                </div>
+
+                <p class="text-stone-600 leading-relaxed text-sm">
+                    <strong>Blade</strong> 是 Laravel 的精緻前台渲染引擎。它把乾淨的 HTML 結合特殊的 directives (指令)，讓你能夠輕鬆印出變數、進行邏輯判斷與迴圈輸出。
+                </p>
+
+                <!-- Interactive Preview Component -->
+                <div class="border border-book-border rounded-xl overflow-hidden bg-book-paper">
+                    <div class="bg-stone-100 px-4 py-2 border-b border-book-border flex items-center justify-between">
+                        <span class="text-xs font-bold text-stone-500 uppercase tracking-wider">Blade 基本語法展示</span>
+                        <span class="text-[10px] bg-stone-200 text-stone-600 px-2 py-0.5 rounded font-mono">resources/views/students/index.blade.php</span>
+                    </div>
+                    <div class="p-5 space-y-4">
+                        <div class="relative">
+                            <pre class="bg-stone-900 text-stone-200 p-4 rounded-lg font-mono text-xs overflow-x-auto"><code>&#64;extends('layouts.app') {{-- 繼承主外框 layouts/app.blade.php --}}
+
+&#64;section('content') {{-- 把這段內容塞入主外框的 &#64;yield('content') 中 --}}
+    &lt;div class="container"&gt;
+        &lt;h1&gt;學生名單&lt;/h1&gt;
+        
+        {{-- 判斷式 --}}
+        &#64;if($students->isEmpty())
+            &lt;p&gt;目前沒有任何學生。&lt;/p>
+        &#64;else
+            &lt;ul&gt;
+                {{-- 迴圈印出 --}}
+                &#64;foreach($students as $student)
+                    &lt;li&gt;
+                        {{-- 印出變數 --}}
+                        {{ $student->name }} - 成績: {{ $student->score }} 分
+                    &lt;/li&gt;
+                &#64;endforeach
+            &lt;/ul&gt;
+        &#64;endif
+    &lt;/div&gt;
+&#64;endsection</code></pre>
+                            <button class="copy-btn absolute top-2 right-2 px-2 py-1 text-[10px] bg-stone-800 text-stone-400 hover:text-white rounded border border-stone-700"><i class="fa-regular fa-copy"></i> 複製</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Layout concept visualization -->
+                <div class="bg-stone-50 border border-book-border rounded-2xl p-5 space-y-4">
+                    <h4 class="text-xs font-bold uppercase tracking-wider text-stone-500">主外框與子頁面的繼承概念 (Layout & Yield)</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="bg-white border border-stone-200 p-4 rounded-lg space-y-2">
+                            <span class="text-[10px] font-mono bg-stone-100 px-2 py-0.5 text-stone-600 rounded">1. 主外框 layouts/app.blade.php</span>
+                            <pre class="text-[11px] font-mono text-stone-600 bg-stone-50 p-2 rounded">&lt;html&gt;
+  &lt;body&gt;
+     &lt;nav&gt;導覽列&lt;/nav&gt;
+     
+     <strong class="text-indigo-600">&#64;yield('content')</strong>
+     
+     &lt;footer&gt;頁尾&lt;/footer&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</pre>
+                        </div>
+                        <div class="bg-white border border-stone-200 p-4 rounded-lg space-y-2">
+                            <span class="text-[10px] font-mono bg-stone-100 px-2 py-0.5 text-stone-600 rounded">2. 子視圖 views/index.blade.php</span>
+                            <pre class="text-[11px] font-mono text-stone-600 bg-stone-50 p-2 rounded"><strong class="text-indigo-600">&#64;extends('layouts.app')</strong>
+
+<strong class="text-indigo-600">&#64;section('content')</strong>
+  &lt;p&gt;我是真正的頁面網頁內容。&lt;/p>
+<strong class="text-indigo-600">&#64;endsection</strong></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AI Prompt Tips for Blade -->
+                <div class="bg-purple-50 border border-purple-100 rounded-2xl p-5 space-y-3">
+                    <div class="flex items-center gap-2 text-purple-800 text-sm font-bold">
+                        <i class="fa-solid fa-robot"></i>
+                        <span>這段如何請 AI 幫你寫？(Prompt 範本)</span>
+                    </div>
+                    <div class="relative">
+                        <textarea readonly class="w-full text-xs font-mono bg-white border border-purple-200 rounded-lg p-3 text-stone-700 focus:outline-none resize-none h-20">我想要在 Laravel 專案寫一個學生列表的 Blade 模板。
+請幫我繼承 'layouts.app'。在 content 區塊中：
+1. 建立一個包含 Tailwind CSS 樣式的漂亮表格 (Table)。
+2. 表格需要印出學生列表 ($students 變數)，包含 ID、姓名、成績三個欄位。
+3. 如果 $students 變數是空的，請顯示「尚無學生資料」的提示訊息。</textarea>
+                        <button class="copy-textarea-btn absolute bottom-3 right-3 px-3 py-1.5 text-xs bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-medium shadow-sm transition"><i class="fa-regular fa-copy mr-1"></i> 複製 Prompt</button>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Quiz Modal Section (Powered by jQuery) -->
+    <div id="quiz-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+        <div class="bg-white w-full max-w-lg rounded-2xl shadow-xl overflow-hidden border border-book-border transform transition-all scale-95 opacity-0 duration-300" id="quiz-card">
+            <!-- Modal Header -->
+            <div class="bg-book-ink text-white p-5 flex justify-between items-center">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-circle-question text-yellow-400"></i>
+                    <h3 class="font-bold">Laravel 基礎挑戰</h3>
+                </div>
+                <button id="close-quiz" class="text-stone-400 hover:text-white transition">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+            <!-- Modal Body -->
+            <div class="p-6 space-y-4">
+                <div id="quiz-intro">
+                    <p class="text-sm text-stone-600 leading-relaxed mb-4">
+                        我們準備了四個精選的 Laravel 觀念挑戰問題。完成挑戰來檢視你的吸收成果吧！
+                    </p>
+                    <button id="start-quiz-btn" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl text-sm shadow-sm transition">
+                        開始挑戰
+                    </button>
+                </div>
+
+                <div id="quiz-question-container" class="hidden space-y-4">
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs font-bold text-blue-600 uppercase tracking-wider" id="quiz-progress">問題 1 / 4</span>
+                    </div>
+                    <h4 class="font-bold text-stone-800 text-base" id="quiz-title">問題讀取中...</h4>
+                    <div class="space-y-2" id="quiz-options">
+                        <!-- Options generated dynamically -->
+                    </div>
+                </div>
+
+                <div id="quiz-result" class="hidden text-center py-6 space-y-4">
+                    <div class="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto text-2xl">
+                        <i class="fa-solid fa-trophy"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-xl text-stone-800">挑戰完成！</h4>
+                        <p class="text-sm text-stone-600 mt-1" id="quiz-score-text">你答對了 4 題中的 4 題！</p>
+                    </div>
+                    <button id="restart-quiz-btn" class="px-5 py-2.5 bg-stone-900 hover:bg-stone-800 text-white rounded-lg text-sm font-medium transition">
+                        再試一次
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-book-card border-t border-book-border py-8 mt-16 text-center text-xs text-book-muted">
+        <div class="max-w-7xl mx-auto px-4 space-y-2">
+            <p class="font-semibold text-stone-700">用 AI 來開發 Laravel，效率提升 10 倍！</p>
+            <p>這本白色課本是為了幫助朱珮瑜同學學習 Laravel 核心概念而設計的電子講義。</p>
+        </div>
+    </footer>
+
+    <!-- jQuery Controller Script -->
+    <script>
+        $(document).ready(function () {
+            // Smooth Scroll for Sidebar Navigation
+            $('#toc-nav a').on('click', function (e) {
+                e.preventDefault();
+                const target = $(this).attr('href');
+                $('html, body').animate({
+                    scrollTop: $(target).offset().top - 100
+                }, 500);
+
+                $('#toc-nav a').removeClass('text-book-accent bg-book-accentLg').addClass('text-stone-600 hover:bg-stone-50 hover:text-stone-900');
+                $(this).addClass('text-book-accent bg-book-accentLg').removeClass('text-stone-600 hover:bg-stone-50 hover:text-stone-900');
+            });
+
+            // HTTP Methods tab switcher
+            $('.tab-btn').on('click', function () {
+                const target = $(this).data('target');
+                
+                // Toggle tab button active styles
+                $('.tab-btn').removeClass('border-blue-500 bg-blue-50/50 text-blue-700').addClass('border-stone-200 bg-white text-stone-700 hover:bg-stone-50');
+                $(this).addClass('border-blue-500 bg-blue-50/50 text-blue-700').removeClass('border-stone-200 bg-white text-stone-700 hover:bg-stone-50');
+                
+                // Toggle content pane
+                $('.tab-pane').addClass('hidden');
+                $('#' + target).removeClass('hidden');
+            });
+
+            // Copy Code Clipboard Simulation
+            $('.copy-btn').on('click', function () {
+                const codeText = $(this).siblings('code').text() || $(this).parent().find('code').text();
+                navigator.clipboard.writeText(codeText);
+                
+                const $btn = $(this);
+                const originalHtml = $btn.html();
+                $btn.html('<i class="fa-solid fa-check text-green-500"></i> 已複製!').addClass('bg-stone-800 text-white');
+                setTimeout(function () {
+                    $btn.html(originalHtml).removeClass('bg-stone-800 text-white');
+                }, 1500);
+            });
+
+            // Copy Prompt Template
+            $('.copy-textarea-btn').on('click', function () {
+                const promptText = $(this).siblings('textarea').val();
+                navigator.clipboard.writeText(promptText);
+
+                const $btn = $(this);
+                $btn.html('<i class="fa-solid fa-check mr-1"></i> Prompt 已複製!');
+                setTimeout(function () {
+                    $btn.html('<i class="fa-regular fa-copy mr-1"></i> 複製 Prompt');
+                }, 1500);
+            });
+
+            // Quiz Logic Database
+            const quizData = [
+                {
+                    title: "關於 RESTful API 與 HTTP 的規劃，下列哪一個代表「新增儲存動作」？",
+                    options: [
+                        "GET /students",
+                        "GET /students/create",
+                        "POST /students",
+                        "PUT /students/{id}"
+                    ],
+                    correct: 2
+                },
+                {
+                    title: "當瀏覽器送出 GET 請求讀取學生列表頁面時，在 web.php 應對應哪一個 Controller 方法？",
+                    options: [
+                        "store",
+                        "index",
+                        "destroy",
+                        "create"
+                    ],
+                    correct: 1
+                },
+                {
+                    title: "在 Laravel Migration 中，若要宣告一個可為空值（Nullable）的長文字欄位，應該怎麼寫？",
+                    options: [
+                        "$table->string('content')->nullable();",
+                        "$table->text('content')->nullable();",
+                        "$table->text('content')->empty();",
+                        "$table->integer('content')->nullable();"
+                    ],
+                    correct: 1
+                },
+                {
+                    title: "關於 RESTful 動作中，哪兩個方法是用來回傳「輸入表單 HTML 網頁」的？",
+                    options: [
+                        "index 與 show",
+                        "store 與 update",
+                        "create 與 edit",
+                        "edit 與 update"
+                    ],
+                    correct: 2
+                }
+            ];
+
+            let currentQuestionIdx = 0;
+            let score = 0;
+
+            // Quiz Modal Show/Hide
+            $('#toggle-quiz').on('click', function () {
+                $('#quiz-modal').removeClass('hidden').addClass('flex');
+                setTimeout(() => {
+                    $('#quiz-card').removeClass('scale-95 opacity-0').addClass('scale-100 opacity-100');
+                }, 50);
+            });
+
+            function closeModal() {
+                $('#quiz-card').removeClass('scale-100 opacity-100').addClass('scale-95 opacity-0');
+                setTimeout(() => {
+                    $('#quiz-modal').removeClass('flex').addClass('hidden');
+                    // Reset quiz state
+                    currentQuestionIdx = 0;
+                    score = 0;
+                    $('#quiz-intro').removeClass('hidden');
+                    $('#quiz-question-container').addClass('hidden');
+                    $('#quiz-result').addClass('hidden');
+                }, 300);
+            }
+
+            $('#close-quiz').on('click', closeModal);
+            $('#quiz-modal').on('click', function (e) {
+                if (e.target === this) closeModal();
+            });
+
+            // Start Quiz
+            $('#start-quiz-btn').on('click', function () {
+                $('#quiz-intro').addClass('hidden');
+                $('#quiz-question-container').removeClass('hidden');
+                renderQuestion();
+            });
+
+            function renderQuestion() {
+                const q = quizData[currentQuestionIdx];
+                $('#quiz-progress').text(`問題 ${currentQuestionIdx + 1} / ${quizData.length}`);
+                $('#quiz-title').text(q.title);
+                
+                const $opts = $('#quiz-options');
+                $opts.empty();
+                
+                q.options.forEach((opt, idx) => {
+                    const $btn = $('<button>')
+                        .addClass('w-full p-3 text-left text-sm border border-stone-200 hover:bg-stone-50 rounded-xl transition font-medium text-stone-700 flex justify-between items-center')
+                        .attr('data-index', idx)
+                        .text(opt);
+                    $opts.append($btn);
+                });
+            }
+
+            // Option selection handling
+            $(document).on('click', '#quiz-options button', function () {
+                const selectedIdx = parseInt($(this).attr('data-index'));
+                const correctIdx = quizData[currentQuestionIdx].correct;
+
+                // Disable all options
+                $('#quiz-options button').prop('disabled', true);
+
+                if (selectedIdx === correctIdx) {
+                    $(this).addClass('bg-green-50 border-green-500 text-green-700')
+                        .append('<i class="fa-solid fa-circle-check text-green-500"></i>');
+                    score++;
+                } else {
+                    $(this).addClass('bg-red-50 border-red-500 text-red-700')
+                        .append('<i class="fa-solid fa-circle-xmark text-red-500"></i>');
+                    
+                    // Show correct option
+                    $(`#quiz-options button[data-index="${correctIdx}"]`)
+                        .addClass('bg-green-50 border-green-500 text-green-700')
+                        .append('<i class="fa-solid fa-circle-check text-green-500"></i>');
+                }
+
+                setTimeout(function () {
+                    currentQuestionIdx++;
+                    if (currentQuestionIdx < quizData.length) {
+                        renderQuestion();
+                    } else {
+                        showResults();
+                    }
+                }, 1800);
+            });
+
+            function showResults() {
+                $('#quiz-question-container').addClass('hidden');
+                $('#quiz-result').removeClass('hidden');
+                $('#quiz-score-text').text(`你答對了 ${quizData.length} 題中的 ${score} 題！`);
+            }
+
+            $('#restart-quiz-btn').on('click', function () {
+                currentQuestionIdx = 0;
+                score = 0;
+                $('#quiz-result').addClass('hidden');
+                $('#quiz-question-container').removeClass('hidden');
+                renderQuestion();
+            });
+        });
+    </script>
+</body>
+
+</html>

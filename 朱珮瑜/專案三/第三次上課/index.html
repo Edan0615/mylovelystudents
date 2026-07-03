@@ -1,0 +1,575 @@
+<html lang="zh-TW" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laravel 基礎架構與開發環境配置 - 數位學習手冊</title>
+    <meta name="description" content="專案三：探索 Laravel 後端開發的核心概念，透過學校行政處室的比喻輕鬆搞懂 MVC 架構，並完成 XAMPP、Composer 及 Node.js 的環境配置。">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        laravel: '#FF2D20',
+                        brand: {
+                            50: '#f0f7ff',
+                            100: '#e0effe',
+                            200: '#bae0fd',
+                            300: '#7cc8fc',
+                            400: '#38abf8',
+                            500: '#0e91eb',
+                            600: '#0273ca',
+                            700: '#035ca3',
+                            800: '#074e87',
+                            900: '#0c4270',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['"Noto Sans TC"', 'Inter', 'system-ui', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts: Noto Sans TC & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom Style for Glassmorphism & Animations -->
+    <style>
+        body {
+            background-color: #f8fafc;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(224, 242, 254, 0.4) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(254, 226, 226, 0.3) 0px, transparent 50%);
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+        }
+        .step-active {
+            border-color: #0e91eb;
+            background-color: #f0f7ff;
+        }
+    </style>
+</head>
+<body class="text-slate-800 antialiased min-h-screen flex flex-col font-sans">
+    <!-- Top Glow Header -->
+    <header class="sticky top-0 z-40 w-full border-b border-slate-200/80 bg-white/80 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-laravel to-red-500 flex items-center justify-center text-white shadow-md shadow-red-500/20">
+                    <i class="fa-brands fa-laravel text-xl"></i>
+                </div>
+                <div>
+                    <span class="font-bold text-slate-900 tracking-tight block text-sm sm:text-base">專案三：朱珮瑜的 Laravel            <nav class="hidden md:flex space-x-6 text-sm font-medium text-slate-600">
+                <a href="#intro" class="hover:text-laravel transition-colors">後端與前端的差別</a>
+                <a href="#benefits" class="hover:text-laravel transition-colors">學習的好處</a>
+                <a href="#env" class="hover:text-laravel transition-colors">環境配置</a>
+                <a href="#analogy" class="hover:text-laravel transition-colors">行政處室比喻</a>
+                <a href="#mvc" class="hover:text-laravel transition-colors">MVC 與 Migration</a>
+                <a href="#voyager" class="hover:text-laravel transition-colors">Voyager 後台</a>
+            </nav>
+            <div>
+                <a href="#quiz" class="inline-flex items-center justify-center px-4 py-2 text-xs sm:text-sm font-semibold text-white bg-laravel hover:bg-red-600 rounded-lg transition-all shadow-sm hover:shadow shadow-red-500/20">
+                    <i class="fa-solid fa-graduation-cap mr-1.5"></i> 課後自我檢測
+                </a>
+            </div>
+        </div>
+    </header>
+    <!-- Main Content Grid -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        <!-- Hero Section -->
+        <section class="mb-12 text-center max-w-3xl mx-auto py-6">
+            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-red-50 text-laravel border border-red-100 mb-4 animate-pulse">
+                <i class="fa-solid fa-code mr-1.5"></i> 後端框架 Laravel 基礎
+            </span>
+            <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 tracking-tight leading-tight mb-4">
+                解密後端核心：<br class="sm:hidden"><span class="bg-gradient-to-r from-laravel via-red-500 to-amber-500 bg-clip-text text-transparent">Laravel 基礎架構與環境配置</span>
+            </h1>
+            <p class="text-base sm:text-lg text-slate-600 leading-relaxed">
+                本堂課我們將踏入後端開發的世界！透過生動的「學校行政處室」比喻，快速搞懂 MVC 架構，並完成本地開發環境所需的所有軟體安裝。
+            </p>
+        </section>
+        <!-- Section 1: Intro (Front vs Back) -->
+        <section id="intro" class="mb-12 scroll-mt-20">
+            <div class="glass-card rounded-2xl p-6 sm:p-8 shadow-sm hover:shadow-md transition-shadow">
+                <div class="flex flex-col lg:flex-row items-center gap-8">
+                    <div class="lg:w-7/12">
+                        <h2 class="text-2xl font-bold text-slate-900 mb-4 flex items-center gap-2.5">
+                            <span class="flex items-center justify-center w-8 h-8 rounded-lg bg-blue-50 text-blue-600"><i class="fa-solid fa-network-wired"></i></span>
+                            我們以前寫前端，跟現在學「後端」有什麼不同？
+                        </h2>
+                        <p class="text-slate-600 mb-4 leading-relaxed">
+                            以前我們寫前端網頁（HTML / CSS / JavaScript），通常<b>只需要用瀏覽器直接點開 HTML 檔案</b>就可以運作。因為瀏覽器天生就懂得如何去解析、渲染這些前端的標籤與樣式。
+                        </p>
+                        <p class="text-slate-600 mb-4 leading-relaxed">
+                            但是，後端（如 PHP 框架 Laravel）截然不同！後端需要處理的是<b>資料庫的讀寫、伺服器端邏輯的運算、權限管理與複雜的 API 路由</b>。
+                        </p>
+                        <div class="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-xl">
+                            <p class="text-sm text-amber-800 font-medium">
+                                <i class="fa-solid fa-triangle-exclamation mr-1.5"></i> 為什麼不能直接點開網頁？
+                            </p>
+                            <p class="text-xs text-amber-700 mt-1 leading-relaxed">
+                                因為 PHP 是在「伺服器端」執行的程式語言。在傳送給瀏覽器之前，必須先經過伺服器環境的編譯和处理，將結果轉成 HTML。因此，我們需要在電腦中架設一個「模擬伺服器環境」（XAMPP）來幫我們執行 PHP 程式碼。
+                            </p>
+                        </div>
+                    </div>
+                    <div class="lg:w-5/12 w-full">
+                        <div class="bg-gradient-to-br from-slate-50 to-slate-100 p-6 rounded-xl border border-slate-200">
+                            <h3 class="font-bold text-slate-900 mb-3 text-center">前端 vs 後端 快速對照表</h3>
+                            <div class="space-y-3">
+                                <div class="flex items-start gap-3 p-2 bg-white rounded-lg shadow-sm border border-slate-100">
+                                    <div class="text-blue-500 mt-0.5"><i class="fa-solid fa-desktop"></i></div>
+                                    <div>
+                                        <h4 class="text-xs font-bold text-slate-700">前端開發 (Frontend)</h4>
+                                        <p class="text-xxs text-slate-500">處理外觀、特效、使用者的互動。只要瀏覽器即可運作。</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start gap-3 p-2 bg-white rounded-lg shadow-sm border border-slate-100">
+                                    <div class="text-laravel mt-0.5"><i class="fa-solid fa-server"></i></div>
+                                    <div>
+                                        <h4 class="text-xs font-bold text-slate-700">後端開發 (Backend)</h4>
+                                        <p class="text-xxs text-slate-500">處理資料庫、伺服器邏輯、安全驗證。需要 PHP 執行環境與伺服器伺服軟體。</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- New Section: Benefits of PHP and Laravel for Beginners -->
+        <section id="benefits" class="mb-12 scroll-mt-20">
+            <div class="glass-card rounded-2xl p-6 sm:p-8 shadow-sm hover:shadow-md transition-shadow bg-gradient-to-br from-white via-white to-sky-50/20 border-l-4 border-laravel">
+                <h2 class="text-2xl font-bold text-slate-900 mb-6 flex items-center gap-2.5">
+                    <span class="flex items-center justify-center w-8 h-8 rounded-lg bg-red-50 text-laravel"><i class="fa-solid fa-graduation-cap"></i></span>
+                    新手必看：為什麼學習 PHP 與 Laravel 是你的最佳選擇？
+                </h2>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <!-- Column 1: PHP Benefits -->
+                    <div class="space-y-4">
+                        <div class="flex gap-4">
+                            <div class="flex-shrink-0 w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center text-sm font-bold">1</div>
+                            <div>
+                                <h3 class="font-bold text-slate-900 text-sm sm:text-base">PHP：專為網頁而生的語言，好學好懂</h3>
+                                <p class="text-xs sm:text-sm text-slate-600 leading-relaxed mt-1">
+                                    與 Python、Java 等通用語言相比，PHP 從一誕生就是為了建構網頁而設計的。它的語法非常直覺，接近 JavaScript，讓網頁新手能無痛銜接後端邏輯。
+                                </p>
+                            </div>
+                        </div>
+                        <div class="flex gap-4">
+                            <div class="flex-shrink-0 w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center text-sm font-bold">2</div>
+                            <div>
+                                <h3 class="font-bold text-slate-900 text-sm sm:text-base">龐大的社群與資源，不怕遇到問題沒人問</h3>
+                                <p class="text-xs sm:text-sm text-slate-600 leading-relaxed mt-1">
+                                    全球有超過 70% 的網站都在使用 PHP（包括著名的 WordPress）。這代表著網路上有鋪天蓋地的教學、問答與開源套件，任何你踩過的坑，前人早就幫你填好了。
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Column 2: Laravel Benefits -->
+                    <div class="space-y-4">
+                        <div class="flex gap-4">
+                            <div class="flex-shrink-0 w-8 h-8 rounded-lg bg-red-50 text-laravel flex items-center justify-center text-sm font-bold">3</div>
+                            <div>
+                                <h3 class="font-bold text-slate-900 text-sm sm:text-base">Laravel：「網頁工匠」的優雅寫法</h3>
+                                <p class="text-xs sm:text-sm text-slate-600 leading-relaxed mt-1">
+                                    Laravel 被譽為最優雅的 PHP 框架。它的程式碼讀起來就像英文一樣流暢，強迫開發者使用現代、乾淨的程式設計模式，能幫你在學習初期就養成良好的寫 code 習慣。
+                                </p>
+                            </div>
+                        </div>
+                        <div class="flex gap-4">
+                            <div class="flex-shrink-0 w-8 h-8 rounded-lg bg-red-50 text-laravel flex items-center justify-center text-sm font-bold">4</div>
+                            <div>
+                                <h3 class="font-bold text-slate-900 text-sm sm:text-base">功能內建免重複造輪子，一秒解鎖專業功能</h3>
+                                <p class="text-xs sm:text-sm text-slate-600 leading-relaxed mt-1">
+                                    註冊登入、發送電子郵件、資料庫串接、分頁處理等，Laravel 全都幫你內建好了。新手不需要花費數週去手寫安全驗證，可以把精力集中在核心的業務邏輯，成就感滿滿！
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Highlight Quote -->
+                <div class="mt-6 bg-slate-50 p-4 rounded-xl border border-slate-100 flex items-start gap-3">
+                    <span class="text-laravel text-lg"><i class="fa-solid fa-quote-left"></i></span>
+                    <p class="text-xs text-slate-600 leading-relaxed italic">
+                        「Laravel 不僅僅是個框架，它為新手開發者打開了一扇通往現代軟體工程設計（如 MVC、依賴注入、ORM）的大門，是從『寫網頁』跨入『系統開發』的最佳跳板。」
+                    </p>
+                </div>
+            </div>
+        </section>
+        <!-- Section 2: Environment Config -->
+        <section id="env" class="mb-12 scroll-mt-20">�。</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start gap-3 p-2 bg-white rounded-lg shadow-sm border border-slate-100">
+                                    <div class="text-laravel mt-0.5"><i class="fa-solid fa-server"></i></div>
+                                    <div>
+                                        <h4 class="text-xs font-bold text-slate-700">後端開發 (Backend)</h4>
+                                        <p class="text-xxs text-slate-500">處理資料庫、伺服器邏輯、安全驗證。需要 PHP 執行環境與伺服器伺服軟體。</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Section 2: Environment Config -->
+        <section id="env" class="mb-12 scroll-mt-20">
+            <div class="text-center mb-8">
+                <h2 class="text-2xl sm:text-3xl font-bold text-slate-900">工欲善其事，必先利其器：後端環境配置三劍客</h2>
+                <p class="text-slate-500 mt-2">在開始開發 Laravel 之前，我們必須在電腦中配置以下三種核心工具</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- XAMPP Card -->
+                <div class="glass-card rounded-2xl p-6 shadow-sm border border-slate-200/60 hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between">
+                    <div>
+                        <div class="w-12 h-12 rounded-xl bg-green-50 text-green-600 flex items-center justify-center text-xl mb-4 shadow-sm">
+                            <i class="fa-solid fa-server"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-900 mb-2">1. XAMPP (伺服器與資料庫)</h3>
+                        <p class="text-sm text-slate-600 mb-4 leading-relaxed">
+                            XAMPP 是一個整合型的軟體套件，安裝後可以一次取得 <b>Apache 網頁伺服器</b> 以及 <b>MariaDB (MySQL) 資料庫</b>，同時內建 PHP 執行環境。它能讓你的電腦瞬間變身成一台後端伺服器！
+                        </p>
+                    </div>
+                    <div class="pt-4 border-t border-slate-100">
+                        <a href="https://www.apachefriends.org/zh_tw/index.html" target="_blank" class="w-full inline-flex items-center justify-center px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white font-medium text-xs rounded-lg transition-colors">
+                            <i class="fa-solid fa-download mr-1.5"></i> 前往下載 XAMPP
+                        </a>
+                    </div>
+                </div>
+                <!-- Composer Card -->
+                <div class="glass-card rounded-2xl p-6 shadow-sm border border-slate-200/60 hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between">
+                    <div>
+                        <div class="w-12 h-12 rounded-xl bg-orange-50 text-orange-600 flex items-center justify-center text-xl mb-4 shadow-sm">
+                            <i class="fa-solid fa-box-open"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-900 mb-2">2. Composer (PHP 套件管理工具)</h3>
+                        <p class="text-sm text-slate-600 mb-4 leading-relaxed">
+                            就像 Node.js 的 <b>npm</b> 一樣，Composer 是 PHP 世界的套件管理老大。當我們要安裝 Laravel 框架、或者使用別人寫好的開源功能（例如發信、後台管理套件）時，都是交給 Composer 來幫我們下載與管理。
+                        </p>
+                    </div>
+                    <div class="pt-4 border-t border-slate-100">
+                        <a href="https://getcomposer.org/" target="_blank" class="w-full inline-flex items-center justify-center px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white font-medium text-xs rounded-lg transition-colors">
+                            <i class="fa-solid fa-download mr-1.5"></i> 前往下載 Composer
+                        </a>
+                    </div>
+                </div>
+                <!-- Node.js Card -->
+                <div class="glass-card rounded-2xl p-6 shadow-sm border border-slate-200/60 hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between">
+                    <div>
+                        <div class="w-12 h-12 rounded-xl bg-green-50 text-green-700 flex items-center justify-center text-xl mb-4 shadow-sm">
+                            <i class="fa-brands fa-node-js"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-900 mb-2">3. Node.js & npm (前端編譯工具)</h3>
+                        <p class="text-sm text-slate-600 mb-4 leading-relaxed">
+                            奇怪，我們不是在寫後端嗎？為什麼要裝 Node.js？因為現代後端開發（包括 Laravel）通常內建了前端資源打包工具（如 Vite 或者是 Laravel Mix）。我們需要 npm 來幫我們編譯 CSS/JS 或是安裝前端 UI 庫。
+                        </p>
+                    </div>
+                    <div class="pt-4 border-t border-slate-100">
+                        <a href="https://nodejs.org/" target="_blank" class="w-full inline-flex items-center justify-center px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white font-medium text-xs rounded-lg transition-colors">
+                            <i class="fa-solid fa-download mr-1.5"></i> 前往下載 Node.js
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Section 3: School Analogy -->
+        <section id="analogy" class="mb-12 scroll-mt-20">
+            <div class="glass-card rounded-2xl p-6 sm:p-8 shadow-sm">
+                <div class="max-w-3xl mx-auto text-center mb-8">
+                    <span class="text-laravel font-bold text-xs uppercase tracking-wider">生動比喻 · 輕鬆記憶</span>
+                    <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 mt-1">如果 Laravel 是一所學校：行政處室的大分工</h2>
+                    <p class="text-slate-500 mt-2">我們用學校的運作方式，來對比 Laravel 後端各個組件的功用與職責：</p>
+                </div>
+                <!-- Visual Analogy Interactive Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    
+                    <!-- 1. Route (收發室/大門警衛) -->
+                    <div class="bg-white rounded-xl p-5 border border-slate-100 shadow-sm hover:shadow-md transition-shadow">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-bold text-blue-600 uppercase tracking-widest bg-blue-50 px-2 py-0.5 rounded">Route 路由</span>
+                            <span class="text-slate-400 text-sm"><i class="fa-solid fa-door-open"></i></span>
+                        </div>
+                        <h4 class="font-bold text-slate-900 mb-2">比喻：大門收發室 / 警衛</h4>
+                        <p class="text-xs text-slate-500 leading-relaxed mb-3">
+                            當有訪客（使用者瀏覽器發送 Request）來到學校時，警衛是第一個接觸的人。警衛會看你手上的公文（網址 URL），決定你要去哪個處室。
+                        </p>
+                        <div class="bg-slate-50 p-2 rounded text-xxs font-mono text-slate-600">
+                            網址輸入 /students -> 警衛指引至「學生處」
+                        </div>
+                    </div>
+                    <!-- 2. Controller (處室組長/核心協調) -->
+                    <div class="bg-white rounded-xl p-5 border border-slate-100 shadow-sm hover:shadow-md transition-shadow">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-bold text-laravel uppercase tracking-widest bg-red-50 px-2 py-0.5 rounded">Controller 控制器</span>
+                            <span class="text-slate-400 text-sm"><i class="fa-solid fa-user-gear"></i></span>
+                        </div>
+                        <h4 class="font-bold text-slate-900 mb-2">比喻：教務處 / 總務處處長</h4>
+                        <p class="text-xs text-slate-500 leading-relaxed mb-3">
+                            他是核心主管！收到警衛傳過來的訪客後，負責調配工作。他自己不搬資料，但他會叫「檔案管理員」（Model）去查資料，並把資料拿去交給「佈告欄設計師」（View）排版。
+                        </p>
+                        <div class="bg-slate-50 p-2 rounded text-xxs font-mono text-slate-600">
+                            接收請求 -> 呼叫 Model -> 將資料傳給 View
+                        </div>
+                    </div>
+                    <!-- 3. Model (檔案保管庫) -->
+                    <div class="bg-white rounded-xl p-5 border border-slate-100 shadow-sm hover:shadow-md transition-shadow">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-bold text-emerald-600 uppercase tracking-widest bg-emerald-50 px-2 py-0.5 rounded">Model 模型</span>
+                            <span class="text-slate-400 text-sm"><i class="fa-solid fa-database"></i></span>
+                        </div>
+                        <h4 class="font-bold text-slate-900 mb-2">比喻：檔案室管理員</h4>
+                        <p class="text-xs text-slate-500 leading-relaxed mb-3">
+                            只負責管理學校的所有學生檔案與教職員資料庫。他聽從 Controller 處長的指示，去抽屜裡拿出需要的學生檔案，或者將新的檔案放進保管箱。
+                        </p>
+                        <div class="bg-slate-50 p-2 rounded text-xxs font-mono text-slate-600">
+                            Student::where('grade', 3)->get();
+                        </div>
+                    </div>
+                    <!-- 4. View (佈告欄/成果發表) -->
+                    <div class="bg-white rounded-xl p-5 border border-slate-100 shadow-sm hover:shadow-md transition-shadow">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-bold text-purple-600 uppercase tracking-widest bg-purple-50 px-2 py-0.5 rounded">View 視圖</span>
+                            <span class="text-slate-400 text-sm"><i class="fa-solid fa-display"></i></span>
+                        </div>
+                        <h4 class="font-bold text-slate-900 mb-2">比喻：大門口佈告欄 / 黑板</h4>
+                        <p class="text-xs text-slate-500 leading-relaxed mb-3">
+                            這是呈現給外來訪客看的地方。設計師會依據處長（Controller）給的資料，排版成漂亮的畫面（HTML/Blade），讓來看的人一目瞭然。
+                        </p>
+                        <div class="bg-slate-50 p-2 rounded text-xxs font-mono text-slate-600">
+                            &lt;h1&gt;哈囉，{{ $student-&gt;name }}&lt;/h1&gt;
+                        </div>
+                    </div>
+                    <!-- 5. Migration (校舍施工藍圖) -->
+                    <div class="bg-white rounded-xl p-5 border border-slate-100 shadow-sm hover:shadow-md transition-shadow">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-bold text-amber-600 uppercase tracking-widest bg-amber-50 px-2 py-0.5 rounded">Migration 遷移</span>
+                            <span class="text-slate-400 text-sm"><i class="fa-solid fa-compass-drafting"></i></span>
+                        </div>
+                        <h4 class="font-bold text-slate-900 mb-2">比喻：校舍改建與裝潢工程圖</h4>
+                        <p class="text-xs text-slate-500 leading-relaxed mb-3">
+                            當學校要蓋一間新的教室（在資料庫建立新的資料表），或者是要幫教室加蓋一個隔間（增加欄位），都要先畫好施工藍圖（Migration），並發布給施工團隊執行。
+                        </p>
+                        <div class="bg-slate-50 p-2 rounded text-xxs font-mono text-slate-600">
+                            php artisan migrate (執行施工圖)
+                        </div>
+                    </div>
+                    <!-- 6. Request/Response (家長諮詢信與回信) -->
+                    <div class="bg-white rounded-xl p-5 border border-slate-100 shadow-sm hover:shadow-md transition-shadow">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-bold text-rose-600 uppercase tracking-widest bg-rose-50 px-2 py-0.5 rounded">Request / Response</span>
+                            <span class="text-slate-400 text-sm"><i class="fa-solid fa-envelope-open-text"></i></span>
+                        </div>
+                        <h4 class="font-bold text-slate-900 mb-2">比喻：家長來信與學校回覆公文</h4>
+                        <p class="text-xs text-slate-500 leading-relaxed mb-3">
+                            Request（請求）就是訪客寄信問學校問題；而學校處理完畢後，回送給訪客的答覆信件與成績單就是 Response（回應）。
+                        </p>
+                        <div class="bg-slate-50 p-2 rounded text-xxs font-mono text-slate-600">
+                            Request (瀏覽) -> 伺服器處理 -> Response (HTML網頁)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Section 4: MVC & Migration Detail -->
+        <section id="mvc" class="mb-12 scroll-mt-20">
+            <div class="glass-card rounded-2xl p-6 sm:p-8 shadow-sm">
+                <h2 class="text-2xl font-bold text-slate-900 mb-6 flex items-center gap-2">
+                    <span class="flex items-center justify-center w-8 h-8 rounded-lg bg-red-50 text-laravel"><i class="fa-solid fa-cubes"></i></span>
+                    深度解析：MVC 設計模式與 Migration 的力量
+                </h2>
+                <div class="space-y-6">
+                    <div class="flex flex-col md:flex-row gap-6">
+                        <div class="md:w-1/2 bg-slate-50 p-6 rounded-xl border border-slate-200/60">
+                            <h3 class="font-bold text-slate-900 text-lg mb-3">MVC 設計模式</h3>
+                            <p class="text-sm text-slate-600 leading-relaxed mb-4">
+                                MVC 是一種軟體設計架構，它將程式碼分成三個核心區塊：
+                            </p>
+                            <ul class="space-y-2.5 text-xs text-slate-600">
+                                <li class="flex items-start gap-2">
+                                    <span class="w-5 h-5 rounded-full bg-emerald-100 text-emerald-800 font-bold flex items-center justify-center flex-shrink-0 text-xxs">M</span>
+                                    <span><b>Model (模型)：</b> 負責資料的邏輯。在這裡我們定義資料的格式，與資料庫進行 CRUD (新增、讀取、更新、刪除) 的溝通。</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <span class="w-5 h-5 rounded-full bg-purple-100 text-purple-800 font-bold flex items-center justify-center flex-shrink-0 text-xxs">V</span>
+                                    <span><b>View (視圖)：</b> 負責呈現外觀。在 Laravel 中通常使用 <code>.blade.php</code> 模板檔案來渲染畫面。</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <span class="w-5 h-5 rounded-full bg-laravel/10 text-laravel font-bold flex items-center justify-center flex-shrink-0 text-xxs">C</span>
+                                    <span><b>Controller (控制器)：</b> 負責調度。當路由把請求送過來，Controller 會去拿 Model 的資料，做必要運算後，丟給 View 渲染網頁。</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="md:w-1/2 bg-slate-50 p-6 rounded-xl border border-slate-200/60">
+                            <h3 class="font-bold text-slate-900 text-lg mb-3">Migration (資料庫遷移) 的妙處</h3>
+                            <p class="text-sm text-slate-600 leading-relaxed mb-4">
+                                在以前，我們如果要建資料表，可能需要手動在 PHPMyAdmin 打開網頁操作，或者自己寫 SQL 指令。但在團隊合作時，別人根本不知道你新增了什麼欄位。
+                            </p>
+                            <p class="text-sm text-slate-600 leading-relaxed">
+                                <b>Migration 就像是「資料庫的 Git 版本控制」</b>。我們用 PHP 程式碼來寫資料表的欄位定義。只要你寫好 Migration，你的隊友只需要在終端機輸入：
+                            </p>
+                            <div class="bg-slate-900 text-amber-400 p-3 rounded-lg font-mono text-xs my-3 shadow-inner">
+                                php artisan migrate
+                            </div>
+                            <p class="text-xs text-slate-500 leading-relaxed">
+                                他的資料庫就會自動同步建立跟你一模一樣的欄位與資料表，非常方便！
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Section 5: Voyager Admin -->
+        <section id="voyager" class="mb-12 scroll-mt-20">
+            <div class="glass-card rounded-2xl p-6 sm:p-8 shadow-sm bg-gradient-to-tr from-white via-white to-red-50/20">
+                <div class="flex flex-col lg:flex-row items-center gap-8">
+                    <div class="lg:w-1/2">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-red-100 text-laravel mb-3">
+                            實戰目標
+                        </span>
+                        <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 mb-4">
+                            認識 Laravel Voyager：一秒生成精美的後台管理系統
+                        </h2>
+                        <p class="text-sm text-slate-600 leading-relaxed mb-4">
+                            <b>Voyager</b> 是 Laravel 一個極具人氣的開源後台管理套件（Admin Package）。它提供了完整的 BREAD (Browse, Read, Edit, Add, Delete) 操作介面，讓我們不用寫半行代碼就能透過網頁操作資料表。
+                        </p>
+                        <p class="text-sm text-slate-600 leading-relaxed mb-4">
+                            在我們的專案中，學習 Laravel Voyager 的作用是幫助我們快速搭建一個「可視化後台」，方便朱珮瑜同學在接下來的課程中，可以直觀地理解資料庫、權限、選單是如何在 Laravel 中運作的。
+                        </p>
+                        <div class="flex flex-wrap gap-3">
+                            <a href="https://laravelvoyager.com/" target="_blank" class="inline-flex items-center justify-center px-4 py-2 border border-slate-300 hover:border-slate-400 bg-white hover:bg-slate-50 text-slate-700 font-medium text-xs rounded-lg transition-colors">
+                                <i class="fa-solid fa-arrow-up-right-from-square mr-1.5"></i> Voyager 官網
+                            </a>
+                            <a href="https://github.com/the-control-group/voyager" target="_blank" class="inline-flex items-center justify-center px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white font-medium text-xs rounded-lg transition-colors">
+                                <i class="fa-brands fa-github mr-1.5"></i> Voyager GitHub 倉庫
+                            </a>
+                        </div>
+                    </div>
+                    <div class="lg:w-1/2 w-full">
+                        <div class="relative overflow-hidden rounded-xl border border-slate-200 shadow-sm bg-slate-900 text-slate-200 p-6 font-mono text-xs">
+                            <div class="flex items-center justify-between pb-3 border-b border-slate-800 mb-4">
+                                <div class="flex space-x-1.5">
+                                    <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                                    <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                                    <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                                </div>
+                                <span class="text-slate-500 text-xxs">Terminal - Composer Install</span>
+                            </div>
+                            <p class="text-slate-400 mb-2"># 1. 下載 Voyager 套件</p>
+                            <p class="text-white mb-4"><span class="text-emerald-400">$</span> composer require tcg/voyager</p>
+                            
+                            <p class="text-slate-400 mb-2"># 2. 執行安裝指令 (包含示範資料)</p>
+                            <p class="text-white mb-4"><span class="text-emerald-400">$</span> php artisan voyager:install --with-dummy</p>
+                            
+                            <p class="text-slate-400 mb-2"># 3. 啟動本機伺服器</p>
+                            <p class="text-white"><span class="text-emerald-400">$</span> php artisan serve</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Section 6: Quiz (Interactive Element) -->
+        <section id="quiz" class="mb-12 scroll-mt-20">
+            <div class="glass-card rounded-2xl p-6 sm:p-8 shadow-sm border border-laravel/20 bg-gradient-to-tr from-white via-white to-red-50/10">
+                <div class="max-w-3xl mx-auto text-center mb-8">
+                    <span class="text-laravel font-bold text-xs uppercase tracking-wider">互動測驗</span>
+                    <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 mt-1">快速小測驗：看你吸收了多少！</h2>
+                    <p class="text-slate-500 mt-2">點選正確的答案，即時檢測學習成效吧！</p>
+                </div>
+                <div class="max-w-2xl mx-auto space-y-6">
+                    <!-- Q1 -->
+                    <div class="bg-slate-50 p-5 rounded-xl border border-slate-200/80">
+                        <p class="font-bold text-slate-800 text-sm mb-3">Q1. 下列哪一個比喻最適合用來形容 Laravel 中的「Route (路由)」？</p>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="q1-options">
+                            <button onclick="checkAnswer(1, 'A', this)" class="p-3 bg-white hover:bg-slate-100 border border-slate-200 rounded-lg text-xs text-left transition-all font-medium text-slate-700">
+                                A. 負責建大樓與油漆的「施工隊」
+                            </button>
+                            <button onclick="checkAnswer(1, 'B', this)" class="p-3 bg-white hover:bg-slate-100 border border-slate-200 rounded-lg text-xs text-left transition-all font-medium text-slate-700">
+                                B. 負責指引訪客去正確處室的「警衛/收發室」
+                            </button>
+                            <button onclick="checkAnswer(1, 'C', this)" class="p-3 bg-white hover:bg-slate-100 border border-slate-200 rounded-lg text-xs text-left transition-all font-medium text-slate-700">
+                                C. 專門整理與保管檔案的「檔案管理員」
+                            </button>
+                            <button onclick="checkAnswer(1, 'D', this)" class="p-3 bg-white hover:bg-slate-100 border border-slate-200 rounded-lg text-xs text-left transition-all font-medium text-slate-700">
+                                D. 學校大門口的「電子公佈欄」
+                            </button>
+                        </div>
+                        <div id="q1-result" class="mt-3 text-xs font-bold hidden"></div>
+                    </div>
+                    <!-- Q2 -->
+                    <div class="bg-slate-50 p-5 rounded-xl border border-slate-200/80">
+                        <p class="font-bold text-slate-800 text-sm mb-3">Q2. 當團隊協作需要同步資料庫欄位結構時，應使用 Laravel 的什麼功能？</p>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="q2-options">
+                            <button onclick="checkAnswer(2, 'A', this)" class="p-3 bg-white hover:bg-slate-100 border border-slate-200 rounded-lg text-xs text-left transition-all font-medium text-slate-700">
+                                A. Model (模型)
+                            </button>
+                            <button onclick="checkAnswer(2, 'B', this)" class="p-3 bg-white hover:bg-slate-100 border border-slate-200 rounded-lg text-xs text-left transition-all font-medium text-slate-700">
+                                B. Controller (控制器)
+                            </button>
+                            <button onclick="checkAnswer(2, 'C', this)" class="p-3 bg-white hover:bg-slate-100 border border-slate-200 rounded-lg text-xs text-left transition-all font-medium text-slate-700">
+                                C. Migration (遷移)
+                            </button>
+                            <button onclick="checkAnswer(2, 'D', this)" class="p-3 bg-white hover:bg-slate-100 border border-slate-200 rounded-lg text-xs text-left transition-all font-medium text-slate-700">
+                                D. Voyager 後台管理
+                            </button>
+                        </div>
+                        <div id="q2-result" class="mt-3 text-xs font-bold hidden"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 py-8 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-xs space-y-3">
+            <p class="text-slate-300 font-medium">朱珮瑜 · 專案三學習講義系列</p>
+            <p>使用 Tailwind CSS & FontAwesome 建立 · 結合 Laravel 知識體系</p>
+            <p class="text-slate-600">&copy; 2026. All rights reserved. 僅供教學與個人筆記使用。</p>
+        </div>
+    </footer>
+    <!-- Interactive Script -->
+    <script>
+        function checkAnswer(qNum, selected, element) {
+            const results = {
+                1: { correct: 'B', desc: '答對了！Route 負責檢查訪客的網址（公文），並指引訪客前往對應的 Controller。' },
+                2: { correct: 'C', desc: '沒錯！Migration 就是資料庫的施工藍圖與版本控制，讓我們能用程式碼建立與共享資料庫結構。' }
+            };
+            const qResult = document.getElementById(`q${qNum}-result`);
+            const qOptions = document.getElementById(`q${qNum}-options`);
+            const buttons = qOptions.getElementsByTagName('button');
+            // Disable all buttons in this question
+            for (let btn of buttons) {
+                btn.disabled = true;
+                btn.classList.add('opacity-60');
+            }
+            qResult.classList.remove('hidden');
+            if (selected === results[qNum].correct) {
+                element.classList.remove('border-slate-200', 'hover:bg-slate-100');
+                element.classList.add('border-emerald-500', 'bg-emerald-50', 'text-emerald-800', 'opacity-100');
+                qResult.innerHTML = `<span class="text-emerald-600"><i class="fa-solid fa-circle-check mr-1.5"></i> ${results[qNum].desc}</span>`;
+            } else {
+                element.classList.remove('border-slate-200', 'hover:bg-slate-100');
+                element.classList.add('border-rose-500', 'bg-rose-50', 'text-rose-800', 'opacity-100');
+                qResult.innerHTML = `<span class="text-rose-600"><i class="fa-solid fa-circle-xmark mr-1.5"></i> 答錯了，再想想看喔！提示：可以往上拉看「行政處室比喻」的卡片。</span>`;
+                // Highlight the correct one
+                for (let btn of buttons) {
+                    if (btn.innerText.trim().startsWith(results[qNum].correct)) {
+                        btn.classList.remove('opacity-60');
+                        btn.classList.add('border-emerald-500', 'bg-emerald-50/50');
+                    }
+                }
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>課本 - 白色主題</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-slate-50 text-slate-800 font-sans antialiased">
+    <!-- Progress Bar -->
+    <div id="progress-bar" class="fixed top-0 left-0 h-1 bg-blue-600 z-50 transition-all duration-150"
+        style="width: 0%"></div>
+
+    <div class="min-h-screen flex flex-col lg:flex-row">
+        <!-- Sidebar Navigation -->
+        <aside class="lg:w-64 bg-white border-r border-slate-200 p-6 sticky top-0 h-screen hidden lg:block">
+            <div class="mb-8">
+                <h2 class="text-xs font-bold uppercase tracking-widest text-slate-400">課程目錄</h2>
+            </div>
+            <nav class="space-y-4">
+                <a href="#intro" class="block text-sm font-medium text-blue-600 hover:text-blue-800">1. 基礎概念</a>
+                <a href="#notes" class="block text-sm font-medium text-slate-600 hover:text-blue-600">2. 重點筆記</a>
+                <a href="#practice" class="block text-sm font-medium text-slate-600 hover:text-blue-600">3. 實作練習</a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-6 lg:p-12 max-w-4xl mx-auto w-full">
+            <header class="mb-12">
+                <div class="inline-block px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-bold mb-4">Module
+                    01</div>
+                <h1 class="text-5xl font-extrabold text-slate-900 mb-4 tracking-tight">基礎概念與實作</h1>
+                <p class="text-xl text-slate-500 leading-relaxed">歡迎來到本課程的第四次上課內容。我們將從基礎概念開始，逐步建立完整的技術架構。</p>
+            </header>
+
+            <div class="space-y-16">
+                <section id="intro" class="scroll-mt-20">
+                    <h2 class="text-3xl font-bold mb-6 flex items-center">
+                        <span
+                            class="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm mr-3">1</span>
+                        基礎概念
+                    </h2>
+                    <div class="bg-white p-8 rounded-2xl border border-slate-100 shadow-xl shadow-slate-200/50">
+                        <p class="text-lg text-slate-700 mb-6 leading-relaxed">
+                            這是一個範例段落。在學習任何新技術之前，理解其核心原理至關重要。我們將探討如何利用 Tailwind CSS 的原子化設計概念來快速構建介面。
+                        </p>
+                        <ul class="space-y-4">
+                            <li class="flex items-start">
+                                <span class="text-blue-500 mr-2">✓</span>
+                                <span class="text-slate-600">原子化設計 (Atomic Design) 的核心價值</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-blue-500 mr-2">✓</span>
+                                <span class="text-slate-600">Utility-first 理念如何提升開發效率</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-blue-500 mr-2">✓</span>
+                                <span class="text-slate-600">與傳統 CSS 框架的差異分析</span>
+                            </li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section id="notes" class="scroll-mt-20">
+                    <h2 class="text-3xl font-bold mb-6 flex items-center">
+                        <span
+                            class="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm mr-3">2</span>
+                        重點筆記
+                    </h2>
+                    <div class="bg-gradient-to-br from-blue-600 to-indigo-700 p-8 rounded-3xl shadow-xl text-white">
+                        <h3 class="text-xl font-bold mb-4 flex items-center">
+                            <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            關鍵核心知識
+                        </h3>
+                        <p class="opacity-90 leading-relaxed">
+                            這裡是用於強調重點的區塊。透過視覺上的強烈對比（如漸層背景與高對比文字），學生可以更快速地捕捉到課程中的核心知識點。
+                        </p>
+                    </div>
+                </section>
+
+                <section id="practice" class="scroll-mt-20">
+                    <h2 class="text-3xl font-bold mb-6 flex items-center">
+                        <span
+                            class="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm mr-3">3</span>
+                        實作練習
+                    </h2>
+                    <div class="bg-white p-8 rounded-2xl border border-slate-100 shadow-xl shadow-slate-200/50">
+                        <p class="mb-8 text-slate-600">請點擊下方的按鈕，確認 jQuery 是否已成功串接至本頁面。</p>
+                        <div class="flex items-center gap-4">
+                            <button id="actionBtn"
+                                class="px-8 py-3 bg-slate-900 text-white font-bold rounded-xl hover:bg-blue-700 transform hover:-translate-y-1 transition-all duration-200 shadow-lg">
+                                執行測試指令
+                            </button>
+                            <div id="btnText" class="text-sm font-bold text-blue-600"></div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <footer class="mt-24 pt-8 border-t border-slate-200 text-slate-400 text-sm text-center">
+                <p>© 2026 專業課程內容版權所有 · 由 Tailwind CSS 驅動</p>
+            </footer>
+        </main>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Button Action
+            $('#actionBtn').click(function () {
+                $('#btnText').text('✅ jQuery 已成功載入並運作中！').hide().fadeIn();
+            });
+
+            // Progress Bar logic
+            $(window).on('scroll', function () {
+                var winScroll = $(window).scrollTop();
+                var height = $(document).height() - $(window).height();
+                var scrolled = (winScroll / height) * 100;
+                $('#progress-bar').css('width', scrolled + '%');
+            });
+        });
+    </script>
+</body>
+
+</html>

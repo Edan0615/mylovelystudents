@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>專案三：從資料表到後台 UI/UX 的具現化之路 (第2次上課)</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Tailwind Configuration for Custom Fonts and Premium White Palette -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            serif: ['Playfair Display', 'Noto Serif TC', 'Georgia', 'serif'],
+            sans: ['Plus Jakarta Sans', 'Noto Sans TC', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            brand: {
+              50: '#F5F7FB',
+              100: '#EBF0F9',
+              200: '#D2DFF2',
+              600: '#2563EB',
+              700: '#1D4ED8',
+              900: '#1E3A8A',
+            },
+            slate: {
+              750: '#20293A',
+            },
+            paper: {
+              50: '#FCFDFE',   // 極致透亮白
+              100: '#F8FAFC',  // 溫潤石板白
+              200: '#F1F5F9',  // 現代淺灰
+            }
+          },
+          boxShadow: {
+            'premium': '0 10px 40px -10px rgba(0, 0, 0, 0.04), 0 2px 12px -2px rgba(0, 0, 0, 0.02)',
+            'card': '0 4px 20px -2px rgba(0, 0, 0, 0.03), 0 2px 8px -1px rgba(0, 0, 0, 0.015)',
+            'hover': '0 20px 40px -8px rgba(37, 99, 235, 0.08), 0 4px 16px -3px rgba(0, 0, 0, 0.03)',
+            'inset-light': 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.01)',
+          }
+        }
+      }
+    }
+  </script>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Noto+Serif+TC:wght@400;500;700;900&family=Noto+Sans+TC:wght@300;400;500;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  
+  <!-- jQuery CDN -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+  <!-- Custom Core Styles -->
+  <style>
+    /* Paper Texture & Book Spine Shadow to make it look realistic and comfortable to read */
+    .paper-texture {
+      background-image: 
+        radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.2) 100%),
+        linear-gradient(rgba(148, 163, 184, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(148, 163, 184, 0.03) 1px, transparent 1px);
+      background-size: 100% 100%, 20px 20px, 20px 20px;
+    }
+
+    .book-spine-single {
+      box-shadow: inset 20px 0 40px -20px rgba(0, 0, 0, 0.03), inset -20px 0 40px -20px rgba(0, 0, 0, 0.03);
+    }
+
+    /* Interactive highlighter */
+    .highlightable-text p, .highlightable-text li {
+      position: relative;
+      cursor: pointer;
+      transition: background-color 0.25s ease, padding 0.25s ease;
+      border-radius: 4px;
+    }
+    .highlightable-text p:hover, .highlightable-text li:hover {
+      background-color: rgba(37, 99, 235, 0.03);
+    }
+    
+    .hl-yellow {
+      background-color: rgba(253, 224, 71, 0.8) !important;
+      border-bottom: 2px solid rgba(234, 179, 8, 0.4);
+    }
+    .hl-green {
+      background-color: rgba(134, 239, 172, 0.8) !important;
+      border-bottom: 2px solid rgba(34, 197, 94, 0.4);
+    }
+    .hl-blue {
+      background-color: rgba(147, 197, 253, 0.8) !important;
+      border-bottom: 2px solid rgba(59, 130, 246, 0.4);
+    }
+
+    /* Custom Scrollbar for modern premium feel */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.02);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(0, 0, 0, 0.12);
+      border-radius: 99px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(37, 99, 235, 0.3);
+    }
+
+    /* Tooltip styling */
+    .hover-tooltip {
+      position: relative;
+    }
+    .hover-tooltip::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      bottom: 125%;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #1E293B;
+      color: #FFF;
+      padding: 6px 10px;
+      border-radius: 8px;
+      font-size: 11px;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s, transform 0.2s;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      z-index: 50;
+    }
+    .hover-tooltip:hover::after {
+      opacity: 1;
+      transform: translateX(-50%) translateY(-4px);
+    }
+  </style>
+</head>
+<body class="bg-[#F8FAFC] text-slate-800 font-sans min-h-screen flex flex-col selection:bg-brand-200">
+
+  <!-- Top Floating Controls Dock -->
+  <header class="fixed top-4 left-4 right-4 z-40 bg-white/80 backdrop-blur-md border border-slate-200/60 rounded-2xl shadow-premium p-3.5 flex items-center justify-between transition-all duration-300">
+    <div class="flex items-center gap-3">
+      <!-- Sidebar toggle button -->
+      <button id="toggle-sidebar" class="p-2.5 bg-slate-50 hover:bg-brand-50 hover:text-brand-600 rounded-xl text-slate-600 transition-all flex items-center justify-center cursor-pointer border border-slate-100" title="開啟/關閉課程目錄與筆記">
+        <i class="fa-solid fa-bars-staggered text-base"></i>
+      </button>
+      <div class="h-5 w-[1px] bg-slate-200"></div>
+      <div class="flex items-center gap-2">
+        <span class="w-6 h-6 rounded-lg bg-brand-600 text-white flex items-center justify-center text-[10px] font-bold">3</span>
+        <div>
+          <h1 class="font-serif font-black text-sm text-slate-900 tracking-wide">專案三：後台管理與視覺具現</h1>
+          <p class="text-[9px] text-slate-400 font-semibold tracking-wider uppercase">Lesson 02 • Table Data To UI Elements</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Utilities panel -->
+    <div class="flex items-center gap-3 text-sm">
+      <!-- Font Size Adjuster -->
+      <div class="flex items-center bg-slate-50 rounded-xl p-0.5 border border-slate-200/50">
+        <button id="font-dec" class="px-2.5 py-1 hover:bg-white hover:shadow-sm rounded-lg transition-all text-xs font-bold text-slate-500 hover:text-slate-800" title="縮小字體"><i class="fa-solid fa-minus text-[9px]"></i> A</button>
+        <button id="font-inc" class="px-2.5 py-1 hover:bg-white hover:shadow-sm rounded-lg transition-all text-xs font-bold text-slate-500 hover:text-slate-800" title="放大字體">A <i class="fa-solid fa-plus text-[9px]"></i></button>
+      </div>
+
+      <!-- Highlighter Color Picker -->
+      <div class="flex items-center gap-1.5 bg-slate-50 px-2 py-1 rounded-xl border border-slate-200/50">
+        <span class="text-xs text-slate-400 mr-1"><i class="fa-solid fa-marker"></i></span>
+        <button class="hl-color-btn w-4.5 h-4.5 rounded-full bg-yellow-300 border-2 border-white ring-2 ring-brand-600 ring-offset-0 transition-all hover:scale-110" data-color="yellow" title="黃色螢光筆"></button>
+        <button class="hl-color-btn w-4.5 h-4.5 rounded-full bg-green-300 border border-white transition-all hover:scale-110" data-color="green" title="綠色螢光筆"></button>
+        <button class="hl-color-btn w-4.5 h-4.5 rounded-full bg-blue-300 border border-white transition-all hover:scale-110" data-color="blue" title="藍色螢光筆"></button>
+      </div>
+
+      <!-- Bookmark page -->
+      <button id="bookmark-page" class="flex items-center gap-1.5 py-1.5 px-3 bg-slate-50 hover:bg-white hover:shadow-sm border border-slate-200/60 rounded-xl text-slate-600 hover:text-brand-600 transition-all text-xs font-semibold cursor-pointer" title="將當前章節加入書籤">
+        <i class="fa-regular fa-bookmark text-slate-500" id="bookmark-icon"></i>
+        <span class="hidden md:inline">標記此章</span>
+      </button>
+
+      <!-- Reading indicator -->
+      <div class="hidden lg:flex items-center gap-2 border-l pl-3 border-slate-200">
+        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">學習進度</span>
+        <div class="w-16 bg-slate-200 h-1.5 rounded-full overflow-hidden">
+          <div id="reading-progress-bar" class="bg-brand-600 h-full w-1/4 transition-all duration-300"></div>
+        </div>
+        <span id="page-indicator" class="text-xs font-serif font-bold text-slate-700">1 / 4</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Grid Workspace -->
+  <div class="flex flex-1 pt-24 overflow-hidden relative">
+
+    <!-- Collapsible Sidebar (TOC, Notes, Bookmarks) -->
+    <aside id="sidebar" class="w-80 bg-white/95 backdrop-blur-md border-r border-slate-200/60 flex flex-col h-[calc(100vh-6rem)] absolute lg:relative z-30 transition-all duration-300 -translate-x-full lg:translate-x-0 shadow-premium lg:shadow-none ml-4 rounded-2xl border">
+      <!-- Tabs header -->
+      <div class="flex border-b border-slate-100 text-xs font-bold uppercase tracking-wider">
+        <button class="sidebar-tab flex-1 py-4 text-center border-b-2 border-brand-600 text-brand-600" data-tab="toc">
+          <i class="fa-solid fa-book-open mr-1.5"></i>課本目錄
+        </button>
+        <button class="sidebar-tab flex-1 py-4 text-center border-b-2 border-transparent text-slate-400 hover:text-slate-700" data-tab="notes">
+          <i class="fa-solid fa-pen-fancy mr-1.5"></i>隨堂筆記
+        </button>
+        <button class="sidebar-tab flex-1 py-4 text-center border-b-2 border-transparent text-slate-400 hover:text-slate-700" data-tab="marks">
+          <i class="fa-solid fa-highlighter mr-1.5"></i>重點摘要
+        </button>
+      </div>
+
+      <!-- Tab Content Area -->
+      <div class="flex-1 overflow-y-auto p-4">
+        <!-- Tab: TOC (Table of Contents) -->
+        <div id="tab-toc" class="tab-pane space-y-3">
+          <div class="relative mb-3.5">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+              <i class="fa-solid fa-magnifying-glass text-xs"></i>
+            </span>
+            <input type="text" id="search-toc" placeholder="搜尋本堂課重點..." class="w-full bg-slate-50 border border-slate-200 rounded-xl py-2 pl-9 pr-3 text-xs focus:outline-none focus:ring-2 focus:ring-brand-600/20 focus:border-brand-600 transition-all">
+          </div>
+          
+          <nav class="space-y-1.5">
+            <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-2 mb-2">課程核心章節</div>
+            
+            <a href="#" data-page="1" class="toc-item active flex items-center justify-between p-3 rounded-xl bg-brand-50/70 text-brand-900 border-l-4 border-brand-600 font-bold transition-all duration-200">
+              <span class="truncate"><span class="font-serif text-xs text-brand-600 mr-1.5">01</span> UI/UX 實務與資料視覺化</span>
+              <span class="text-[10px] bg-white border border-brand-100 text-brand-600 px-1.5 py-0.5 rounded-md font-mono">P.1</span>
+            </a>
+            
+            <a href="#" data-page="2" class="toc-item flex items-center justify-between p-3 rounded-xl text-slate-600 hover:bg-slate-50 hover:text-slate-900 border-l-4 border-transparent transition-all duration-200">
+              <span class="truncate"><span class="font-serif text-xs text-slate-400 mr-1.5">02</span> 資料表在 UI/UX 的具現化</span>
+              <span class="text-[10px] bg-slate-100 text-slate-500 px-1.5 py-0.5 rounded-md font-mono">P.2</span>
+            </a>
+            
+            <a href="#" data-page="3" class="toc-item flex items-center justify-between p-3 rounded-xl text-slate-600 hover:bg-slate-50 hover:text-slate-900 border-l-4 border-transparent transition-all duration-200">
+              <span class="truncate"><span class="font-serif text-xs text-slate-400 mr-1.5">03</span> 後台經典佈局與防呆表單</span>
+              <span class="text-[10px] bg-slate-100 text-slate-500 px-1.5 py-0.5 rounded-md font-mono">P.3</span>
+            </a>
+            
+            <a href="#" data-page="4" class="toc-item flex items-center justify-between p-3 rounded-xl text-slate-600 hover:bg-slate-50 hover:text-slate-900 border-l-4 border-transparent transition-all duration-200">
+              <span class="truncate"><span class="font-serif text-xs text-slate-400 mr-1.5">04</span> Figma 後台自適應網格規範</span>
+              <span class="text-[10px] bg-slate-100 text-slate-500 px-1.5 py-0.5 rounded-md font-mono">P.4</span>
+            </a>
+          </nav>
+        </div>
+
+        <!-- Tab: Notes -->
+        <div id="tab-notes" class="tab-pane hidden space-y-3.5">
+          <div class="flex items-center justify-between">
+            <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wide">筆記區</h3>
+            <span class="text-[9px] px-2 py-0.5 bg-green-50 text-green-700 rounded-full font-bold border border-green-200 flex items-center gap-1">
+              <span class="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span>已自動儲存
+            </span>
+          </div>
+          <textarea id="note-input" rows="12" placeholder="在此輸入筆記...這些筆記將會被自動儲存在本機硬碟中，您可以隨時閱讀與編輯。" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs leading-relaxed focus:outline-none focus:ring-2 focus:ring-brand-600/20 focus:border-brand-600 transition-all font-sans shadow-inner"></textarea>
+          <div class="flex gap-2">
+            <button id="clear-note" class="flex-1 py-2 px-3 border border-slate-250 rounded-xl text-xs font-bold text-slate-500 hover:bg-slate-50 transition-colors">
+              <i class="fa-regular fa-trash-can mr-1"></i> 清空
+            </button>
+            <button id="download-note" class="flex-1 py-2 px-3 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-xs font-bold transition-all shadow-sm">
+              <i class="fa-solid fa-download mr-1"></i> 導出筆記
+            </button>
+          </div>
+        </div>
+
+        <!-- Tab: Bookmarks & Highlights -->
+        <div id="tab-marks" class="tab-pane hidden space-y-3.5">
+          <div class="flex justify-between items-center">
+            <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wide">本堂課劃線紀錄</h3>
+            <button id="clear-highlights" class="text-[10px] font-bold text-red-600 hover:text-red-800 transition-colors">
+              <i class="fa-solid fa-rotate-left mr-0.5"></i> 清除全部
+            </button>
+          </div>
+          
+          <div id="highlights-list" class="space-y-2.5 max-h-[450px] overflow-y-auto pr-1">
+            <p class="text-xs text-slate-400 text-center py-8">尚無劃線紀錄。<br>請在右側課本中直接點選文字段落進行劃線！</p>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Area (Textbook Viewport) -->
+    <main class="flex-1 flex flex-col justify-between items-center p-4 md:p-6 overflow-y-auto paper-texture relative h-[calc(100vh-6rem)]">
+      
+      <div class="w-full max-w-5xl flex-1 flex flex-col justify-start py-2">
+        <div class="w-full bg-white rounded-2xl shadow-premium border border-slate-200/80 flex flex-col min-h-[700px] relative overflow-hidden transition-all duration-300">
+          
+          <!-- Elegant Spine lines for Book Metaphor -->
+          <div class="absolute inset-y-0 left-0 w-2.5 bg-slate-100/60 border-r border-slate-200/30 rounded-l-2xl z-10 hidden md:block"></div>
+          <div class="absolute inset-y-0 right-0 w-2.5 bg-slate-100/60 border-l border-slate-200/30 rounded-r-2xl z-10 hidden md:block"></div>
+
+          <!-- Page Content Wrapper -->
+          <div id="left-page" class="flex-1 p-6 md:p-10 flex flex-col justify-between book-spine-single relative z-20 transition-all duration-300">
+            
+            <div id="book-content-container" class="highlightable-text font-serif leading-relaxed text-slate-800 text-sm md:text-base space-y-6 flex-1">
+              
+              <!-- PAGE 1: Homework & Data Visualization -->
+              <div id="page-content-1" class="page-content space-y-6">
+                <div class="space-y-1">
+                  <span class="text-xs font-sans font-bold text-brand-600 tracking-widest uppercase"><i class="fa-solid fa-star mr-1"></i> Part 01. 上次作業回顧與 UI/UX 實務對接</span>
+                  <h2 class="text-2xl md:text-3xl font-black text-slate-900 tracking-wide font-serif">資料視覺化：將冷冰冰的數據轉為介面符號</h2>
+                </div>
+                
+                <p data-id="p1-1" class="font-sans text-slate-600 leading-relaxed">
+                  在上一堂課中，我們一起規劃了「會員註冊系統」的資料庫欄位。然而，後端儲存的<strong>原始文字與數字</strong>，對使用者來說是難以閱讀且不友善的。設計師的責任，就是將這些後端數據轉換成具備視覺辨識度的「介面符號」。
+                </p>
+
+                <!-- Interactive Demo 1: Raw Data vs Visualized UI -->
+                <div class="bg-slate-50 border border-slate-200/60 rounded-2xl p-5 font-sans space-y-4 shadow-inset-light">
+                  <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 pb-3 border-b border-slate-200">
+                    <div>
+                      <h4 class="text-sm font-bold text-slate-950 flex items-center gap-1.5">
+                        <span class="w-2 h-2 rounded-full bg-brand-600"></span>
+                        互動體驗：後端資料視覺化轉換器
+                      </h4>
+                      <p class="text-[11px] text-slate-400">點擊切換視角，體驗「設計師的眼睛」如何重新詮釋資料庫欄位</p>
+                    </div>
+                    <!-- View Toggle Switch -->
+                    <div class="flex bg-slate-200/60 p-0.5 rounded-lg border border-slate-300/30 text-xs font-semibold">
+                      <button id="btn-view-raw" class="px-3 py-1.5 rounded-md transition-all cursor-pointer bg-white text-slate-800 shadow-sm" data-view="raw">
+                        <i class="fa-solid fa-code mr-1"></i> 後端資料庫檢視 (Raw)
+                      </button>
+                      <button id="btn-view-ui" class="px-3 py-1.5 rounded-md transition-all cursor-pointer text-slate-500 hover:text-slate-800" data-view="ui">
+                        <i class="fa-solid fa-wand-magic-sparkles mr-1"></i> 前端 UI 視覺檢視 (UX)
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- Dynamic Visualizer Box -->
+                  <div id="visualizer-sandbox-1" class="grid grid-cols-1 md:grid-cols-3 gap-4 transition-all duration-300">
+                    <!-- Column 1: Status Field -->
+                    <div class="bg-white border border-slate-200 rounded-xl p-4 flex flex-col justify-between h-36 transition-all shadow-card hover:shadow-hover">
+                      <div>
+                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">欄位：status (會員狀態)</span>
+                        <h5 class="text-xs font-semibold text-slate-700 mt-1">控制帳號是否啟用</h5>
+                      </div>
+                      
+                      <div class="flex items-center justify-center py-3">
+                        <!-- Raw State -->
+                        <div class="view-state-raw font-mono text-xl font-bold text-slate-700">
+                          <code>value: 1</code>
+                        </div>
+                        <!-- UI State -->
+                        <div class="view-state-ui hidden">
+                          <span class="px-3 py-1 bg-green-50 text-green-700 border border-green-200 rounded-full text-xs font-bold flex items-center gap-1.5">
+                            <span class="w-2 h-2 bg-green-500 rounded-full"></span> 啟用中 (Active)
+                          </span>
+                        </div>
+                      </div>
+                      <p class="text-[10px] text-slate-500 leading-tight">資料庫存 0 或 1，在前端需化為易讀的「狀態標籤 Badge」</p>
+                    </div>
+
+                    <!-- Column 2: Date Field -->
+                    <div class="bg-white border border-slate-200 rounded-xl p-4 flex flex-col justify-between h-36 transition-all shadow-card hover:shadow-hover">
+                      <div>
+                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">欄位：created_at (註冊時間)</span>
+                        <h5 class="text-xs font-semibold text-slate-700 mt-1">紀錄使用者加入日期</h5>
+                      </div>
+                      
+                      <div class="flex items-center justify-center py-3">
+                        <!-- Raw State -->
+                        <div class="view-state-raw font-mono text-xs text-slate-600 bg-slate-50 p-2 rounded border border-slate-100">
+                          <code>2026-06-05 07:32:07</code>
+                        </div>
+                        <!-- UI State -->
+                        <div class="view-state-ui hidden flex items-center gap-2">
+                          <span class="text-xs text-slate-700 font-semibold"><i class="fa-regular fa-calendar-days text-brand-600 mr-1.5"></i> 2026 年 6 月 5 日</span>
+                          <span class="text-[9px] bg-slate-100 text-slate-500 px-1.5 py-0.5 rounded">今天</span>
+                        </div>
+                      </div>
+                      <p class="text-[10px] text-slate-500 leading-tight">複雜時間字串，在前端需友善格式化或搭配日曆篩選器</p>
+                    </div>
+
+                    <!-- Column 3: Identity Field -->
+                    <div class="bg-white border border-slate-200 rounded-xl p-4 flex flex-col justify-between h-36 transition-all shadow-card hover:shadow-hover">
+                      <div>
+                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">欄位：role (使用者權限)</span>
+                        <h5 class="text-xs font-semibold text-slate-700 mt-1">區分一般與後台權限</h5>
+                      </div>
+                      
+                      <div class="flex items-center justify-center py-3">
+                        <!-- Raw State -->
+                        <div class="view-state-raw font-mono text-sm text-slate-700">
+                          <code>"admin"</code>
+                        </div>
+                        <!-- UI State -->
+                        <div class="view-state-ui hidden">
+                          <span class="px-2.5 py-1 bg-amber-50 text-amber-800 border border-amber-200 rounded-lg text-xs font-bold flex items-center gap-1">
+                            <i class="fa-solid fa-shield-halved text-amber-600"></i> 系統管理員
+                          </span>
+                        </div>
+                      </div>
+                      <p class="text-[10px] text-slate-500 leading-tight">原始身分字串，化為權限圖標或帶色彩標籤提升安全警示</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="bg-brand-50/50 border border-brand-100 p-5 rounded-2xl font-sans text-xs space-y-2">
+                  <h4 class="font-bold text-brand-900 flex items-center gap-1.5"><i class="fa-solid fa-lightbulb"></i> 設計思考點 (UI/UX Insight)</h4>
+                  <p class="text-slate-700 leading-relaxed">
+                    後台介面設計的核心，在於「減少管理者的認知負荷」。當我們直接在 UI 呈現資料庫狀態（如 0/1）時，會強迫管理者在腦海裡進行一次解碼。透過顏色、狀態標籤 (Badges) 以及親切的時間描述（如「3分鐘前」、「今天」），我們能在直覺層面解決管理效率與錯誤率。
+                  </p>
+                </div>
+              </div>
+
+              <!-- PAGE 2: DB Tables Visualized in UI -->
+              <div id="page-content-2" class="page-content space-y-6 hidden">
+                <div class="space-y-1">
+                  <span class="text-xs font-sans font-bold text-brand-600 tracking-widest uppercase"><i class="fa-solid fa-table mr-1"></i> Part 02. 資料表在 UI/UX 的視覺具現化</span>
+                  <h2 class="text-2xl md:text-3xl font-black text-slate-900 tracking-wide font-serif">用設計師的眼睛閱讀資料庫</h2>
+                </div>
+                
+                <p data-id="p2-1" class="font-sans text-slate-600 leading-relaxed">
+                  後台最核心的介面元件是<strong>「資料表格 (Data Table)」</strong>。這並不是設計師隨意排版的成果，而是後端資料庫中「資料表」結構在前端的鏡像對接。
+                </p>
+
+                <!-- Mapping visualizer card -->
+                <div class="border border-slate-200 rounded-2xl overflow-hidden bg-white shadow-premium font-sans">
+                  <div class="bg-slate-50 p-4 border-b border-slate-200 flex justify-between items-center">
+                    <span class="text-xs font-bold text-slate-700"><i class="fa-solid fa-network-wired text-brand-600 mr-1.5"></i> 資料表 ➜ UI 表格 對應對照</span>
+                    <span class="text-[10px] text-slate-400">點擊下方 UI 表格各區塊，查看其對應的資料庫核心概念</span>
+                  </div>
+
+                  <!-- Dynamic Mapping Explainer box -->
+                  <div id="mapping-explainer" class="bg-brand-50/50 p-4 border-b border-slate-200 text-xs flex items-center gap-3.5 transition-all">
+                    <span class="w-8 h-8 rounded-lg bg-brand-600 text-white flex items-center justify-center text-sm shadow-sm flex-shrink-0 animate-pulse">
+                      <i id="explainer-icon" class="fa-solid fa-mouse-pointer"></i>
+                    </span>
+                    <div>
+                      <h4 id="explainer-title" class="font-bold text-brand-900">點擊表格體驗對應關係</h4>
+                      <p id="explainer-desc" class="text-slate-600 text-xxs mt-0.5">試著點擊下方表格的「欄頭」、「資料列」或「操作按鈕 (ID)」來開啟知識對應！</p>
+                    </div>
+                  </div>
+
+                  <!-- Sandbox Interactive Table -->
+                  <div class="p-4 overflow-x-auto">
+                    <table class="w-full text-left text-xs text-slate-700">
+                      <thead>
+                        <tr class="border-b border-slate-200 text-slate-400 font-bold uppercase tracking-wider text-[10px] bg-slate-50/70">
+                          <th class="py-3 px-4 hover-tooltip cursor-pointer hover:bg-brand-50 hover:text-brand-600 rounded-l-lg transition-all" data-tooltip="點擊看欄位概念" data-map="column">
+                            ID <i class="fa-solid fa-arrow-pointer text-[9px] opacity-40 ml-1"></i>
+                          </th>
+                          <th class="py-3 px-4 hover-tooltip cursor-pointer hover:bg-brand-50 hover:text-brand-600 transition-all" data-tooltip="點擊看欄位概念" data-map="column">
+                            姓名 (Name) <i class="fa-solid fa-arrow-pointer text-[9px] opacity-40 ml-1"></i>
+                          </th>
+                          <th class="py-3 px-4 hover-tooltip cursor-pointer hover:bg-brand-50 hover:text-brand-600 transition-all" data-tooltip="點擊看欄位概念" data-map="column">
+                            狀態 (Status) <i class="fa-solid fa-arrow-pointer text-[9px] opacity-40 ml-1"></i>
+                          </th>
+                          <th class="py-3 px-4 hover-tooltip cursor-pointer hover:bg-brand-50 hover:text-brand-600 transition-all" data-tooltip="點擊看欄位概念" data-map="column">
+                            加入時間 <i class="fa-solid fa-arrow-pointer text-[9px] opacity-40 ml-1"></i>
+                          </th>
+                          <th class="py-3 px-4 rounded-r-lg">操作</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <!-- Row 1 -->
+                        <tr class="border-b border-slate-100 hover:bg-slate-50 transition-colors cursor-pointer group" data-map="row">
+                          <td class="py-3 px-4 font-mono font-bold text-brand-600">
+                            <span class="hover-tooltip bg-brand-100 text-brand-700 px-2 py-0.5 rounded text-[10px] cursor-pointer" data-tooltip="主鍵對應：按鈕/跳轉核心" data-map="pk">#101</span>
+                          </td>
+                          <td class="py-3 px-4 font-semibold text-slate-900">朱珮瑜</td>
+                          <td class="py-3 px-4">
+                            <span class="px-2 py-0.5 bg-green-50 text-green-700 border border-green-200 text-[10px] rounded-full font-bold">啟用中</span>
+                          </td>
+                          <td class="py-3 px-4 text-slate-500">2026-06-01</td>
+                          <td class="py-3 px-4">
+                            <button class="text-[11px] font-bold text-brand-600 hover:text-brand-900 cursor-pointer" onclick="event.stopPropagation(); alert('此 ID #101 在後端代表主鍵 (Primary Key)。在 UI 上是進行 CRUD (增刪查改) 跳轉的核心樞紐！');">編輯</button>
+                          </td>
+                        </tr>
+                        <!-- Row 2 -->
+                        <tr class="border-b border-slate-100 hover:bg-slate-50 transition-colors cursor-pointer group" data-map="row">
+                          <td class="py-3 px-4 font-mono font-bold text-brand-600">
+                            <span class="hover-tooltip bg-brand-100 text-brand-700 px-2 py-0.5 rounded text-[10px] cursor-pointer" data-tooltip="主鍵對應：按鈕/跳轉核心" data-map="pk">#102</span>
+                          </td>
+                          <td class="py-3 px-4 font-semibold text-slate-900">陳小明</td>
+                          <td class="py-3 px-4">
+                            <span class="px-2 py-0.5 bg-slate-100 text-slate-650 border border-slate-200 text-[10px] rounded-full font-bold">已禁用</span>
+                          </td>
+                          <td class="py-3 px-4 text-slate-500">2026-06-03</td>
+                          <td class="py-3 px-4">
+                            <button class="text-[11px] font-bold text-brand-600 hover:text-brand-900 cursor-pointer" onclick="event.stopPropagation(); alert('此 ID #102 將做為參數，傳給後端 API 執行對應編輯。');">編輯</button>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                <!-- Three-column concept details -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-5 font-sans">
+                  <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-2">
+                    <h5 class="font-bold text-slate-900 text-xs flex items-center gap-1.5">
+                      <span class="w-5 h-5 rounded bg-brand-600 text-white flex items-center justify-center text-[10px]"><i class="fa-solid fa-arrows-left-right-to-line"></i></span>
+                      直欄 (Columns) = UI 表頭與欄位
+                    </h5>
+                    <p class="text-slate-500 text-[11px] leading-relaxed">
+                      資料庫裡的 <code>user_name</code>、<code>created_at</code> 等直欄，直接對應為 UI 表格上方的「表頭標題列」。設計師需依據欄位屬性決定寬度、對齊（如數字靠右對齊，文字靠左對齊）與截斷規範。
+                    </p>
+                  </div>
+                  
+                  <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-2">
+                    <h5 class="font-bold text-slate-900 text-xs flex items-center gap-1.5">
+                      <span class="w-5 h-5 rounded bg-brand-600 text-white flex items-center justify-center text-[10px]"><i class="fa-solid fa-arrows-up-down"></i></span>
+                      橫列 (Rows) = UI 資料列表
+                    </h5>
+                    <p class="text-slate-500 text-[11px] leading-relaxed">
+                      資料庫中每新增一筆使用者記錄，在前端表格中就會多出一條「橫列」。這就是為什麼需要設計「分頁機制 (Pagination)」或「無限滾動」，避免一次載入太多資料列導致效能崩潰。
+                    </p>
+                  </div>
+
+                  <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-2">
+                    <h5 class="font-bold text-slate-900 text-xs flex items-center gap-1.5">
+                      <span class="w-5 h-5 rounded bg-brand-600 text-white flex items-center justify-center text-[10px]"><i class="fa-solid fa-key"></i></span>
+                      主鍵 (Primary Key) = 跳轉核心
+                    </h5>
+                    <p class="text-slate-500 text-[11px] leading-relaxed">
+                      主鍵是資料的唯一身分標識。在 UI 上，主鍵通常做為超連結或操作按鈕。點擊「查看詳情」或「編輯」時，前端將攜帶這個 ID 去向後端 API 請求該筆資料的完整表單。
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- PAGE 3: Classic Dashboard Layout & Forms -->
+              <div id="page-content-3" class="page-content space-y-6 hidden">
+                <div class="space-y-1">
+                  <span class="text-xs font-sans font-bold text-brand-600 tracking-widest uppercase"><i class="fa-solid fa-border-all mr-1"></i> Part 03. 後台管理系統經典佈局與表單心理學</span>
+                  <h2 class="text-2xl md:text-3xl font-black text-slate-900 tracking-wide font-serif">三欄式架構佈局 & 增刪查改 (CRUD) 防呆設計</h2>
+                </div>
+                
+                <p data-id="p3-1" class="font-sans text-slate-600 leading-relaxed">
+                  後台系統的核心任務是協助管理者「快速做出正確決策與資料處理」。這需要符合兩大設計主軸：<strong>高資訊密度的經典佈局</strong>，與<strong>防止使用者輸入錯誤資料的表單心理學</strong>。
+                </p>
+
+                <!-- Classic Layout Viewer -->
+                <div class="border border-slate-200 rounded-2xl overflow-hidden bg-white shadow-premium font-sans">
+                  <div class="bg-slate-50 p-4 border-b border-slate-200">
+                    <span class="text-xs font-bold text-slate-700"><i class="fa-solid fa-cubes-stacked text-brand-600 mr-1.5"></i> 後台經典「三欄式架構」透視模擬器</span>
+                  </div>
+
+                  <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 p-4">
+                    <!-- Left: Interactive layout block view -->
+                    <div class="lg:col-span-5 bg-slate-100 p-3 rounded-xl border border-slate-200 space-y-2 text-[10px]">
+                      <div class="text-center font-bold text-slate-500 mb-1.5 uppercase tracking-wider text-[9px]">介面佈局模型 (點擊區塊標示)</div>
+                      
+                      <!-- Miniature Layout Wireframe -->
+                      <div class="border border-slate-350 rounded-lg overflow-hidden bg-white shadow-sm flex flex-col h-40">
+                        <!-- Top Navbar -->
+                        <div id="layout-block-nav" class="bg-slate-200 border-b border-slate-300 p-2 text-center text-slate-600 font-bold cursor-pointer transition-all hover:bg-brand-500 hover:text-white" data-layout="nav">
+                          頂部狀態欄 (Navbar)
+                        </div>
+                        <div class="flex-1 flex">
+                          <!-- Sidebar -->
+                          <div id="layout-block-sidebar" class="w-1/3 bg-slate-105 border-r border-slate-300 p-2 flex items-center justify-center text-center text-slate-500 font-bold cursor-pointer transition-all hover:bg-brand-500 hover:text-white" data-layout="sidebar">
+                            側邊導覽列 (Sidebar)
+                          </div>
+                          <!-- Main content -->
+                          <div id="layout-block-main" class="flex-1 bg-white p-2 flex items-center justify-center text-center text-slate-700 font-bold cursor-pointer transition-all hover:bg-brand-500 hover:text-white" data-layout="main">
+                            主工作區 (Main Content)
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Right: Info Details -->
+                    <div class="lg:col-span-7 flex flex-col justify-center space-y-3 p-2">
+                      <div id="layout-explainer-card" class="bg-brand-50/50 border border-brand-200/50 rounded-xl p-4 transition-all">
+                        <h4 id="layout-title" class="font-bold text-brand-900 text-xs flex items-center gap-1.5">
+                          <i class="fa-solid fa-circle-info"></i> 點擊佈局區塊了解功能
+                        </h4>
+                        <p id="layout-desc" class="text-slate-600 text-xxs leading-relaxed mt-1">
+                          點擊左方模擬器的各個板塊（Navbar, Sidebar, Main Content），即可查看其對應的後台系統分工。
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Form psychology & SQL connection -->
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-start font-sans">
+                  <div class="md:col-span-6 space-y-4">
+                    <h3 class="text-base font-bold text-slate-900 font-serif"><i class="fa-solid fa-shield-halved text-brand-600 mr-1.5"></i> 表單防呆心理學：視覺防錯設計</h3>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                      後端資料庫（如 SQL）非常嚴格。如果一個欄位在資料庫規定只能存「整數」，而使用者在前端輸入了「中文字」，後端在寫入時就會噴出嚴重的 SQL 語法錯誤 (TypeError) 甚至導致崩潰。
+                    </p>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                      UI/UX 設計師的任務就是透過<strong>「視覺限制」</strong>進行防錯。例如：使用下拉選單 (Dropdown) 代替文字輸入框、用日曆選擇器限制日期格式、在送出按鈕加上即時的欄位格式驗證，確保進到後端資料庫的資料是 100% 格式正確的。
+                    </p>
+                  </div>
+
+                  <!-- Interactive Form visualizer -->
+                  <div class="md:col-span-6 bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-3.5 shadow-sm">
+                    <h4 class="text-xs font-bold text-slate-800 flex items-center gap-1.5"><i class="fa-solid fa-shield-virus text-amber-600"></i> 即時防錯表單模擬</h4>
+                    
+                    <form id="dummy-form" class="space-y-3 text-xxs" onsubmit="event.preventDefault();">
+                      <div>
+                        <label class="block text-slate-500 font-bold mb-1">使用者名稱 (限制 2-5 個字，無特殊符號)</label>
+                        <input type="text" id="form-username" placeholder="請輸入姓名" class="w-full bg-white border border-slate-200 rounded-lg p-2 text-xs focus:ring-1 focus:ring-brand-600 focus:outline-none transition-all">
+                        <span id="validation-username-tip" class="text-[9px] text-red-500 font-semibold mt-1 hidden">❌ 名稱長度不合規範或包含特殊符號！</span>
+                      </div>
+
+                      <div>
+                        <label class="block text-slate-500 font-bold mb-1">生日 (強制格式 yyyy-mm-dd)</label>
+                        <div class="relative">
+                          <input type="text" id="form-birthday" placeholder="例：1999-01-01" class="w-full bg-white border border-slate-200 rounded-lg p-2 text-xs focus:ring-1 focus:ring-brand-600 focus:outline-none transition-all">
+                          <span id="validation-birthday-tip" class="text-[9px] text-red-500 font-semibold mt-1 hidden">❌ 日期格式不符合 yyyy-mm-dd 規範！</span>
+                        </div>
+                      </div>
+
+                      <button id="btn-submit-test" class="w-full py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg font-bold text-xs transition-colors cursor-pointer">
+                        模擬送出資料到資料庫
+                      </button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+
+              <!-- PAGE 4: Figma Responsive Layout & Design Tokens -->
+              <div id="page-content-4" class="page-content space-y-6 hidden">
+                <div class="space-y-1">
+                  <span class="text-xs font-sans font-bold text-brand-600 tracking-widest uppercase"><i class="fa-solid fa-compass-drafting mr-1"></i> Part 04. Figma 實務奠基：後台自適應網格規範</span>
+                  <h2 class="text-2xl md:text-3xl font-black text-slate-900 tracking-wide font-serif">後台系統高資訊密度的 12 欄網格與 RWD 實務</h2>
+                </div>
+                
+                <p data-id="p4-1" class="font-sans text-slate-600 leading-relaxed">
+                  管理系統後台通常會有大量複雜的數據卡片和圖表。如何在有限且不固定的螢幕寬度下，維持資訊的對齊與呼吸感？這就必須仰賴 <strong>12 欄網格系統 (12-Column Grid System)</strong> 與自適應 (Responsive Web Design, RWD) 的思考模型。
+                </p>
+
+                <!-- 12-Column Grid Visualizer -->
+                <div class="border border-slate-200 rounded-2xl overflow-hidden bg-white shadow-premium font-sans">
+                  <div class="bg-slate-50 p-4 border-b border-slate-200 flex justify-between items-center">
+                    <span class="text-xs font-bold text-slate-700"><i class="fa-solid fa-grip text-brand-600 mr-1.5"></i> 互動體驗：12-Column 欄位分配與自適應模擬</span>
+                    <button id="toggle-grid-overlay" class="px-2.5 py-1 bg-white border border-slate-200 text-slate-600 rounded-lg text-xxs font-bold hover:text-brand-600 transition-colors cursor-pointer">
+                      <i class="fa-solid fa-eye mr-1"></i> 開啟網格線
+                    </button>
+                  </div>
+
+                  <!-- Simulator Screen Area -->
+                  <div class="p-4 bg-slate-50 relative">
+                    <!-- Column lines overlay container -->
+                    <div id="grid-lines-overlay" class="absolute inset-0 px-4 py-4 grid grid-cols-12 gap-3 pointer-events-none opacity-0 transition-opacity duration-300">
+                      <div class="h-full bg-red-500/5 border-x border-red-500/10"></div>
+                      <div class="h-full bg-red-500/5 border-x border-red-500/10"></div>
+                      <div class="h-full bg-red-500/5 border-x border-red-500/10"></div>
+                      <div class="h-full bg-red-500/5 border-x border-red-500/10"></div>
+                      <div class="h-full bg-red-500/5 border-x border-red-500/10"></div>
+                      <div class="h-full bg-red-500/5 border-x border-red-500/10"></div>
+                      <div class="h-full bg-red-500/5 border-x border-red-500/10"></div>
+                      <div class="h-full bg-red-500/5 border-x border-red-500/10"></div>
+                      <div class="h-full bg-red-500/5 border-x border-red-500/10"></div>
+                      <div class="h-full bg-red-500/5 border-x border-red-500/10"></div>
+                      <div class="h-full bg-red-500/5 border-x border-red-500/10"></div>
+                      <div class="h-full bg-red-500/5 border-x border-red-500/10"></div>
+                    </div>
+
+                    <!-- Simulator cards inside grid container -->
+                    <div class="grid grid-cols-12 gap-4 relative z-10 text-center font-bold text-xxs">
+                      <!-- Card 1: Spans 12 columns -->
+                      <div class="col-span-12 bg-white border border-slate-200 rounded-xl p-4 shadow-sm flex flex-col justify-center items-center gap-1 min-h-[60px] hover:border-brand-500 transition-colors">
+                        <span class="text-brand-600"><i class="fa-solid fa-chart-line text-xs"></i> 寬幅統計圖 (col-span-12)</span>
+                        <span class="text-[10px] text-slate-400 font-normal">適合需要長時間軸、大資訊密度的全幅寬折線圖</span>
+                      </div>
+                      
+                      <!-- Card 2: Spans 6 columns -->
+                      <div class="col-span-12 sm:col-span-6 bg-white border border-slate-200 rounded-xl p-4 shadow-sm flex flex-col justify-center items-center gap-1 min-h-[60px] hover:border-brand-500 transition-colors">
+                        <span class="text-indigo-600"><i class="fa-solid fa-chart-pie text-xs"></i> 圓餅分析圖 (col-span-6)</span>
+                        <span class="text-[10px] text-slate-400 font-normal">中型卡片，在手機上自動拉直成 12 欄</span>
+                      </div>
+                      
+                      <!-- Card 3: Spans 6 columns -->
+                      <div class="col-span-12 sm:col-span-6 bg-white border border-slate-200 rounded-xl p-4 shadow-sm flex flex-col justify-center items-center gap-1 min-h-[60px] hover:border-brand-500 transition-colors">
+                        <span class="text-emerald-600"><i class="fa-solid fa-list-check text-xs"></i> 近期待辦清單 (col-span-6)</span>
+                        <span class="text-[10px] text-slate-400 font-normal">中型列表，適合與隔壁圓餅圖並排</span>
+                      </div>
+
+                      <!-- Card 4: Spans 4 columns -->
+                      <div class="col-span-12 md:col-span-4 bg-white border border-slate-200 rounded-xl p-3 shadow-xs flex flex-col justify-center items-center min-h-[50px] hover:border-brand-500 transition-colors">
+                        <span class="text-slate-700">小指標 A (col-span-4)</span>
+                      </div>
+                      <!-- Card 5: Spans 4 columns -->
+                      <div class="col-span-12 md:col-span-4 bg-white border border-slate-200 rounded-xl p-3 shadow-xs flex flex-col justify-center items-center min-h-[50px] hover:border-brand-500 transition-colors">
+                        <span class="text-slate-700">小指標 B (col-span-4)</span>
+                      </div>
+                      <!-- Card 6: Spans 4 columns -->
+                      <div class="col-span-12 md:col-span-4 bg-white border border-slate-200 rounded-xl p-3 shadow-xs flex flex-col justify-center items-center min-h-[50px] hover:border-brand-500 transition-colors">
+                        <span class="text-slate-700">小指標 C (col-span-4)</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="bg-amber-50/55 border border-amber-200/50 p-5 rounded-2xl font-sans text-xs space-y-2">
+                  <h4 class="font-bold text-amber-900 flex items-center gap-1.5"><i class="fa-solid fa-circle-info"></i> Figma 與前端 RWD 的換算邏輯</h4>
+                  <ul class="list-disc pl-4 space-y-1.5 text-slate-700">
+                    <li><strong>12 是最完美的公約數</strong>：因為 12 可以被 1, 2, 3, 4, 6 整除。這代表一個版面可以被均分為 2 欄 (各佔 6 欄)、3 欄 (各佔 4 欄) 或 4 欄 (各佔 3 欄)，對後台極具彈性。</li>
+                    <li><strong>斷點 (Breakpoints) 與自適應</strong>：在 Figma 中，我們需要分別建立 Desktop (1440px)、Tablet (768px) 與 Mobile (375px) 的基礎畫布，並確保元件能在不同欄數下伸縮自如。</li>
+                  </ul>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Page Footer Controls -->
+            <footer class="mt-8 pt-4 border-t border-slate-200/60 flex items-center justify-between font-sans text-xs text-slate-400">
+              <button id="btn-prev-page" class="flex items-center gap-1.5 py-2 px-4 bg-slate-50 hover:bg-brand-50 hover:text-brand-600 rounded-xl border border-slate-100 font-bold transition-all cursor-pointer disabled:opacity-40 disabled:pointer-events-none">
+                <i class="fa-solid fa-arrow-left"></i> 上一章
+              </button>
+              
+              <span class="font-serif italic text-slate-500 font-semibold" id="bottom-page-num">第 1 頁</span>
+              
+              <button id="btn-next-page" class="flex items-center gap-1.5 py-2 px-4 bg-slate-50 hover:bg-brand-50 hover:text-brand-600 rounded-xl border border-slate-100 font-bold transition-all cursor-pointer">
+                下一章 <i class="fa-solid fa-arrow-right"></i>
+              </button>
+            </footer>
+
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Interactive Logic via jQuery -->
+  <script>
+    $(document).ready(function() {
+      // 1. Core State variables
+      let currentPage = 1;
+      const totalPages = 4;
+      let selectedHighlightColor = 'yellow';
+      let bookmarks = JSON.parse(localStorage.getItem('lesson2_bookmarks') || '[]');
+      let highlights = JSON.parse(localStorage.getItem('lesson2_highlights') || '[]');
+
+      // Load initial bookmarks state
+      updateBookmarkUI();
+      // Render highlights on load
+      applyStoredHighlights();
+      renderHighlightsList();
+
+      // Load saved notes
+      const savedNote = localStorage.getItem('lesson2_notes');
+      if (savedNote) {
+        $('#note-input').val(savedNote);
+      }
+
+      // 2. Navigation Control (Page Flipping)
+      function showPage(pageNumber) {
+        currentPage = pageNumber;
+        $('.page-content').addClass('hidden');
+        $(`#page-content-${currentPage}`).removeClass('hidden');
+        
+        // Update TOC active state
+        $('.toc-item').removeClass('active bg-brand-50/70 text-brand-900 border-l-4 border-brand-600 font-bold');
+        $('.toc-item').addClass('text-slate-600 border-l-4 border-transparent');
+        
+        const currentToc = $(`.toc-item[data-page="${currentPage}"]`);
+        currentToc.addClass('active bg-brand-50/70 text-brand-900 border-l-4 border-brand-600 font-bold');
+        currentToc.removeClass('text-slate-600 border-l-4 border-transparent');
+        
+        // Update indicators
+        $('#page-indicator').text(`${currentPage} / ${totalPages}`);
+        $('#bottom-page-num').text(`第 ${currentPage} 頁`);
+        $('#reading-progress-bar').css('width', `${(currentPage / totalPages) * 100}%`);
+        
+        // Disabled buttons states
+        $('#btn-prev-page').prop('disabled', currentPage === 1);
+        if (currentPage === totalPages) {
+          $('#btn-next-page').html('完成閱讀 <i class="fa-solid fa-circle-check text-green-500"></i>');
+        } else {
+          $('#btn-next-page').html('下一章 <i class="fa-solid fa-arrow-right"></i>');
+        }
+
+        // Check bookmark icon state
+        if (bookmarks.includes(currentPage)) {
+          $('#bookmark-icon').removeClass('fa-regular').addClass('fa-solid text-brand-600');
+        } else {
+          $('#bookmark-icon').removeClass('fa-solid text-brand-600').addClass('fa-regular');
+        }
+      }
+
+      // Prev Page click
+      $('#btn-prev-page').click(function() {
+        if (currentPage > 1) {
+          showPage(currentPage - 1);
+        }
+      });
+
+      // Next Page click
+      $('#btn-next-page').click(function() {
+        if (currentPage < totalPages) {
+          showPage(currentPage + 1);
+        } else {
+          alert('恭喜你閱讀完全部章節！接下來可以試著做隨堂筆記，或是利用互動沙盒練習喔！');
+        }
+      });
+
+      // TOC Item click
+      $('.toc-item').click(function(e) {
+        e.preventDefault();
+        const page = parseInt($(this).data('page'));
+        showPage(page);
+        
+        // On mobile, close sidebar automatically after clicking TOC
+        if ($(window).width() < 1024) {
+          $('#sidebar').addClass('-translate-x-full');
+        }
+      });
+
+      // 3. Sidebar Tabs
+      $('.sidebar-tab').click(function() {
+        $('.sidebar-tab').removeClass('border-brand-600 text-brand-600').addClass('border-transparent text-slate-400 hover:text-slate-700');
+        $(this).removeClass('border-transparent text-slate-400').addClass('border-brand-600 text-brand-600');
+        
+        const tabName = $(this).data('tab');
+        $('.tab-pane').addClass('hidden');
+        $(`#tab-${tabName}`).removeClass('hidden');
+      });
+
+      // Sidebar Toggle
+      $('#toggle-sidebar').click(function() {
+        $('#sidebar').toggleClass('-translate-x-full');
+      });
+
+      // 4. Font Size Adjustments
+      let currentFontSize = 14; // default base size
+      $('#font-inc').click(function() {
+        if (currentFontSize < 20) {
+          currentFontSize += 1.5;
+          $('#book-content-container').css('font-size', `${currentFontSize}px`);
+        }
+      });
+      $('#font-dec').click(function() {
+        if (currentFontSize > 11) {
+          currentFontSize -= 1.5;
+          $('#book-content-container').css('font-size', `${currentFontSize}px`);
+        }
+      });
+
+      // 5. Highlighter Mechanics
+      $('.hl-color-btn').click(function() {
+        $('.hl-color-btn').removeClass('ring-2 ring-brand-600');
+        $(this).addClass('ring-2 ring-brand-600');
+        selectedHighlightColor = $(this).data('color');
+      });
+
+      // Perform highlighting on text click
+      $(document).on('click', '.highlightable-text p, .highlightable-text li', function() {
+        // Exclude interactive components from text highlight click
+        if ($(this).closest('#visualizer-sandbox-1, #dummy-form, table, #mapping-explainer').length > 0) {
+          return;
+        }
+
+        const element = $(this);
+        const textContent = element.text().trim().substring(0, 50) + '...';
+        const targetId = element.data('id') || 'gen-' + Math.random().toString(36).substr(2, 9);
+        
+        if (!element.data('id')) {
+          element.attr('data-id', targetId);
+        }
+
+        // Toggle highlight colors
+        if (element.hasClass(`hl-${selectedHighlightColor}`)) {
+          element.removeClass(`hl-${selectedHighlightColor}`);
+          // Remove from local storage array
+          highlights = highlights.filter(h => h.id !== targetId);
+        } else {
+          // Clear other highlight classes first
+          element.removeClass('hl-yellow hl-green hl-blue');
+          element.addClass(`hl-${selectedHighlightColor}`);
+          
+          // Add or update storage array
+          highlights = highlights.filter(h => h.id !== targetId);
+          highlights.push({
+            id: targetId,
+            page: currentPage,
+            color: selectedHighlightColor,
+            text: textContent
+          });
+        }
+
+        localStorage.setItem('lesson2_highlights', JSON.stringify(highlights));
+        renderHighlightsList();
+      });
+
+      // Render Highlights List inside Tab
+      function renderHighlightsList() {
+        const listContainer = $('#highlights-list');
+        listContainer.empty();
+        
+        if (highlights.length === 0) {
+          listContainer.append('<p class="text-xs text-slate-400 text-center py-8">尚無任何劃線紀錄。請在課本中直接點擊段落進行重點劃線！</p>');
+          return;
+        }
+
+        highlights.forEach(h => {
+          let dotColor = 'bg-yellow-400';
+          if (h.color === 'green') dotColor = 'bg-green-400';
+          if (h.color === 'blue') dotColor = 'bg-blue-400';
+
+          const markItem = $(`
+            <div class="p-2.5 rounded-xl border border-slate-100 bg-slate-50/50 hover:bg-slate-50 transition-all text-xxs flex flex-col gap-1 cursor-pointer" data-target-id="${h.id}" data-target-page="${h.page}">
+              <div class="flex justify-between items-center text-slate-400">
+                <span class="flex items-center gap-1 font-bold text-[10px]"><span class="w-2 h-2 rounded-full ${dotColor}"></span> 章節 P.${h.page}</span>
+                <span class="text-[9px] hover:text-red-500 font-semibold btn-delete-highlight" data-id="${h.id}">刪除</span>
+              </div>
+              <p class="text-slate-600 font-serif leading-relaxed italic">"${h.text}"</p>
+            </div>
+          `);
+          listContainer.append(markItem);
+        });
+      }
+
+      // Click highlight item to navigate & scroll
+      $(document).on('click', '#highlights-list div', function(e) {
+        if ($(e.target).hasClass('btn-delete-highlight')) return;
+        const pageNum = $(this).data('target-page');
+        const targetId = $(this).data('target-id');
+        
+        showPage(pageNum);
+        const targetElement = $(`[data-id="${targetId}"]`);
+        if (targetElement.length) {
+          $('main').animate({
+            scrollTop: targetElement.offset().top - 150
+          }, 500);
+          // Simple visual cue highlight pulse
+          targetElement.addClass('scale-[1.01]').delay(300).queue(function(next){
+            $(this).removeClass('scale-[1.01]');
+            next();
+          });
+        }
+      });
+
+      // Delete single highlight
+      $(document).on('click', '.btn-delete-highlight', function(e) {
+        e.stopPropagation();
+        const id = $(this).data('id');
+        $(`[data-id="${id}"]`).removeClass('hl-yellow hl-green hl-blue');
+        highlights = highlights.filter(h => h.id !== id);
+        localStorage.setItem('lesson2_highlights', JSON.stringify(highlights));
+        renderHighlightsList();
+      });
+
+      // Clear all highlights
+      $('#clear-highlights').click(function() {
+        if (confirm('確定要清除本堂課的所有劃線重點嗎？')) {
+          $('.highlightable-text p, .highlightable-text li').removeClass('hl-yellow hl-green hl-blue');
+          highlights = [];
+          localStorage.removeItem('lesson2_highlights');
+          renderHighlightsList();
+        }
+      });
+
+      // Apply highlights on initialization
+      function applyStoredHighlights() {
+        highlights.forEach(h => {
+          const target = $(`[data-id="${h.id}"]`);
+          if (target.length) {
+            target.addClass(`hl-${h.color}`);
+          }
+        });
+      }
+
+      // 6. Bookmarking Feature
+      $('#bookmark-page').click(function() {
+        if (bookmarks.includes(currentPage)) {
+          // Remove bookmark
+          bookmarks = bookmarks.filter(b => b !== currentPage);
+          $('#bookmark-icon').removeClass('fa-solid text-brand-600').addClass('fa-regular');
+        } else {
+          // Add bookmark
+          bookmarks.push(currentPage);
+          $('#bookmark-icon').removeClass('fa-regular').addClass('fa-solid text-brand-600');
+        }
+        localStorage.setItem('lesson2_bookmarks', JSON.stringify(bookmarks));
+        updateBookmarkUI();
+      });
+
+      function updateBookmarkUI() {
+        // Toggle bookmark visual tags in TOC if bookmarked
+        $('.toc-item').each(function() {
+          const page = $(this).data('page');
+          if (bookmarks.includes(page)) {
+            $(this).find('.fa-book-open').replaceWith('<i class="fa-solid fa-bookmark text-amber-500 mr-1.5"></i>');
+          } else {
+            $(this).find('.fa-bookmark').replaceWith('<i class="fa-solid fa-book-open mr-1.5"></i>');
+          }
+        });
+      }
+
+      // 7. Auto-save Notes Feature
+      $('#note-input').on('input', function() {
+        localStorage.setItem('lesson2_notes', $(this).val());
+      });
+
+      $('#clear-note').click(function() {
+        if (confirm('確定要清空所有的筆記嗎？')) {
+          $('#note-input').val('');
+          localStorage.removeItem('lesson2_notes');
+        }
+      });
+
+      $('#download-note').click(function() {
+        const text = $('#note-input').val();
+        if (!text) {
+          alert('隨堂筆記尚無內容，請先撰寫後再導出。');
+          return;
+        }
+        const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = `朱珮瑜-專案三-第二次上課-筆記.txt`;
+        link.click();
+      });
+
+      // 8. Search TOC function
+      $('#search-toc').on('input', function() {
+        const query = $(this).val().toLowerCase();
+        $('.toc-item').each(function() {
+          const text = $(this).text().toLowerCase();
+          if (text.includes(query)) {
+            $(this).show();
+          } else {
+            $(this).hide();
+          }
+        });
+      });
+
+      // 9. Interactive Sandbox 1: Raw vs UI View
+      $('#btn-view-raw').click(function() {
+        $('#btn-view-ui').removeClass('bg-white text-slate-800 shadow-sm').addClass('text-slate-500 hover:text-slate-800');
+        $(this).addClass('bg-white text-slate-800 shadow-sm').removeClass('text-slate-500');
+        $('.view-state-ui').addClass('hidden');
+        $('.view-state-raw').removeClass('hidden');
+      });
+
+      $('#btn-view-ui').click(function() {
+        $('#btn-view-raw').removeClass('bg-white text-slate-800 shadow-sm').addClass('text-slate-500 hover:text-slate-800');
+        $(this).addClass('bg-white text-slate-800 shadow-sm').removeClass('text-slate-500');
+        $('.view-state-raw').addClass('hidden');
+        $('.view-state-ui').removeClass('hidden');
+      });
+
+      // 10. Interactive Sandbox 2: Mapping Explainer
+      $('[data-map]').click(function(e) {
+        e.stopPropagation();
+        const mapType = $(this).data('map');
+        const explainer = $('#mapping-explainer');
+        const icon = $('#explainer-icon');
+        const title = $('#explainer-title');
+        const desc = $('#explainer-desc');
+
+        explainer.removeClass('bg-brand-50/50 bg-amber-50 bg-green-50 bg-blue-50');
+
+        if (mapType === 'column') {
+          explainer.addClass('bg-blue-50 border-blue-200');
+          icon.removeClass().addClass('fa-solid fa-arrows-left-right-to-line text-blue-600 text-sm');
+          title.text('對應資料庫核心：直欄 (Columns / Fields)').addClass('text-blue-900').removeClass('text-brand-900');
+          desc.text('這排表頭對應資料庫的每個特定直欄名稱。設計師需依據此處定義資料格式，如文字、日期、布林狀態等。');
+        } else if (mapType === 'row') {
+          explainer.addClass('bg-green-50 border-green-200');
+          icon.removeClass().addClass('fa-solid fa-arrows-up-down text-green-600 text-sm');
+          title.text('對應資料庫核心：橫列 (Rows / Records)').addClass('text-green-900').removeClass('text-brand-900');
+          desc.text('一整行代表資料庫裡的一筆獨立 Record。每當使用者註冊一個帳號，這張表就會多出一條橫列資料。');
+        } else if (mapType === 'pk') {
+          explainer.addClass('bg-amber-50 border-amber-200');
+          icon.removeClass().addClass('fa-solid fa-key text-amber-600 text-sm');
+          title.text('對應資料庫核心：主鍵 (Primary Key / ID)').addClass('text-amber-900').removeClass('text-brand-900');
+          desc.text('這是具有唯一識別性的 Primary Key (例如 ID #101)。在 UI 設計上，這是引導編輯、點擊詳情或刪除的重要連結與按鈕媒介！');
+        }
+      });
+
+      // 11. Interactive Sandbox 3: Classic 3-Column Layout
+      $('[data-layout]').click(function() {
+        const layoutType = $(this).data('layout');
+        const card = $('#layout-explainer-card');
+        const title = $('#layout-title');
+        const desc = $('#layout-desc');
+        
+        // Highlight active layout block in miniature
+        $('[data-layout]').removeClass('bg-brand-600 text-white').addClass('bg-slate-200 text-slate-600');
+        $(`#layout-block-${layoutType}`).removeClass('bg-slate-200 text-slate-600').addClass('bg-brand-600 text-white');
+        
+        if (layoutType === 'nav') {
+          title.html('<i class="fa-solid fa-window-maximize text-brand-600"></i> 頂部狀態欄 (Navbar)');
+          desc.text('頂部欄通常承載系統層級的功能，如：權限控制、通知中心、登出按鈕以及目前登入的使用者頭像與身分說明。資訊密度低但層級極高。');
+        } else if (layoutType === 'sidebar') {
+          title.html('<i class="fa-solid fa-list-check text-brand-600"></i> 側邊導覽列 (Sidebar)');
+          desc.text('側邊欄是對應資料庫中「不同資料表 (Tables)」的分流切換點。例如點擊「會員管理」切換到會員表，「商品管理」切換到商品表。是導覽的核心。');
+        } else if (layoutType === 'main') {
+          title.html('<i class="fa-solid fa-table-cells text-brand-600"></i> 主工作區 (Main Content)');
+          desc.text('這是管理員主要的操作重地。這裡會擺放核心的數據儀表板卡片、資料搜尋篩選列、主要資料清單表格，以及增刪查改 (CRUD) 的表單對話框。');
+        }
+      });
+
+      // 12. Dummy Form Real-time Validation
+      $('#form-username').on('input', function() {
+        const value = $(this).val();
+        // Rule: 2 to 5 characters, no symbols
+        const regex = /^[\u4e00-\u9fa5a-zA-Z0-9]{2,5}$/;
+        if (value.length > 0 && !regex.test(value)) {
+          $('#validation-username-tip').removeClass('hidden');
+          $(this).addClass('border-red-500 focus:ring-red-500/20');
+        } else {
+          $('#validation-username-tip').addClass('hidden');
+          $(this).removeClass('border-red-500 focus:ring-red-500/20');
+        }
+      });
+
+      $('#form-birthday').on('input', function() {
+        const value = $(this).val();
+        // Rule: yyyy-mm-dd
+        const regex = /^\d{4}-\d{2}-\d{2}$/;
+        if (value.length > 0 && !regex.test(value)) {
+          $('#validation-birthday-tip').removeClass('hidden');
+          $(this).addClass('border-red-500 focus:ring-red-500/20');
+        } else {
+          $('#validation-birthday-tip').addClass('hidden');
+          $(this).removeClass('border-red-500 focus:ring-red-500/20');
+        }
+      });
+
+      $('#btn-submit-test').click(function() {
+        const uVal = $('#form-username').val();
+        const bVal = $('#form-birthday').val();
+        const uRegex = /^[\u4e00-\u9fa5a-zA-Z0-9]{2,5}$/;
+        const bRegex = /^\d{4}-\d{2}-\d{2}$/;
+
+        if (!uVal || !bVal) {
+          alert('請先填入這兩個欄位以進行模擬！');
+          return;
+        }
+
+        if (uRegex.test(uVal) && bRegex.test(bVal)) {
+          alert(`✅ 防呆檢驗通過！\n已經將格式正確的資料轉成安全的 SQL 寫入語意：\nINSERT INTO users (name, birthday) VALUES ('${uVal}', '${bVal}');\n這能100%避免資料庫錯誤！`);
+        } else {
+          alert('❌ 驗證失敗：表單中有未排除的紅字錯誤！\n後端防線已攔截此操作，禁止送出，以免造成資料庫結構性錯誤。');
+        }
+      });
+
+      // 13. Grid System Overlay Toggle
+      $('#toggle-grid-overlay').click(function() {
+        const overlay = $('#grid-lines-overlay');
+        if (overlay.hasClass('opacity-0')) {
+          overlay.removeClass('opacity-0').addClass('opacity-100');
+          $(this).html('<i class="fa-solid fa-eye-slash mr-1"></i> 隱藏網格線').addClass('text-brand-600 bg-brand-50 border-brand-200');
+        } else {
+          overlay.removeClass('opacity-100').addClass('opacity-0');
+          $(this).html('<i class="fa-solid fa-eye mr-1"></i> 開啟網格線').removeClass('text-brand-600 bg-brand-50 border-brand-200');
+        }
+      });
+    });
+  </script>
+</body>
+</html>
