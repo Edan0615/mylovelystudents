@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>學程式的前哨站：認識電腦、人腦與物件導向 (OOP) | programming-for-beginners</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts Outfit & Inter -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <!-- jQuery CDN -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #ffffff;
+            color: #334155;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .heading-font {
+            font-family: 'Outfit', sans-serif;
+        }
+
+        /* Premium Minimalist White Theme Styles */
+        .premium-sidebar {
+            background: #ffffff;
+            border-right: 1px solid #f1f5f9;
+        }
+
+        .premium-card {
+            background: #ffffff;
+            border: 1px solid #f1f5f9;
+            border-radius: 24px;
+            box-shadow: 0 4px 30px rgba(148, 163, 184, 0.03);
+            transition: all 0.3s ease;
+        }
+
+        .accent-gradient-bg {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+        }
+
+        .sidebar-link {
+            transition: all 0.2s ease;
+        }
+
+        .sidebar-link.active {
+            background: rgba(79, 70, 229, 0.05);
+            color: #4f46e5;
+            font-weight: 600;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #ffffff;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #e2e8f0;
+            border-radius: 10px;
+        }
+
+        /* Responsive Sidebar Transition styles */
+        #sidebar {
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Hide all tutorial sections by default for single-page presentation */
+        .tutorial-section {
+            display: none;
+        }
+
+        /* Show active section */
+        .tutorial-section.active {
+            display: block;
+        }
+
+        .premium-code {
+            background-color: #0f172a;
+            border: 1px solid #1e293b;
+            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.4);
+        }
+    </style>
+</head>
+
+<body class="min-h-screen flex antialiased overflow-hidden relative">
+
+
+
+    <!-- Mobile Sidebar Overlay (Backdrop) -->
+    <div id="sidebar-overlay" class="fixed inset-0 bg-slate-900/20 backdrop-blur-sm z-30 hidden md:hidden"></div>
+
+    <!-- Sidebar Menu (Collapsible & Mobile Responsive) -->
+    <aside id="sidebar"
+        class="fixed md:relative w-72 -translate-x-full md:translate-x-0 premium-sidebar p-6 flex flex-col gap-6 shrink-0 z-40 overflow-y-auto h-screen shadow-xl md:shadow-none">
+        <div class="flex items-center justify-between mb-2">
+            <div class="flex items-center gap-3">
+                <div
+                    class="w-8 h-8 rounded-xl accent-gradient-bg flex items-center justify-center font-bold text-white shadow-md">
+                    🤖</div>
+                <span class="heading-font font-extrabold text-lg tracking-tight text-slate-800">程式前哨戰</span>
+            </div>
+            <!-- Mobile Close Button -->
+            <button id="close-sidebar-mobile"
+                class="p-1.5 hover:bg-slate-100 rounded-lg text-slate-400 hover:text-slate-800 md:hidden focus:outline-none border border-slate-100">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+
+        <div>
+            <h3 id="side-title"
+                class="heading-font text-xs font-extrabold text-slate-400 uppercase tracking-widest mb-4">目錄 / Table of
+                Contents</h3>
+            <nav class="flex flex-col gap-1">
+                <a href="#section-1" data-target="section-1"
+                    class="sidebar-link active flex items-center gap-3 px-4 py-2.5 text-sm rounded-xl text-slate-600 hover:bg-slate-50 hover:text-slate-950 font-medium">
+                    <span class="text-base">🪵</span> <span class="nav-text">1. 乖巧又笨的電腦</span>
+                </a>
+                <a href="#section-hurdles" data-target="section-hurdles"
+                    class="sidebar-link flex items-center gap-3 px-4 py-2.5 text-sm rounded-xl text-slate-600 hover:bg-slate-50 hover:text-slate-950 font-medium">
+                    <span class="text-base">🚧</span> <span class="nav-text">2. 學習程式兩大難關</span>
+                </a>
+                <a href="#section-brain-pc" data-target="section-brain-pc"
+                    class="sidebar-link flex items-center gap-3 px-4 py-2.5 text-sm rounded-xl text-slate-600 hover:bg-slate-50 hover:text-slate-950 font-medium">
+                    <span class="text-base">🧠</span> <span class="nav-text">3. 人腦 vs 電腦架構</span>
+                </a>
+                <a href="#section-2" data-target="section-2"
+                    class="sidebar-link flex items-center gap-3 px-4 py-2.5 text-sm rounded-xl text-slate-600 hover:bg-slate-50 hover:text-slate-950 font-medium">
+                    <span class="text-base">💡</span> <span class="nav-text">4. AI 與 PHP 角色</span>
+                </a>
+                <a href="#section-3" data-target="section-3"
+                    class="sidebar-link flex items-center gap-3 px-4 py-2.5 text-sm rounded-xl text-slate-600 hover:bg-slate-50 hover:text-slate-950 font-medium">
+                    <span class="text-base">🏗️</span> <span class="nav-text">5. 宣告與 OOP 起源</span>
+                </a>
+                <a href="#section-4" data-target="section-4"
+                    class="sidebar-link flex items-center gap-3 px-4 py-2.5 text-sm rounded-xl text-slate-600 hover:bg-slate-50 hover:text-slate-950 font-medium">
+                    <span class="text-base">💻</span> <span class="nav-text">6. 程式碼示範</span>
+                </a>
+                <a href="#section-summary" data-target="section-summary"
+                    class="sidebar-link flex items-center gap-3 px-4 py-2.5 text-sm rounded-xl text-slate-600 hover:bg-slate-50 hover:text-slate-950 font-medium">
+                    <span class="text-base">🏁</span> <span class="nav-text">7. 總結：分而治之</span>
+                </a>
+            </nav>
+        </div>
+
+        <div class="mt-auto">
+            <div class="p-4 bg-slate-50 border border-slate-100 rounded-2xl text-center">
+                <p id="side-tips" class="text-[11px] text-slate-500 leading-relaxed font-medium">
+                    💡 點選左上角按鈕可收合選單
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main id="main-content"
+        class="flex-1 h-screen overflow-y-auto px-4 py-16 md:px-16 flex flex-col justify-between relative bg-white">
+
+        <!-- Floating Controls Panel -->
+        <div
+            class="absolute top-6 left-4 right-4 md:left-8 md:right-8 flex items-center justify-between pointer-events-none z-30">
+            <!-- Sidebar toggle button -->
+            <button id="toggle-sidebar"
+                class="p-2.5 hover:bg-slate-100 rounded-xl transition-all text-slate-500 hover:text-slate-900 border border-slate-200/60 bg-white pointer-events-auto shadow-sm focus:outline-none">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
+
+            <!-- Language Globe Dropdown -->
+            <div class="relative inline-block text-left pointer-events-auto">
+                <button id="lang-dropdown-btn"
+                    class="p-2 bg-white border border-slate-200/60 hover:bg-slate-100 rounded-xl transition-all flex items-center gap-2 shadow-sm focus:outline-none">
+                    <span class="text-sm">🌐</span>
+                    <span id="current-lang-label" class="text-xs font-bold text-slate-600">繁體中文</span>
+                    <svg class="w-3 h-3 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                </button>
+                <div id="lang-dropdown-menu"
+                    class="hidden absolute right-0 mt-1.5 w-32 rounded-xl bg-white border border-slate-100 shadow-xl py-1 z-50 animate-fade-in">
+                    <button data-lang="zh-TW"
+                        class="lang-option w-full text-left px-4 py-2 text-xs font-bold hover:bg-slate-50 text-slate-600">繁體中文</button>
+                    <button data-lang="zh-CN"
+                        class="lang-option w-full text-left px-4 py-2 text-xs font-bold hover:bg-slate-50 text-slate-600">简体中文</button>
+                    <button data-lang="en"
+                        class="lang-option w-full text-left px-4 py-2 text-xs font-bold hover:bg-slate-50 text-slate-600">English</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="max-w-3xl mx-auto w-full flex-1 flex flex-col justify-center my-8">
+
+
+
+            <!-- Disclaimer Banner (Shows only on Slide 1) -->
+            <div id="disclaimer-banner"
+                class="mb-6 p-4 md:p-5 bg-amber-50/50 border border-amber-200/40 rounded-2xl flex items-start gap-3 md:gap-4 shadow-sm shadow-amber-50/20">
+                <span class="text-lg md:text-xl">💡</span>
+                <div class="text-xs md:text-sm text-amber-800 leading-relaxed">
+                    <strong id="disclaimer-title" class="font-bold">學習前的小提醒：</strong>
+                    <span
+                        id="disclaimer-content">這篇教材是專門為「非技術背景」學生設計的。為了讓大家能輕鬆看懂，內容進行了高度的抽象化與簡化，讓我們避開生硬的專有名詞，先用大腦直覺來建立觀念吧！</span>
+                </div>
+            </div>
+
+            <!-- Section 1 (Slide 1) -->
+            <section id="section-1" class="tutorial-section active premium-card rounded-3xl p-5 md:p-10 mb-6">
+                <div class="flex items-center gap-3.5 mb-5 md:mb-6">
+                    <span class="text-2xl md:text-3xl">🪵</span>
+                    <h2 id="sec1-title" class="heading-font text-lg md:text-2xl font-bold text-slate-900">1.
+                        電腦：一個無比乖巧卻又很「笨」的孩子</h2>
+                </div>
+                <!-- Illustration Image -->
+                <div class="my-6 border border-slate-200 rounded-2xl overflow-hidden shadow-sm bg-slate-50/50 max-w-md mx-auto">
+                    <img src="assets/chapter_1.png" alt="Obedient Robot" class="w-full h-auto object-cover">
+                </div>
+                <div id="sec1-content"
+                    class="text-slate-600 space-y-4 md:space-y-5 leading-relaxed text-xs md:text-base">
+                    <p>
+                        在現代科技（特別是強大的 AI）環繞下，我們常下意識地覺得電腦很聰明：它能做超高難度的算術、能精準播放我們想看的影片。
+                    </p>
+                    <p
+                        class="border-l-4 border-indigo-600 pl-4 py-1.5 italic bg-indigo-50/50 text-indigo-950 font-semibold rounded-r-xl">
+                        但事實上，<strong>電腦其實是一個非常乖巧、同時卻也很「笨」的孩子。</strong>
+                    </p>
+                    <p>
+                        為什麼說它無比乖巧？因為它是真的會 <strong>100% 照著你寫的指令做</strong>。即使指令寫錯了，它也會忠實地執行錯誤，絕不會自己擅自變通。
+                    </p>
+                    <p>
+                        但也就是因為它這麼聽話，所以它顯得非常「笨」——就像俗話說的「木頭橫的拿不進門，不知道換成直的拿進去」。電腦不會自發性地變通。這也是非資訊科系的學生在剛接觸程式時最大的挫折感來源。我們人類覺得理所當然的事（「不就是這樣嗎？」），在電腦面前，你卻會驚訝地發現：<strong>「天啊，連這個細節也要我一步一步跟電腦講嗎？」</strong>
+                    </p>
+                </div>
+            </section>
+
+            <!-- Section 2: Two Hidden Hurdles (Slide 2) -->
+            <section id="section-hurdles" class="tutorial-section premium-card rounded-3xl p-5 md:p-10 mb-6">
+                <div class="flex items-center gap-3.5 mb-5 md:mb-6">
+                    <span class="text-2xl md:text-3xl">🚧</span>
+                    <h2 id="hurdles-title" class="heading-font text-lg md:text-2xl font-bold text-slate-900">2.
+                        新手學習程式的兩大隱形難關</h2>
+                </div>
+                <p id="hurdles-intro" class="text-slate-500 text-xs md:text-sm mb-5 leading-relaxed">
+                    不論你是要體驗新潮的 Vibe Coding，還是想按部就班學寫程式，只要碰到程式碼，幾乎所有人都會撞上這兩個隱形難關。提早認識它們，能幫你建立更好的心理建設！
+                </p>
+                <!-- Illustration Image -->
+                <div class="my-6 border border-slate-200 rounded-2xl overflow-hidden shadow-sm bg-slate-50/50 max-w-md mx-auto">
+                    <img src="assets/chapter_2.png" alt="Coding Hurdles" class="w-full h-auto object-cover">
+                </div>
+                <div class="space-y-4 md:space-y-6">
+                    <div class="p-4 md:p-5 bg-slate-50/50 border border-slate-100 rounded-2xl">
+                        <h4 id="hurdle1-title"
+                            class="font-bold text-indigo-600 mb-2 flex items-center gap-2 text-xs md:text-base">
+                            <span
+                                class="w-5 h-5 rounded-full bg-indigo-100/50 flex items-center justify-center text-xs font-extrabold text-indigo-600">1</span>
+                            難關一：語法與規則的「資訊爆炸」
+                        </h4>
+                        <p id="hurdle1-desc" class="text-slate-600 text-[11px] md:text-sm leading-relaxed">
+                            寫程式的第一道門檻就是對「語法」的恐懼。像 C 語言體系，到處都是大括號 `{}`、小括號 `()`，每行結尾還要強制打分號 `;`；換到 Python 又變成了嚴格的「縮排
+                            (Indentation)」來分段。新手一看到這些密密麻麻的規則，常會覺得「這只是冰山一角，我怎麼可能學得完？」，進而感到焦慮並放棄。請放心，語法只是一種溝通橋樑，多寫幾次，大腦就會慢慢習慣。
+                        </p>
+                    </div>
+                    <div class="p-4 md:p-5 bg-slate-50/50 border border-slate-100 rounded-2xl">
+                        <h4 id="hurdle2-title"
+                            class="font-bold text-indigo-600 mb-2 flex items-center gap-2 text-xs md:text-base">
+                            <span
+                                class="w-5 h-5 rounded-full bg-indigo-100/50 flex items-center justify-center text-xs font-extrabold text-indigo-600">2</span>
+                            難關二：『理所當然』與『精密轉譯』的思維落差
+                        </h4>
+                        <p id="hurdle2-desc" class="text-slate-600 text-[11px] md:text-sm leading-relaxed">
+                            人類大腦非常聰明，當我們看到一個平板電腦，我們的腦袋會瞬間做出複雜思考：知道它好不好看、有什麼用途、能帶來什麼價值。我們把這一切視為「理所當然 (Take it for
+                            granted)」，完全不需要耗費腦力去拆解。但電腦沒有這種常識！它需要你把所有細節，一步一步拆解成最基礎的指令。這種「我們以為很直覺，電腦卻聽不懂」的思維轉譯落差，就是新手最常感到挫折的原因。
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 3: Human Brain vs Computer Architecture (Slide 3) -->
+            <section id="section-brain-pc" class="tutorial-section premium-card rounded-3xl p-5 md:p-10 mb-6">
+                <div class="flex items-center gap-3.5 mb-5 md:mb-6">
+                    <span class="text-2xl md:text-3xl">🧠</span>
+                    <h2 id="brain-pc-title" class="heading-font text-lg md:text-2xl font-bold text-slate-900">3. 人腦 vs.
+                        電腦：馮紐曼架構的侷限</h2>
+                </div>
+                <!-- Illustration Image -->
+                <div class="my-6 border border-slate-200 rounded-2xl overflow-hidden shadow-sm bg-slate-50/50 max-w-md mx-auto">
+                    <img src="assets/chapter_3.png" alt="Brain vs PC Architecture" class="w-full h-auto object-cover">
+                </div>
+                <div id="brain-pc-content" class="text-slate-600 space-y-4 leading-relaxed text-xs md:text-base">
+                    <p>
+                        雖然我們在很多 AI 或計算的層面上想讓電腦學習「人類的大腦」，但受限於硬體架構，電腦和人腦有著天壤之別。
+                    </p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-3">
+                        <div class="p-4 md:p-5 bg-slate-50/50 rounded-2xl border border-slate-200">
+                            <h4 id="architecture-pc-title"
+                                class="font-extrabold text-slate-900 mb-2 text-xs md:text-sm flex items-center gap-2">
+                                <span class="text-blue-500">💻</span> 電腦：馮紐曼架構 (von Neumann)
+                            </h4>
+                            <p id="architecture-pc-desc" class="text-slate-550 text-[11px] leading-relaxed">
+                                現代電腦幾乎都採用「馮紐曼架構」——它把「計算 (CPU)」與「記憶
+                                (RAM)」分成兩個獨立的硬體。就像把兩個功能蓋在不同的山頭上，中間需要一條通道（資料匯流排）來傳遞資料。這會導致在資料往返時產生硬體效率瓶頸，並伴隨嚴重的散熱與耗電問題。雖然電腦算大數字極快，但架構本質是分裂的。
+                            </p>
+                        </div>
+                        <div class="p-4 md:p-5 bg-slate-50/50 rounded-2xl border border-slate-200">
+                            <h4 id="architecture-brain-title"
+                                class="font-extrabold text-slate-900 mb-2 text-xs md:text-sm flex items-center gap-2">
+                                <span class="text-indigo-500">🧠</span> 人腦：超高集成神經網絡
+                            </h4>
+                            <p id="architecture-brain-desc" class="text-slate-555 text-[11px] leading-relaxed">
+                                人腦則完全不同，是由無數個神經元與突觸構成。每一個神經元既能做運算，同時也能儲存記憶。它們還會動態伸出觸手（突觸）去連接其他神經元，形成記憶迴路。人腦的運作集成度極高，在大規模模糊決策時的效率與學習成本極低，且耗電量（能量消耗）遠比同等級的電腦低得多。
+                            </p>
+                        </div>
+                    </div>
+                    <p id="brain-pc-summary"
+                        class="text-[11px] md:text-xs text-slate-500 bg-slate-50 border border-slate-100 p-4 rounded-2xl leading-relaxed">
+                        即使電腦算純數學比人類快上百萬倍，但人類大腦的理解、聯想與低耗能學習機制，在架構上仍遙遙領先現代電腦。而且，人類至今對大腦運作的了解，也僅僅是冰山一角。
+                    </p>
+                </div>
+            </section>
+
+            <!-- Section 4 (Slide 4) -->
+            <section id="section-2" class="tutorial-section premium-card rounded-3xl p-5 md:p-10 mb-6">
+                <!-- Illustration Image -->
+                <div class="mb-6 border border-slate-200 rounded-2xl overflow-hidden shadow-sm bg-slate-50/50 max-w-md mx-auto">
+                    <img src="assets/chapter_4.png" alt="AI & PHP Collab" class="w-full h-auto object-cover">
+                </div>
+                <div class="grid grid-cols-1 gap-6 md:gap-8">
+                    <div>
+                        <div class="flex items-center gap-3.5 mb-3 md:mb-4">
+                            <span class="text-xl md:text-2xl">💡</span>
+                            <h3 id="sec2-ai-title" class="heading-font text-lg md:text-xl font-bold text-slate-900">4.1 AI 的聰明是怎麼來的？</h3>
+                        </div>
+                        <p id="sec2-ai-content" class="text-slate-600 text-xs md:text-base leading-relaxed">
+                            現代 AI
+                            看起來非常聰明，但這並非因為它真的會自主思考。其本質上是工程師設計了算法，讓電腦<strong>在特定事情上重複學習了上百億次</strong>，它才終於學會了該怎麼做。它依舊是建立在「重複執行指令」的極致體現。
+                        </p>
+                    </div>
+                    <hr class="border-slate-200">
+                    <div>
+                        <div class="flex items-center gap-3.5 mb-3 md:mb-4">
+                            <span class="text-xl md:text-2xl">🐘</span>
+                            <h3 id="sec2-php-title" class="heading-font text-lg md:text-xl font-bold text-slate-900">4.2 PHP 與 Laravel 的市占地位</h3>
+                        </div>
+                        <p id="sec2-php-content" class="text-slate-600 text-xs md:text-base leading-relaxed">
+                            在非 AI 領域的網站開發中，最常使用的是像 <strong>Laravel</strong> 這樣的框架。它底層採用的語言是 **PHP**。你知道嗎？目前全世界高達
+                            <strong>78% 的網站</strong> 都是由 PHP 在幕後默默支持的。不論是 PHP 還是其他程式語言，本質上都是我們人類用來指引電腦這個「笨孩子」的一步步步驟說明書。
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 5 (Slide 5) -->
+            <section id="section-3" class="tutorial-section premium-card rounded-3xl p-5 md:p-10 mb-6">
+                <div class="flex items-center gap-3.5 mb-4 md:mb-5">
+                    <span class="text-xl md:text-2xl">🏗️</span>
+                    <h2 id="sec3-title" class="heading-font text-lg md:text-2xl font-bold text-slate-900">5. 從資料型態到物件導向 (OOP) 的發明</h2>
+                </div>
+                <div id="sec3-content-1" class="text-slate-600 space-y-4 leading-relaxed mb-6 text-xs md:text-base">
+                    <p>
+                        在寫程式時，有許多種不同的風格，而現在最流行、也最被廣泛應用的風格叫做 <strong>物件導向 (Object-Oriented Programming, 簡稱
+                            OOP)</strong>。我們所學的 Laravel 本質上就是使用這個風格撰寫的。
+                    </p>
+                    <p>
+                        在傳統寫程式時，變數是用來儲存資料的容器。在強型別語言（如 Java/C++）中，你必須嚴格<strong>宣告（Declare）</strong>變數能存什麼資料；而在弱型別語言（如
+                        PHP/JS）中，雖然不強迫宣告，但電腦自己也會在執行時去判斷它的型態。
+                    </p>
+                    <p>
+                        然而，傳統的資料型態只有 `string` (字串)、`int` (整數)、`bool` (布林值)
+                        等。但在現實生活中，我們要描述一個東西，例如「一隻筆」或「一瓶水」，是無法單純用這幾個基本型別就定義清楚的。
+                    </p>
+                </div>
+
+                <!-- OOP Illustration Image -->
+                <div class="my-6 border border-slate-200 rounded-2xl overflow-hidden shadow-sm bg-slate-50/50">
+                    <img src="assets/chapter_5.png" alt="OOP Class and Instances"
+                        class="w-full h-auto object-cover">
+                    <div
+                        class="p-3 bg-slate-50 border-t border-slate-200 text-center text-[10px] md:text-xs text-slate-500 font-semibold">
+                        <span id="img-caption">💡 視覺化圖解：類別 (Class) 就像是設計藍圖，而可口可樂、礦泉水與果汁則是實例化 (Instance) 出來的物件。</span>
+                    </div>
+                </div>
+
+                <div id="sec3-content-2" class="text-slate-600 space-y-4 leading-relaxed text-xs md:text-base">
+                    <p>
+                        這就體現了為什麼說「電腦很笨」。當人類看到一隻筆，腦袋會下意識聯想它的用途、墨水顏色、握感。但電腦不懂！所以我們發明了 **物件導向
+                        (OOP)**：<strong>我們把世界上的所有東西，都看作一個個的「物件 (Object)」</strong>。
+                    </p>
+                    <p>
+                        既然是個東西，我們就會在腦袋中給它賦予很多屬性。例如<strong>「一瓶水」</strong>，我們知道它包含：瓶子、蓋子、內容物、標籤、高度、圓周和功用。
+                    </p>
+                    <p id="sec3-transition-p"
+                        class="p-4 md:p-5 bg-indigo-50/70 border-l-4 border-indigo-500 text-indigo-950 font-semibold rounded-r-2xl text-[11px] md:text-sm my-5 leading-relaxed shadow-sm">
+                        在這裡，我們就碰到了前面提到的<strong>第二個難關：『理所當然』與『實際操作』的思維落差</strong>。人類看到一瓶水覺得理所當然，但對電腦來說，如果不進行具體的操作拆解，它就完全無法理解。這就是為什麼我們需要使用
+                        **物件導向 (OOP)** 的語法，老老實實地為電腦寫一份「水瓶說明書」（類別 Class）。
+                    </p>
+                    <p id="sec3-outro-text" class="text-xs md:text-base">
+                        對於程式而言，電腦不知道什麼是一瓶水，所以我們要寫一份<strong>「類別 (Class) 藍圖」</strong>介紹給它看：
+                    </p>
+                </div>
+            </section>
+
+            <!-- Section 6 (Slide 6) -->
+            <section id="section-4" class="tutorial-section premium-card rounded-3xl p-5 md:p-10 mb-6">
+                <div class="flex items-center gap-3.5 mb-4 md:mb-5">
+                    <span class="text-xl md:text-2xl">💻</span>
+                    <h2 id="sec4-title" class="heading-font text-lg md:text-2xl font-bold text-slate-900">6. 讓我們用程式碼跟電腦介紹「一瓶水」</h2>
+                </div>
+
+                <!-- Code Block -->
+                <div class="premium-code rounded-2xl overflow-hidden mb-6 shadow-lg max-w-full">
+                    <div class="bg-slate-900 px-4 py-2.5 border-b border-slate-800 flex justify-between items-center">
+                        <span class="text-[10px] md:text-xs font-mono text-slate-400">PHP Example (Laravel Style)</span>
+                        <span class="text-[10px] md:text-xs text-indigo-400 font-semibold">OOP blueprint</span>
+                    </div>
+                    <pre class="p-4 text-[10px] md:text-sm font-mono text-green-400 overflow-x-auto"><code><span class="text-purple-400">class</span> <span class="text-blue-400">WaterBottle</span> {
+    <span class="text-gray-500">// 1. 屬性 (Properties)</span>
+    <span class="text-purple-400">public</span> <span class="text-blue-400">$brand</span>;
+    <span class="text-purple-400">public</span> <span class="text-blue-400">$color</span>;
+    <span class="text-purple-400">protected</span> <span class="text-blue-400">$volume</span>;
+
+    <span class="text-purple-400">public</span> <span class="text-purple-400">function</span> <span class="text-blue-400">__construct</span>(<span class="text-blue-400">$brand</span>, <span class="text-blue-400">$color</span>, <span class="text-blue-400">$volume</span>) {
+        <span class="text-purple-400">$this</span>->brand = <span class="text-blue-400">$brand</span>;
+        <span class="text-purple-400">$this</span>->color = <span class="text-blue-400">$color</span>;
+        <span class="text-purple-400">$this</span>->volume = <span class="text-blue-400">$volume</span>;
+    }
+
+    <span class="text-purple-400">public</span> <span class="text-purple-400">function</span> <span class="text-blue-400">drink</span>() {
+        <span class="text-purple-400">return</span> <span class="text-green-300">"喝了一口 "</span> . <span class="text-purple-400">$this</span>->brand;
+    }
+}
+
+// 2. 實例化
+<span class="text-blue-400">$cocaCola</span> = <span class="text-purple-400">new</span> <span class="text-blue-400">WaterBottle</span>(<span class="text-green-300">"可口可樂"</span>, <span class="text-green-300">"紅色"</span>, <span class="text-blue-400">500</span>);
+echo <span class="text-blue-400">$cocaCola</span>->drink();
+</code></pre>
+                </div>
+
+                <!-- Illustration Image -->
+                <div class="my-6 border border-slate-200 rounded-2xl overflow-hidden shadow-sm bg-slate-50/50 max-w-md mx-auto">
+                    <img src="assets/chapter_6.png" alt="Access Modifiers Protection" class="w-full h-auto object-cover">
+                </div>
+                <div id="sec4-concepts"
+                    class="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6 text-xs md:text-sm text-slate-600 leading-relaxed">
+                    <div>
+                        <h4 id="concept-inherit-title" class="font-bold text-slate-900 mb-2 text-xs md:text-base">🧬 繼承
+                            (Inheritance) 的概念</h4>
+                        <p id="concept-inherit-desc" class="text-[11px] md:text-sm">
+                            如果我們寫好了一個「動物」的類別（有呼吸、會睡覺的特質），當我們想創造「小狗」的類別時，我們不需要重複去寫呼吸和睡覺。我們直接讓小狗「繼承
+                            (extends)」動物，小狗就會自動學會呼吸和睡覺！我們只需要專注在寫小狗專屬的特徵（例如：會汪汪叫）。
+                        </p>
+                    </div>
+                    <div>
+                        <h4 id="concept-access-title" class="font-bold text-slate-900 mb-2 text-xs md:text-base">🔒
+                            存取控制修飾詞 (Access Modifiers)</h4>
+                        <p id="concept-access-desc" class="text-[11px] md:text-sm">
+                            電腦很聽話，但有時候我們想保護一些內部秘密。我們可以用 `public` (大家都能用)、`private` (只有這瓶水自己知道，別人不能看)、`protected`
+                            (只有親屬繼承的人能看) 來控管權限，確保程式 safe 又整潔。
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 7: Summary (Slide 7) -->
+            <section id="section-summary" class="tutorial-section premium-card rounded-3xl p-5 md:p-10 mb-6">
+                <div class="flex items-center gap-3.5 mb-5 md:mb-6">
+                    <span class="text-2xl md:text-3xl">🏁</span>
+                    <h2 id="summary-title" class="heading-font text-lg md:text-2xl font-bold text-slate-900">7. 總結：分而治之 (Divide & Conquer) 與你的總工程師大腦</h2>
+                </div>
+                <div id="summary-content"
+                    class="text-slate-600 space-y-4 md:space-y-5 leading-relaxed text-xs md:text-base">
+                    <p>
+                        學習了這麼多知識後，我們該如何串聯它們？無論你是要自己動手手寫程式，還是在 AI 時代下進行 <strong>Vibe
+                            Coding</strong>，有一個最重要的計算機科學核心思維你必須掌握：<strong>「分而治之 (Divide and Conquer)」</strong>，這叫做
+                        computational thinking。
+                    </p>
+                    <p>
+                        電腦很笨、只懂得 0 與 1、對與錯、陰與陽。要讓這個笨孩子幫你解決龐大的現實問題，你必須學會兩件事：
+                    </p>
+                    <ul class="list-disc pl-5 space-y-2 text-xs md:text-base">
+                        <li><strong>第一步：定義問題 (Define the Problem)</strong>：明確找出你要解決的核心痛點是什麼，以及為什麼要解決它。</li>
+                        <li><strong>第二步：精確拆解 (Decompose)</strong>：將一個巨大的問題，拆解成數個中型問題；再把中型問題，拆解成數個極小、甚至是非黑即白的微型子任務。</li>
+                    </ul>
+                    <div class="p-4 md:p-5 bg-indigo-50/30 border border-indigo-100/50 rounded-2xl my-5">
+                        <h4 id="ai-collab-title" class="font-extrabold text-indigo-900 mb-2 text-xs md:text-base">🤖 與
+                            AI 的黃金合作法則</h4>
+                        <p id="ai-collab-desc" class="text-slate-600 text-[11px] md:text-sm leading-relaxed">
+                            在開發中，<strong>AI 就像是那個「最棒的搬磚工具人
+                                (Mason)」</strong>，它寫程式非常快，非常擅長重複性、機械式的代碼填充與細節操作。<strong>但你才是那個掌控全域的「總工程師 (Chief
+                                Engineer)」</strong>。<br><br>
+                            如果你把專案全權交給 AI 自由發揮，它會亂改程式、亂套語法、產出臃腫不堪的代碼。你必須用你的工程師大腦去規劃架構、考慮程式擴充性
+                            (Extensibility)、遵守開發規範、做好分工（例如知道何時該去修改 Laravel 的 <code>web.php</code>
+                            檔案）。由你來做好<strong>「分而治之」</strong>的拆解，再交給 AI 去把磚頭碼好。這才是未來工程師的核心競爭力！
+                        </p>
+                    </div>
+                </div>
+            </section>
+            <!-- Navigation Controls Footer (Prev / Next Buttons) -->
+            <div class="flex items-center justify-between border-t border-slate-200 pt-6 mt-4 md:mt-6 px-2">
+                <button id="prev-btn"
+                    class="px-4 py-2.5 rounded-xl border border-slate-200 text-slate-500 hover:text-slate-800 hover:bg-slate-50 font-bold transition-all text-xs md:text-sm focus:outline-none flex items-center gap-2">
+                    ← Previous
+                </button>
+                <button id="next-btn"
+                    class="px-4 py-2.5 rounded-xl accent-gradient-bg text-white font-bold transition-all text-xs md:text-sm focus:outline-none flex items-center gap-2 hover:opacity-90 shadow-md shadow-indigo-100">
+                    Next →
+                </button>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Script Section for Sidebar toggle, Navigation, & Language selector -->
+    <script>
+        $(document).ready(function () {
+            // State: Current active section ID
+            let activeSectionId = "section-1";
+
+            // Array of sections in order
+            const sections = [
+                "section-1",
+                "section-hurdles",
+                "section-brain-pc",
+                "section-2",
+                "section-3",
+                "section-4",
+                "section-summary"
+            ];
+
+            // Toggle language dropdown visibility
+            $('#lang-dropdown-btn').click(function (e) {
+                e.stopPropagation();
+                $('#lang-dropdown-menu').toggleClass('hidden');
+            });
+
+            // Hide dropdown when clicking elsewhere
+            $(document).click(function () {
+                $('#lang-dropdown-menu').addClass('hidden');
+            });
+
+            // Update UI based on active section with Full-screen Transition Animation
+            function updateSectionUI(sectionId) {
+                activeSectionId = sectionId;
+
+                // Toggle disclaimer banner
+                if (activeSectionId === "section-1") {
+                    $('#disclaimer-banner').show();
+                } else {
+                    $('#disclaimer-banner').hide();
+                }
+
+                // Hide all sections, show active
+                $('.tutorial-section').removeClass('active').hide();
+                $('#' + activeSectionId).addClass('active').show();
+
+                // Update sidebar links
+                $('.sidebar-link').removeClass('active bg-indigo-50/50 text-indigo-600 font-semibold').addClass('text-slate-600 hover:bg-slate-50 hover:text-slate-900');
+                $(`.sidebar-link[data-target="${activeSectionId}"]`).removeClass('text-slate-600 hover:bg-slate-50 hover:text-slate-900').addClass('active bg-indigo-50/50 text-indigo-600 font-semibold');
+
+                // Update Prev/Next button config
+                const index = sections.indexOf(activeSectionId);
+                if (index === 0) {
+                    $('#prev-btn').addClass('opacity-30 cursor-not-allowed').prop('disabled', true);
+                } else {
+                    $('#prev-btn').removeClass('opacity-30 cursor-not-allowed').prop('disabled', false);
+                }
+
+                if (index === sections.length - 1) {
+                    $('#next-btn').text('Finish 🏁');
+                } else {
+                    $('#next-btn').text('Next →');
+                }
+
+                // Auto-scroll main content to top
+                $('#main-content').scrollTop(0);
+            }
+
+            // Init active state without transition on page load
+            $('.tutorial-section').removeClass('active').hide();
+            $('#' + activeSectionId).addClass('active').show();
+
+            // 1. Sidebar Link Clicks
+            $('.sidebar-link').click(function (e) {
+                e.preventDefault();
+                const target = $(this).data('target');
+                if (target !== activeSectionId) {
+                    updateSectionUI(target);
+                }
+
+                // Hide sidebar on mobile after clicking a link
+                if ($(window).width() < 768) {
+                    closeSidebar();
+                }
+            });
+
+            // 2. Navigation Next / Prev button logic
+            $('#next-btn').click(function () {
+                const currentIndex = sections.indexOf(activeSectionId);
+                if (currentIndex < sections.length - 1) {
+                    updateSectionUI(sections[currentIndex + 1]);
+                } else {
+                    alert('🎉 Congratulations! You have finished this lesson!');
+                }
+            });
+
+            $('#prev-btn').click(function () {
+                const currentIndex = sections.indexOf(activeSectionId);
+                if (currentIndex > 0) {
+                    updateSectionUI(sections[currentIndex - 1]);
+                }
+            });
+
+            // 3. Responsive Sidebar Actions
+            function openSidebar() {
+                $('#sidebar').removeClass('-translate-x-full').addClass('translate-x-0');
+                $('#sidebar-overlay').fadeIn(300);
+            }
+
+            function closeSidebar() {
+                $('#sidebar').removeClass('translate-x-0').addClass('-translate-x-full');
+                $('#sidebar-overlay').fadeOut(300);
+            }
+
+            // Sidebar Toggle button handler (Responsive)
+            $('#toggle-sidebar').click(function () {
+                if ($(window).width() < 768) {
+                    if ($('#sidebar').hasClass('-translate-x-full')) {
+                        openSidebar();
+                    } else {
+                        closeSidebar();
+                    }
+                } else {
+                    const sidebar = $('#sidebar');
+                    if (sidebar.hasClass('w-72')) {
+                        sidebar.removeClass('w-72').addClass('w-0 p-0 border-r-0 overflow-hidden');
+                    } else {
+                        sidebar.removeClass('w-0 p-0 border-r-0 overflow-hidden').addClass('w-72 p-6');
+                    }
+                }
+            });
+
+            // Close mobile sidebar hooks
+            $('#close-sidebar-mobile, #sidebar-overlay').click(function () {
+                closeSidebar();
+            });
+
+            // 5. Language Translations Database
+            const translations = {
+                "zh-TW": {
+                    "side-title": "目錄 / Table of Contents",
+                    "nav-sec1": "1. 乖巧又笨的電腦",
+                    "nav-hurdles": "2. 學習程式兩大難關",
+                    "nav-brain-pc": "3. 人腦 vs 電腦架構",
+                    "nav-sec2": "4. AI 與 PHP 角色",
+                    "nav-sec3": "5. 宣告與 OOP 起源",
+                    "nav-sec4": "6. 程式碼示範",
+                    "nav-summary": "7. 總結：分而治之",
+                    "side-tips": "💡 點選左上角按鈕可收合選單",
+                    "hero-title": "學程式的前哨站：認識電腦、人腦與物件導向 (OOP)",
+                    "hero-subtitle": "用最直觀、最生活化的比喻，帶你理解電腦的運作邏輯，以及為什麼我們要使用「物件導向」來寫程式。",
+                    "disclaimer-title": "學習前的小提醒：",
+                    "disclaimer-content": "這篇教材是專門為「非技術背景」學生設計的。為了讓大家能輕鬆看懂，內容進行了高度的抽象化與簡化，讓我們避開生硬的專有名詞，先用大腦直覺來建立觀念吧！",
+                    "sec1-title": "1. 電腦：一個無比乖巧卻又很「笨」的孩子",
+                    "sec1-content": `<p>在現代科技（特別是強大的 AI）環繞下，我們常下意識地覺得電腦很聰明：它能做超高難度的算術、能精準播放我們想看的影片。</p>
+                                     <p class="border-l-4 border-indigo-600 pl-4 py-1.5 italic bg-indigo-50/50 text-indigo-900 font-medium rounded-r-xl">但事實上，<strong>電腦其實是一個非常乖巧、同時卻也很「笨」的孩子。</strong></p>
+                                     <p>為什麼說它無比乖巧？因為它是真的會 <strong>100% 照著你寫的指令做</strong>。即使指令寫錯了，它也會忠實地執行錯誤，絕不會自己擅自變通。</p>
+                                     <p>但也就是因為它這麼聽話，所以它顯得非常「笨」——就像俗話說的「木頭橫的拿不進門，不知道換成直的拿進去」。電腦不會自發性地變通。這也是非資訊科系的學生在剛接觸程式時最大的挫折感來源。我們人類覺得理所當然的事（「不就是這樣嗎？」），在電腦面前，你卻會驚訝地發現：<strong>「天啊，連這個細節也要我一步一步跟電腦講嗎？」</strong></p>`,
+                    "hurdles-title": "2. 新手學習程式的兩大隱形難關",
+                    "hurdles-intro": "不論你是要體驗新潮的 Vibe Coding，還是想按部就班學寫程式，只要碰到程式碼，幾乎所有人都會撞上這兩個隱形難關。提早認識它們，能幫你建立更好的心理建設！",
+                    "hurdle1-title": "難關一：語法與規則的「資訊爆炸」",
+                    "hurdle1-desc": "寫程式的第一道門檻就是對「語法」的恐懼。像 C 語言體系，到處都是大括號 `{}`、小括號 `()`，每行結尾還要強制打分號 `;`；換到 Python 又變成了嚴格的「縮排 (Indentation)」來分段。新手一看到這些密密麻麻的規則，常會覺得「這只是冰山一角，我怎麼可能學得完？」，進而感到焦慮並放棄。請放心，語法只是一種溝通橋樑，多寫幾次，大腦就會慢慢習慣。",
+                    "hurdle2-title": "難關二：『理所當然』與『精密轉譯』的思維落差",
+                    "hurdle2-desc": "人類大腦非常聰明，當我們看到一個平板電腦，我們的腦袋會瞬間做出複雜思考：知道它好不好看、有什麼用途、能帶來什麼價值。我們把這一切視為「理所當然 (Take it for granted)」，完全不需要耗費腦力去拆解。但電腦沒有這種常識！它需要你把所有細節，一步一步拆解成最基礎的指令。這種「我們以為很直覺，電腦卻聽不懂」的思維轉譯落差，就是新手最常感到挫折的原因。",
+                    "brain-pc-title": "3. 人腦 vs. 電腦：馮紐曼架構的侷限",
+                    "architecture-pc-title": "💻 電腦：馮紐曼架構 (von Neumann)",
+                    "architecture-pc-desc": "現代電腦幾乎都採用「馮紐曼架構」——它把「計算 (CPU)」與「記憶 (RAM)」分成兩個獨立的硬體。就像把兩個功能蓋在不同的山頭上，中間需要一條通道（資料匯流排）來傳遞資料。這會導致在資料往返時產生硬體效率瓶頸，並伴隨嚴重的散熱與耗電問題。雖然電腦算大數字極快，但架構本質是分裂的。",
+                    "architecture-brain-title": "🧠 人腦：超高集成神經網絡",
+                    "architecture-brain-desc": "人腦則完全不同，是由無數個神經元與突觸構成。每一個神經元既能做運算，同時也能儲存記憶。它們還會動態伸出觸手（突觸）去連接其他神經元，形成記憶迴路。人腦的運作集成度極高，在大規模模糊決策時的效率與學習成本極低，且耗電量（能量消耗）遠比同等級的電腦低得多。",
+                    "brain-pc-summary": "即使電腦算純數學比人類快上百萬倍，但人類大腦的理解、聯想與低耗能學習機制，在架構上仍遙遙領先現代電腦。而且，人類至今對大腦運作的了解，也僅僅是冰山一角。",
+                    "sec2-ai-title": "4.1 AI 的聰明是怎麼來的？",
+                    "sec2-ai-content": "現代 AI 看起來非常聰明，但這並非因為它真的會自主思考。其本質上是工程師設計了算法，讓電腦<strong>在特定事情上重複學習了上百億次</strong>，它才終於學會了該怎麼做。它依舊是建立在「重複執行指令」的極致體現。",
+                    "sec2-php-title": "4.2 PHP 與 Laravel 的市占地位",
+                    "sec2-php-content": "在非 AI 領域的網站開發中，最常使用的是像 <strong>Laravel</strong> 這樣的框架。它底層採用的語言是 **PHP**。你知道嗎？目前全世界高達 <strong>78% 的網站</strong> 都是由 PHP 在幕後默默支持的。不論是 PHP 還是其他程式語言，本質上都是我們人類用來指引電腦這個「笨孩子」的一步步步驟說明書。",
+                    "sec3-title": "5. 從資料型態到物件導向 (OOP) 的發明",
+                    "sec3-content-1": `<p>在寫程式時，有許多種不同的風格，而現在最流行、也最被廣泛應用的風格叫做 <strong>物件導向 (Object-Oriented Programming, 簡稱 OOP)</strong>。我們所學的 Laravel 本質上就是使用這個風格撰寫的。</p>
+                                       <p>在傳統寫程式時，變數是用來儲存資料的容器。在強型別語言（如 Java/C++）中，你必須嚴格<strong>宣告（Declare）</strong>變數能存什麼資料；而在弱型別語言（如 PHP/JS）中，雖然不強迫宣告，但電腦自己也會在執行時去判斷它的型態。</p>
+                                       <p>然而，傳統的資料型態只有 \`string\` (字串)、\`int\` (整數)、\`bool\` (布林值) 等。但在現實生活中，我們要描述一個東西，例如「一隻筆」或「一瓶水」，是無法單純用這幾個基本型別就定義清楚的。</p>`,
+                    "img-caption": "💡 視覺化圖解：類別 (Class) 就像是設計藍圖，而可口可樂、礦泉水與果汁則是實例化 (Instance) 出來的物件。",
+                    "sec3-content-2": `<p>這就體現了為什麼說「電腦很笨」。當人類看到一隻筆，腦袋會下意識聯想它的用途、墨水顏色、握感。但電腦不懂！所以我們發明了 **物件導向 (OOP)**：<strong>我們把世界上的所有東西，都看作一個個的「物件 (Object)」</strong>。</p>
+                                       <p>既然是個東西，我們就會在腦袋中給它賦予很多屬性。例如<strong>「一瓶水」</strong>，我們知道它包含：瓶子、蓋子、內容物、標籤、高度、圓周和功用。</p>`,
+                    "sec3-transition-p": "在這裡，我們就碰到了前面提到的<strong>第二個難關：『理所當然』與『實際操作』的思維落差</strong>。人類看到一瓶水覺得理所當然，但對電腦來說，如果不進行具體的操作拆解，它就完全無法理解。這就是為什麼我們需要使用 **物件導向 (OOP)** 的語法，老老實實地為電腦寫一份「水瓶說明書」（類別 Class）。",
+                    "sec3-outro-text": "對於程式而言，電腦不知道什麼是一瓶水，所以我們要寫一份<strong>「類別 (Class) 藍圖」</strong>介紹給它看：",
+                    "sec4-title": "6. 讓我們用程式碼跟電腦介紹「一瓶水」",
+                    "concept-inherit-title": "🧬 繼承 (Inheritance) 的概念",
+                    "concept-inherit-desc": "如果我們寫好了一個「動物」的類別（有呼吸、會睡覺的特質），當我們想創造「小狗」的類別時，我們不需要重複去寫呼吸和睡覺。我們直接讓小狗「繼承 (extends)」動物，小狗就會自動學會呼吸和睡覺！我們距離只需要專注在寫小狗專屬的特徵（例如：會汪汪叫）。",
+                    "concept-access-title": "🔒 存取控制修飾詞 (Access Modifiers)",
+                    "concept-access-desc": "電腦很聽話，但有時候我們想保護一些內部秘密。我們可以用 \`public\` (大家都能用)、\`private\` (只有這瓶水自己知道，別人不能看)、\`protected\` (只有親屬繼承的人能看) 來控管權限，確保程式安全又整潔。",
+                    "summary-title": "7. 總結：分而治之 (Divide & Conquer) 與你的總工程師大腦",
+                    "summary-content": `<p>學習了這麼多知識後，我們該如何串聯它們？無論你是要自己動手手寫程式，還是在 AI 時代下進行 <strong>Vibe Coding</strong>，有一個最重要的計算機科學核心思維你必須掌握：<strong>「分而治之 (Divide and Conquer)」</strong>，這叫做 computational thinking。</p>
+                                    <p>電腦很笨、只懂得 0 與 1、對與錯、陰與陽。要讓這個笨孩子幫你解決龐大的現實問題，你必須學會兩件事：</p>
+                                    <ul class="list-disc pl-5 space-y-2 text-xs md:text-base">
+                                        <li><strong>第一步：定義問題 (Define the Problem)</strong>：明確找出你要解決的核心痛點是什麼，以及為什麼要解決它。</li>
+                                        <li><strong>第二步：精確拆解 (Decompose)</strong>：將一個巨大的問題，拆解成數個中型問題；再把中型問題，拆解成數個極小、甚至是非黑即白的微型子任務。</li>
+                                    </ul>`,
+                    "ai-collab-title": "🤖 與 AI 的黃金合作法則",
+                    "ai-collab-desc": `在開發中，<strong>AI 就像是那個「最棒的搬磚工具人 (Mason)」</strong>，它寫程式非常快，非常擅長重複性、機械式的代碼填充與細節操作。<strong>但你才是那個掌控全域的「總工程師 (Chief Engineer)」</strong>。<br><br>
+                                     如果你把專案全權交給 AI 自由發揮，它會亂改程式、亂套語法、產出臃腫不堪的代碼。你必須用你的工程師大腦去規劃架構、考慮程式擴充性 (Extensibility)、遵守開發規範、做好分工（例如知道何時該去修改 Laravel 的 <code>web.php</code> 檔案）。由你來做好<strong>「分而治之」</strong>的拆解，再交給 AI 去把磚頭碼好。這才是未來工程師的核心競爭力！`
+                },
+                "zh-CN": {
+                    "side-title": "目录 / Table of Contents",
+                    "nav-sec1": "1. 乖巧又笨的电脑",
+                    "nav-hurdles": "2. 学习程式两大难关",
+                    "nav-brain-pc": "3. 人脑 vs 电脑架构",
+                    "nav-sec2": "4. AI 与 PHP 角色",
+                    "nav-sec3": "5. 宣告与 OOP 起源",
+                    "nav-sec4": "6. 程式码示范",
+                    "nav-summary": "7. 总结：分而治之",
+                    "side-tips": "💡 點選左上角按鈕可收合選單",
+                    "hero-title": "学程序的第一堂课：认识电脑、人脑与面向对象 (OOP)",
+                    "hero-subtitle": "用最直观、最生活化的比喻，带你理解电脑的运作逻辑，以及为什么我们要使用「面向对象」来写程序。",
+                    "disclaimer-title": "学习前的小提醒：",
+                    "disclaimer-content": "这篇教材是专门为「非技术背景」学生设计的。为了让大家能轻松看懂，内容进行了高度的抽象化与简化，让我们避开生硬的专有名词，先用大脑直觉来建立观念吧！",
+                    "sec1-title": "1. 电脑：一个无比乖巧却又很「笨」的孩子",
+                    "sec1-content": `<p>在现代科技（特别是强大的 AI）环绕下，我们常下意识地觉得电脑很聪明：它能做超高难度的算术、能精准播放我们想看的视频。</p>
+                                     <p class="border-l-4 border-indigo-600 pl-4 py-1 italic bg-indigo-50 text-indigo-905 font-medium rounded-r-lg">但事实上，<strong>电脑其实是一个非常乖巧、同时却也很「慢」的孩子。</strong></p>
+                                     <p>为什么说它无比乖巧？因为它是真的会 <strong>100% 照着你写的指令做</strong>。即使指令写错了，它也会忠实地执行错误，绝不会自己擅自变通。</p>
+                                     <p>但也就是因为它这么听话，所以它显得非常「笨」——图像俗话说的「木头横着拿不进门，不知道换成竖着拿进去」。电脑不会自发性地变通。这也是非信息科系的学生在刚接触程序时最大的挫折感来源。我们人类觉得理所当然的事（「不就是这样吗？」），在电脑面前，你却会惊讶地发现：<strong>「天意啊，连这个细节也要我一步一步跟电脑讲吗？」</strong></p>`,
+                    "hurdles-title": "2. 新手学习程式的两大隐形难关",
+                    "hurdles-intro": "不论你是要体验新潮的 Vibe Coding，还是想按部就班学写程式，只要碰到程式码，几乎所有人都会撞上这两个隐形难关。提早认识它们，能帮你建立更好的心理建设！",
+                    "hurdle1-title": "难关一：语法与规则的「资讯爆炸」",
+                    "hurdle1-desc": "写程序的第一道门槛就是对「语法」的恐惧。像 C 语言体系，到处都是大括号 `{}`、小括号 `()`，每行结尾还要强制打分号 `;`；换到 Python 又变成了严格的「缩排 (Indentation)」来分段。新手一看到这些密密麻麻的规则，常会觉得「这只是冰山一角，我怎么可能学得完？」，进而感到焦虑并放弃。请放心，语法只是一种沟通桥梁，多写几次，大脑就会慢慢习惯。",
+                    "hurdle2-title": "难关二：『理所当然』与『精密转译』的思维落差",
+                    "hurdle2-desc": "人类大脑非常聪明，当我们看到一个平板电脑，我们的脑袋会瞬间做出复杂思考：知道它好不好看、有什么用途、能带来什么价值。我们把这一切视为「理所当然 (Take it for granted)」，完全不需要耗费脑力去拆解。单电脑没有这种常识！它需要你把所有细节，一步一步拆解成最基础的指令。这种「我们以为很直觉，电脑却听不懂」的思维转译落差，就是新手最常感到挫折的原因。",
+                    "brain-pc-title": "3. 人脑 vs. 电脑：冯纽曼架构的局限",
+                    "architecture-pc-title": "💻 电脑：冯纽曼架构 (von Neumann)",
+                    "architecture-pc-desc": "现代电脑几乎都采用「冯纽曼架构」——它把「计算 (CPU)」与「记忆 (RAM)」分成两个独立的硬件。就像把两个功能盖在不同的山头上，中间需要一条通道（数据总线）来传递数据。这会导致在数据往返时产生硬件效率瓶颈，并伴随严重的散热与耗电问题。虽然电脑算大数字极快，但架构本质是分裂的。",
+                    "architecture-brain-title": "🧠 人脑：超高集成神经网络",
+                    "architecture-brain-desc": "人脑则完全不同，是由无数个神经元与触突构成。每一个神经元既能做运算，同时也能存储记忆。它们还会动态伸出触手（突触）去连接其他神经元，形成记忆回路。人脑的运作集成度极高，在大规模模糊决策时的效率与学习成本极低，且耗电量（能量消耗）远比同等级的电脑低得多。",
+                    "brain-pc-summary": "即使电脑算纯数学比人类快上百万倍，但人类大脑的理解、联想与低耗能学习机制，在架构上仍遥遥领先现代电脑。而且，人类至今对大脑运作的了解，也仅仅是冰山一角。",
+                    "sec2-ai-title": "4.1 AI 的聪明是怎么来的？",
+                    "sec2-ai-content": "现代 AI 看起来非常聪明，但这并非因为它真的会自主思考。其本质上是工程师设计了算法，让电脑<strong>在特定事情上重复学习了上百亿次</strong>，它才终于学会了该怎么做。它依旧是建立在「重复执行指令」的极致体现。",
+                    "sec2-php-title": "4.2 PHP 与 Laravel 的市占地位",
+                    "sec2-php-content": "在非 AI 领域的网站开发中，最常使用的是像 <strong>Laravel</strong> 這樣框架。它底层采用的语言是 **PHP**。你知道吗？目前全世界高达 <strong>78% 的网站</strong> 都是由 PHP 在幕后默默支持的。不论是 PHP 还是其他程序语言，本质上都是我们人类用来指引电脑这个「笨孩子」的一步步步骤说明书。",
+                    "sec3-title": "5. 从数据类型到面向对象 (OOP) 的发明",
+                    "sec3-content-1": `<p>在写程序时，有许多种不同的风格，而现在最流行、也最被广泛应用的风格叫做 <strong>面向对象 (Object-Oriented Programming, 简称 OOP)</strong>。我们所学的 Laravel 本质上就是使用这个风格撰写的。</p>
+                                       <p>在传统写程序時，变量是用来源数据存储的容器。在强类型语言（如 Java/C++）中，你必须严格<strong>宣告（Declare）</strong>变量能存什么数据；而在弱类型语言（如 PHP/JS）中，虽然不强迫宣告，但电脑自己也会在运行时去判断它的型態。</p>
+                                       <p>然而，传统的数据类型只有 \`string\` (字符串)、\`int\` (整数)、\`bool\` (布林值) 等。但在现实生活中，我们要描述一個东西，例如「一双笔」或「一瓶水」，是无法单纯用这几个基本型態就定义清楚的。</p>`,
+                    "img-caption": "💡 视觉化图解：类别 (Class) 就像是设计蓝图，而可口可乐、矿泉水與果汁則是实例化 (Instance) 出来的物件。",
+                    "sec3-content-2": `<p>这就体现了为什么说「电脑很笨」。当人类看到一双笔，脑袋会下意识联想它的用途、墨水颜色、握感。但电脑不懂！所以我们发明了 **面向对象 (OOP)**：<strong>我们把世界上的所有东西，都看作一个个的「物件 (Object)」</strong>。</p>
+                                       <p>既然是个东西，我们就会在脑袋中给它赋予很多属性。例如<strong>「一瓶水」</strong>，我们知道它包含：瓶子、盖子、内容物、标签、高度、圆周和功用。</p>`,
+                    "sec3-transition-p": "在这里，我们就碰到了前面提到的<strong>第二个难关：『理所当然』与『实际操作』的思维落差</strong>。人类看到一瓶水觉得理所当然，但对电脑来说，如果不进行具体的操作拆解，它就完全无法理解。这就是为什么我们需要使用 **面向对象 (OOP)** 的语法，老老实实地為电脑写一份「水瓶说明书」（类别 Class）。",
+                    "sec3-outro-text": "对于程序而言，电脑不知道什么是一瓶水，所以我们要写一份<strong>「类别 (Class) 蓝图」</strong>介绍给它看：",
+                    "sec4-title": "6. 讓我們用程式碼跟電腦介紹「一瓶水」",
+                    "concept-inherit-title": "🧬 继承 (Inheritance) 的概念",
+                    "concept-inherit-desc": "如果我们写好了一个「动物」的类别（有呼吸、会睡觉的特质），当我们想创造「小狗」的类别时，我们不需要重复去寫呼吸和睡觉。我们直接讓小狗「继承 (extends)」动物，小狗就会自动学会呼吸和睡觉！我们只需要专注于写小狗专属的特征（例如：会汪汪叫）。",
+                    "concept-access-title": "🔒 存取控制修饰词 (Access Modifiers)",
+                    "concept-access-desc": "电脑很听话，但有时候我们想保护一些内部秘密。我们可以用 \`public\` (大家都能用)、\`private\` (只有这瓶水自己知道，别人不能看)、\`protected\` (只有亲属继承的人能看) 來控管权限，确保程序安全又整洁。",
+                    "summary-title": "7. 总结：分而治之 (Divide & Conquer) 与你的总工程师大脑",
+                    "summary-content": `<p>学习了这么多知识后，我们该如何串联它们？无论你是要自己动手手写程序，还是在 AI 时代下进行 <strong>Vibe Coding</strong>，有一个最重要的计算机科学核心思维你必须掌握：<strong>「分而治之 (Divide and Conquer)」</strong>，这叫做 computational thinking。</p>
+                                    <p>电脑很笨、只懂得 0 與 1、对与错、阴与阳。要让这个笨孩子帮你解决庞大的现实问题，你必须学会两件事：</p>
+                                    <ul class="list-disc pl-5 space-y-2 text-xs md:text-base">
+                                        <li><strong>第一步：定义问题 (Define the Problem)</strong>：明确找出你要解决的核心痛点是什么，以及为什么要解决它。</li>
+                                        <li><strong>第二步：精确拆解 (Decompose)</strong>：将一个巨大的问题，拆解成数个中型问题；再把中型问题，拆解成数个极小、甚至是非黑即白的微型子任务。</li>
+                                    </ul>`,
+                    "ai-collab-title": "🤖 与 AI 的黄金合作法则",
+                    "ai-collab-desc": `在开发中，<strong>AI 就像是那个「最棒的搬磚工具人 (Mason)」</strong>，它写程序非常快，非常擅长重复性、机械式的代码填充与细节操作。<strong>但你才是那个掌控全域的「总工程师 (Chief Engineer)」</strong>。<br><br>
+                                     如果你把专案全权交给 AI 自由发挥，它会乱改程序、乱套语法、产出臃肿不堪的代码。你必须用你的工程师大脑去规划架构、考虑程序扩充性 (Extensibility)、遵守开发规范、做好分工（例如知道何時該去修改 Laravel 的 <code>web.php</code> 檔案）。由你來做好<strong>「分而治之」</strong>的拆解，再交給 AI 去把砖头码好。这才是未来工程师的核心竞争力！`
+                },
+                "en": {
+                    "side-title": "Table of Contents",
+                    "nav-sec1": "1. Obedient & Dumb PC",
+                    "nav-hurdles": "2. Two Hurdles to Learn",
+                    "nav-brain-pc": "3. Brain vs PC Architecture",
+                    "nav-sec2": "4. AI & PHP Role",
+                    "nav-sec3": "5. Primitives & OOP Origin",
+                    "nav-sec4": "6. Code Examples",
+                    "nav-summary": "7. Summary: Divide & Conquer",
+                    "side-tips": "💡 Click menu icon on top-left to toggle sidebar",
+                    "hero-title": "The Outpost of Coding: Understanding PC, Brain, and OOP",
+                    "hero-subtitle": "Learn how computers think and why Object-Oriented Programming (OOP) is crucial using easy, real-life analogies.",
+                    "disclaimer-title": "A Friendly Disclaimer:",
+                    "disclaimer-content": "This material is specifically designed for 'non-technical' students. To ensure a highly readable and intuitive experience, the content has been highly simplified and abstracted. Let's build concepts using logic rather than heavy jargon!",
+                    "sec1-title": "1. Computers: Extremely Obedient but 'Dumb' Children",
+                    "sec1-content": `<p>Surrounded by modern tech (especially AI), we naturally think computers are super smart: they do complex math and play our videos perfectly.</p>
+                                     <p class="border-l-4 border-indigo-600 pl-4 py-1 italic bg-indigo-50 text-indigo-900 font-medium rounded-r-lg">But in reality, <strong>computers are extremely obedient but very 'dumb' children.</strong></p>
+                                     <p>Why obedient? Because they do <strong>exactly 100% of what you tell them</strong>. Even if the instruction is wrong, they will run it faithfully without correcting it themselves.</p>
+                                     <p>But because they are so literal, they seem 'dumb' - like carrying a log horizontally, getting stuck at the door, and not knowing to turn it vertically. They do not adapt. This is the biggest frustration for non-CS students. Things we humans take for granted make us scream at the computer: <strong>'Wait, do I really have to explain this tiny detail to you step-by-step?'</strong></p>`,
+                    "hurdles-title": "2. Two Hidden Hurdles for Programming Beginners",
+                    "hurdles-intro": "Whether you are trying out the trendy Vibe Coding, or learning to code step-by-step, almost everyone faces these two invisible hurdles. Getting to know them early builds great mental preparation!",
+                    "hurdle1-title": "Hurdle 1: Information Overwhelm from Syntax & Rules",
+                    "hurdle1-desc": "The first barrier to coding is the fear of 'syntax'. In C-like ecosystems, there are brackets `{}` and parentheses `()` everywhere, and semicolons `;` are mandatory at the end of every line. In Python, it switches to strict 'Indentation' for code blocks. Seeing all these strict rules at once makes beginners feel 'I'll never learn all of this' and quit. Don't worry, syntax is just a bridge. With practice, it becomes second nature.",
+                    "hurdle2-title": "Hurdle 2: The 'Take it for Granted' Thought Gap",
+                    "hurdle2-desc": "Human brains are brilliant. When we see a tablet PC, we instantly evaluate its aesthetics, purpose, and value without active brain effort. We take all this for granted. But computers have zero common sense! It needs you to break everything down into the most basic step-by-step instructions. This translation gap - where we think something is obvious, but the computer needs explicit steps - is the primary cause of beginner frustration.",
+                    "brain-pc-title": "3. Human Brain vs. Computer: Limits of von Neumann",
+                    "architecture-pc-title": "💻 Computer: von Neumann Architecture",
+                    "architecture-pc-desc": "Almost all modern computers adopt the 'von Neumann architecture', which physically separates computing (CPU) from memory (RAM). It is like building two functions on different mountains, communicating via a narrow bridge (data bus). This creates hardware efficiency bottlenecks, high heat output, and power leakage. Even though it calculates large numbers fast, the hardware is fundamentally split.",
+                    "architecture-brain-title": "🧠 Brain: Highly Integrated Neural Net",
+                    "architecture-brain-desc": "The human brain is completely different, consisting of billions of neurons and synapses. Each neuron can BOTH process calculations and store memory at the same location. They also organically grow tentacles (synapses) to connect with others, forming memory loops. The brain operates with extreme integration, making complex associative learning highly efficient at a fraction of a computer's energy cost.",
+                    "brain-pc-summary": "Even if computers do raw arithmetic millions of times faster than us, the human brain's understanding, association, and low-energy learning architecture remains vastly superior. Plus, our understanding of the brain is still just the tip of the iceberg.",
+                    "sec2-ai-title": "4. Where does AI's 'smartness' come from?",
+                    "sec2-ai-content": "Modern AI looks incredibly smart, but not because it genuinely thinks. At its core, engineers created algorithms allowing computers to <strong>learn a single task tens of billions of times</strong>. It is still the ultimate execution of repetitive instructions.",
+                    "sec2-php-title": "5. PHP and Laravel's Market Dominance",
+                    "sec2-php-content": "In non-AI web development, frameworks like <strong>Laravel</strong> are widely used. Its underlying language is **PHP**. Did you know? Over <strong>78% of all websites</strong> in the world are powered by PHP. Languages like PHP are simply step-by-step manuals for us to instruct the 'dumb' computer.",
+                    "sec3-title": "6. From Primitives to the Birth of OOP",
+                    "sec3-content-1": `<p>There are many programming styles, and the most popular one today is called <strong>Object-Oriented Programming (OOP)</strong>. Laravel is heavily built on this paradigm.</p>
+                                       <p>In traditional coding, variables store data. Strongly typed languages (like Java/C++) require you to strictly <strong>declare</strong> the data type, while weakly typed languages (like PHP/JS) infer them dynamically.</p>
+                                       <p>However, traditional primitive types only include \`string\`, \`int\`, \`bool\`, etc. In real life, we cannot describe complex items like a 'pen' or a 'water bottle' using only these basic types.</p>`,
+                    "img-caption": "💡 Diagram: A Class is like a blueprint. Coke, Smartwater, and Ovaltine are concrete Objects instantiated from it.",
+                    "sec3-content-2": `<p>This shows why computers are dumb. When a human sees a pen, they intuitively know its ink color and purpose. A computer has no clue! So we invented **OOP**: <strong>We treat everything in the world as an 'Object'</strong>.</p>
+                                       <p>Since it's an object, we give it properties. For a <strong>'Water Bottle'</strong>, we know it has: bottle, cap, contents, label, height, and purpose.</p>`,
+                    "sec3-transition-p": "Here, we run into the <strong>second hurdle mentioned earlier: the thought gap between 'taking it for granted' and 'explicit operations'</strong>. While a human takes a bottle of water for granted, a computer has no concept of it unless we explicitly define and break down every detail. This is exactly why we use <strong>Object-Oriented Programming (OOP)</strong> syntax to write a detailed 'User Manual' (Class) for the computer.",
+                    "sec3-outro-text": "For a computer, it doesn't know what a water bottle is, so we must write a <strong>'Class blueprint'</strong> to introduce it:",
+                    "sec4-title": "6. Introducing 'Water Bottle' to Computers in Code",
+                    "concept-inherit-title": "🧬 Understanding Inheritance",
+                    "concept-inherit-desc": "If we define an 'Animal' class (which can breathe and sleep), we don't need to rewrite breathe and sleep when defining a 'Dog'. We just let the Dog 'inherit' (extends) from Animal, and it gets those traits automatically. We only code Dog-specific traits (like barks).",
+                    "concept-access-title": "🔒 Access Modifiers",
+                    "concept-access-desc": "Computers are obedient, but we want to secure internal data. We use \`public\` (open to all), \`private\` (hidden, accessible only internally), and \`protected\` (accessible by descendants) to govern permissions for safe, clean code.",
+                    "summary-title": "7. Summary: Divide & Conquer and Your Chief Engineer Brain",
+                    "summary-content": `<p>After acquiring all this knowledge, how do we connect the dots? Whether you are hand-coding yourself or performing <strong>Vibe Coding</strong> with AI assistance, there is one supreme computer science mindset you must master: <strong>'Divide and Conquer'</strong>, which is called computational thinking.</p>
+                                    <p>Computers are literal and only understand 0/1, true/false, right/wrong. To let this dumb machine solve complex real-life challenges, you must master two steps:</p>
+                                    <ul class="list-disc pl-5 space-y-2 text-xs md:text-base">
+                                        <li><strong>First: Define the Problem</strong>: Pinpoint exactly what problem you are solving and why it needs solving.</li>
+                                        <li><strong>Second: Decompose</strong>: Split a massive problem into several medium problems, and then split those into tiny, almost binary sub-tasks.</li>
+                                    </ul>`,
+                    "ai-collab-title": "🤖 The Golden Rules of AI Collaboration",
+                    "ai-collab-desc": `In modern development, <strong>AI acts as the ultimate 'Bricklayer / Mason (Tool)'</strong>. It writes code incredibly fast, excelling at repetitive boilerplates and mechanical tasks. <strong>But YOU are the 'Chief Engineer (Brain)'</strong>.<br><br>
+                                     If you delegate everything to the AI and let it run wild, it will mess up coding conventions, write redundant logic, and clutter your directories. You must use your engineering brain to design the architecture, ensure code extensibility, follow coding standards, and maintain clean modular limits (e.g. knowing when to edit Laravel's <code>web.php</code> file). You decompose via <strong>Divide & Conquer</strong>, and let the AI fill in the code blocks. This is the true competitive edge of future engineers!`
+                }
+            };
+
+            // 4. Language Switcher Click Handler
+            $('.lang-option').click(function () {
+                const lang = $(this).data('lang');
+                const langLabel = $(this).text();
+
+                // Update dropdown label
+                $('#current-lang-label').text(langLabel);
+                $('#lang-dropdown-menu').addClass('hidden');
+
+                // Switch text content dynamically
+                const dict = translations[lang];
+
+                $('#side-title').text(dict["side-title"]);
+                $('#nav-sec1 .nav-text').text(dict["nav-sec1"]);
+                $('#nav-hurdles .nav-text').text(dict["nav-hurdles"]);
+                $('#nav-brain-pc .nav-text').text(dict["nav-brain-pc"]);
+                $('#nav-sec2 .nav-text').text(dict["nav-sec2"]);
+                $('#nav-sec3 .nav-text').text(dict["nav-sec3"]);
+                $('#nav-sec4 .nav-text').text(dict["nav-sec4"]);
+                $('#nav-summary .nav-text').text(dict["nav-summary"]);
+                $('#side-tips').text(dict["side-tips"]);
+
+                $('#hero-title').text(dict["hero-title"]);
+                $('#hero-subtitle').text(dict["hero-subtitle"]);
+                $('#disclaimer-title').text(dict["disclaimer-title"]);
+                $('#disclaimer-content').text(dict["disclaimer-content"]);
+
+                $('#sec1-title').text(dict["sec1-title"]);
+                $('#sec1-content').html(dict["sec1-content"]);
+
+                $('#hurdles-title').text(dict["hurdles-title"]);
+                $('#hurdles-intro').text(dict["hurdles-intro"]);
+                $('#hurdle1-title').html('<span class="w-5 h-5 rounded-full bg-indigo-100 flex items-center justify-center text-xs">1</span>' + dict["hurdle1-title"]);
+                $('#hurdle1-desc').text(dict["hurdle1-desc"]);
+                $('#hurdle2-title').html('<span class="w-5 h-5 rounded-full bg-indigo-100 flex items-center justify-center text-xs">2</span>' + dict["hurdle2-title"]);
+                $('#hurdle2-desc').text(dict["hurdle2-desc"]);
+
+                $('#brain-pc-title').text(dict["brain-pc-title"]);
+                $('#architecture-pc-title').html('<span class="text-blue-500">💻</span> ' + dict["architecture-pc-title"]);
+                $('#architecture-pc-desc').text(dict["architecture-pc-desc"]);
+                $('#architecture-brain-title').html('<span class="text-indigo-500">🧠</span> ' + dict["architecture-brain-title"]);
+                $('#architecture-brain-desc').text(dict["architecture-brain-desc"]);
+                $('#brain-pc-summary').text(dict["brain-pc-summary"]);
+
+                $('#sec2-ai-title').html('<span class="text-2xl">💡</span> ' + dict["sec2-ai-title"]);
+                $('#sec2-ai-content').html(dict["sec2-ai-content"]);
+
+                $('#sec2-php-title').html('<span class="text-2xl">🐘</span> ' + dict["sec2-php-title"]);
+                $('#sec2-php-content').html(dict["sec2-php-content"]);
+
+                $('#sec3-title').text(dict["sec3-title"]);
+                $('#sec3-content-1').html(dict["sec3-content-1"]);
+                $('#img-caption').text(dict["img-caption"]);
+                $('#sec3-content-2').html(dict["sec3-content-2"]);
+
+                $('#sec3-transition-p').text(dict["sec3-transition-p"]);
+                $('#sec3-outro-text').html(dict["sec3-outro-text"]);
+
+                $('#sec4-title').text(dict["sec4-title"]);
+                $('#concept-inherit-title').text(dict["concept-inherit-title"]);
+                $('#concept-inherit-desc').text(dict["concept-inherit-desc"]);
+                $('#concept-access-title').text(dict["concept-access-title"]);
+                $('#concept-access-desc').text(dict["concept-access-desc"]);
+
+                $('#summary-title').text(dict["summary-title"]);
+                $('#summary-content').html(dict["summary-content"]);
+                $('#ai-collab-title').html('🤖 ' + dict["ai-collab-title"]);
+                $('#ai-collab-desc').html(dict["ai-collab-desc"]);
+
+                // Update document language tag
+                $('html').attr('lang', lang);
+            });
+        });
+    </script>
+</body>
+
+</html>

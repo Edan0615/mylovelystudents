@@ -232,6 +232,90 @@
                     </div>
                 </div>
 
+                <!-- HTTP Methods Tab Layout -->
+                <div class="border border-book-border rounded-xl overflow-hidden bg-book-paper">
+                    <div class="bg-stone-100 px-4 py-2 border-b border-book-border flex items-center justify-between">
+                        <span class="text-xs font-bold text-stone-500 uppercase tracking-wider">常見的 HTTP 方法 (Methods) 作用與代碼</span>
+                        <span class="text-[10px] bg-stone-200 text-stone-600 px-2 py-0.5 rounded font-mono">網頁溝英語言</span>
+                    </div>
+                    <div class="p-5 space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-2" id="route-tabs">
+                            <button data-target="route-get" class="tab-btn px-4 py-3 rounded-lg text-left text-sm font-semibold border-2 border-blue-500 bg-blue-50/50 text-blue-700 transition">
+                                <span class="block text-xs text-blue-500 uppercase font-mono">GET</span>
+                                取得資料 / 網頁
+                            </button>
+                            <button data-target="route-post" class="tab-btn px-4 py-3 rounded-lg text-left text-sm font-semibold border border-stone-200 bg-white hover:bg-stone-50 text-stone-700 transition">
+                                <span class="block text-xs text-emerald-600 uppercase font-mono">POST</span>
+                                提交 / 新增資料
+                            </button>
+                            <button data-target="route-patch" class="tab-btn px-4 py-3 rounded-lg text-left text-sm font-semibold border border-stone-200 bg-white hover:bg-stone-50 text-stone-700 transition">
+                                <span class="block text-xs text-amber-600 uppercase font-mono">PUT / PATCH</span>
+                                更新 / 修改資料
+                            </button>
+                            <button data-target="route-delete" class="tab-btn px-4 py-3 rounded-lg text-left text-sm font-semibold border border-stone-200 bg-white hover:bg-stone-50 text-stone-700 transition">
+                                <span class="block text-xs text-rose-600 uppercase font-mono">DELETE</span>
+                                刪除資料
+                            </button>
+                        </div>
+
+                        <!-- Tab Contents -->
+                        <div id="route-tabs-content" class="mt-4">
+                            <!-- GET content -->
+                            <div id="route-get" class="tab-pane space-y-3">
+                                <p class="text-xs text-stone-600 leading-relaxed">
+                                    當使用者在網址列輸入網址，或者點擊連結時，送出的都是 <strong>GET</strong> 請求。用於「讀取」資源。
+                                </p>
+                                <div class="relative">
+                                    <pre class="bg-stone-900 text-stone-200 p-4 rounded-lg font-mono text-xs overflow-x-auto"><code>// 簡單回傳視圖 (Blade)
+Route::get('/welcome', function () {
+    return view('welcome');
+});
+
+// 指向 Controller 處理
+Route::get('/students', [StudentController::class, 'index']);</code></pre>
+                                    <button class="copy-btn absolute top-2 right-2 px-2 py-1 text-[10px] bg-stone-800 text-stone-400 hover:text-white rounded border border-stone-700"><i class="fa-regular fa-copy"></i> 複製</button>
+                                </div>
+                            </div>
+                            
+                            <!-- POST content -->
+                            <div id="route-post" class="tab-pane hidden space-y-3">
+                                <p class="text-xs text-stone-600 leading-relaxed">
+                                    當使用者填寫表單並按下「送出」時，使用 <strong>POST</strong> 請求。在 Laravel 中，POST 請求表單內必須包含 <code>@csrf</code> 保護標記，否則會報錯（419 page expired）。
+                                </p>
+                                <div class="relative">
+                                    <pre class="bg-stone-900 text-stone-200 p-4 rounded-lg font-mono text-xs overflow-x-auto"><code>// 新增學生資料的處理路由
+Route::post('/students', [StudentController::class, 'store']);</code></pre>
+                                    <button class="copy-btn absolute top-2 right-2 px-2 py-1 text-[10px] bg-stone-800 text-stone-400 hover:text-white rounded border border-stone-700"><i class="fa-regular fa-copy"></i> 複製</button>
+                                </div>
+                            </div>
+
+                            <!-- PATCH content -->
+                            <div id="route-patch" class="tab-pane hidden space-y-3">
+                                <p class="text-xs text-stone-600 leading-relaxed">
+                                    <strong>PUT</strong> 用於替換整筆資源，而 <strong>PATCH</strong> 用於修改部分欄位。在 HTML 表單中，因為瀏覽器只支援 GET 與 POST，所以需要透過 <code>@method('PATCH')</code> 進行偽裝。
+                                </p>
+                                <div class="relative">
+                                    <pre class="bg-stone-900 text-stone-200 p-4 rounded-lg font-mono text-xs overflow-x-auto"><code>// 修改 ID 為 5 的學生資料
+Route::patch('/students/{id}', [StudentController::class, 'update']);</code></pre>
+                                    <button class="copy-btn absolute top-2 right-2 px-2 py-1 text-[10px] bg-stone-800 text-stone-400 hover:text-white rounded border border-stone-700"><i class="fa-regular fa-copy"></i> 複製</button>
+                                </div>
+                            </div>
+
+                            <!-- DELETE content -->
+                            <div id="route-delete" class="tab-pane hidden space-y-3">
+                                <p class="text-xs text-stone-600 leading-relaxed">
+                                    <strong>DELETE</strong> 用於移除伺服器上的某個資源。與 PATCH 相同，在 HTML 表單中需要寫成 POST，再利用 <code>@method('DELETE')</code> 偽裝。
+                                </p>
+                                <div class="relative">
+                                    <pre class="bg-stone-900 text-stone-200 p-4 rounded-lg font-mono text-xs overflow-x-auto"><code>// 刪除 ID 為 5 的學生資料
+Route::delete('/students/{id}', [StudentController::class, 'destroy']);</code></pre>
+                                    <button class="copy-btn absolute top-2 right-2 px-2 py-1 text-[10px] bg-stone-800 text-stone-400 hover:text-white rounded border border-stone-700"><i class="fa-regular fa-copy"></i> 複製</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- RESTful Mapping Table -->
                 <div class="space-y-3">
                     <h3 class="text-sm font-bold text-stone-800 flex items-center gap-2">
@@ -339,87 +423,24 @@
                     路由路徑（Route）就像是網站的門牌號碼。當瀏覽器發出請求時，<code>routes/web.php</code> 決定該由誰來處理。
                 </p>
 
-                <!-- HTTP Methods Tab Layout -->
-                <div class="border border-book-border rounded-xl overflow-hidden bg-book-paper">
-                    <div class="bg-stone-100 px-4 py-2 border-b border-book-border flex items-center justify-between">
-                        <span class="text-xs font-bold text-stone-500 uppercase tracking-wider">常見的 HTTP 方法 (Methods)</span>
-                        <span class="text-[10px] bg-stone-200 text-stone-600 px-2 py-0.5 rounded font-mono">routes/web.php</span>
-                    </div>
-                    <div class="p-5 space-y-4">
-                        <div class="grid grid-cols-1 md:grid-cols-4 gap-2" id="route-tabs">
-                            <button data-target="route-get" class="tab-btn px-4 py-3 rounded-lg text-left text-sm font-semibold border-2 border-blue-500 bg-blue-50/50 text-blue-700 transition">
-                                <span class="block text-xs text-blue-500 uppercase font-mono">GET</span>
-                                取得資料 / 網頁
-                            </button>
-                            <button data-target="route-post" class="tab-btn px-4 py-3 rounded-lg text-left text-sm font-semibold border border-stone-200 bg-white hover:bg-stone-50 text-stone-700 transition">
-                                <span class="block text-xs text-emerald-600 uppercase font-mono">POST</span>
-                                提交 / 新增資料
-                            </button>
-                            <button data-target="route-patch" class="tab-btn px-4 py-3 rounded-lg text-left text-sm font-semibold border border-stone-200 bg-white hover:bg-stone-50 text-stone-700 transition">
-                                <span class="block text-xs text-amber-600 uppercase font-mono">PUT / PATCH</span>
-                                更新 / 修改資料
-                            </button>
-                            <button data-target="route-delete" class="tab-btn px-4 py-3 rounded-lg text-left text-sm font-semibold border border-stone-200 bg-white hover:bg-stone-50 text-stone-700 transition">
-                                <span class="block text-xs text-rose-600 uppercase font-mono">DELETE</span>
-                                刪除資料
-                            </button>
-                        </div>
-
-                        <!-- Tab Contents -->
-                        <div id="route-tabs-content" class="mt-4">
-                            <!-- GET content -->
-                            <div id="route-get" class="tab-pane space-y-3">
-                                <p class="text-xs text-stone-600 leading-relaxed">
-                                    當使用者在網址列輸入網址，或者點擊連結時，送出的都是 <strong>GET</strong> 請求。用於「讀取」資源。
-                                </p>
-                                <div class="relative">
-                                    <pre class="bg-stone-900 text-stone-200 p-4 rounded-lg font-mono text-xs overflow-x-auto"><code>// 簡單回傳視圖 (Blade)
-Route::get('/welcome', function () {
-    return view('welcome');
+                <div class="border border-book-border rounded-xl overflow-hidden bg-book-paper p-5 space-y-3">
+                    <h4 class="text-xs font-bold text-stone-500 uppercase tracking-wider">Laravel 路由基本宣告寫法</h4>
+                    <p class="text-xs text-stone-600">
+                        在 <code>routes/web.php</code> 中，我們使用 <code>Route::方法名稱('路徑', 處理器)</code> 的結構來設定路由。例如：
+                    </p>
+                    <div class="relative">
+                        <pre class="bg-stone-900 text-stone-200 p-4 rounded-lg font-mono text-xs overflow-x-auto"><code>// 1. 基礎寫法：直接指向一個匿名函式
+Route::get('/about', function () {
+    return '關於我們頁面';
 });
 
-// 指向 Controller 處理
-Route::get('/students', [StudentController::class, 'index']);</code></pre>
-                                    <button class="copy-btn absolute top-2 right-2 px-2 py-1 text-[10px] bg-stone-800 text-stone-400 hover:text-white rounded border border-stone-700"><i class="fa-regular fa-copy"></i> 複製</button>
-                                </div>
-                            </div>
-                            
-                            <!-- POST content -->
-                            <div id="route-post" class="tab-pane hidden space-y-3">
-                                <p class="text-xs text-stone-600 leading-relaxed">
-                                    當使用者填寫表單並按下「送出」時，使用 <strong>POST</strong> 請求。在 Laravel 中，POST 請求表單內必須包含 <code>@csrf</code> 保護標記，否則會報錯（419 page expired）。
-                                </p>
-                                <div class="relative">
-                                    <pre class="bg-stone-900 text-stone-200 p-4 rounded-lg font-mono text-xs overflow-x-auto"><code>// 新增學生資料的處理路由
-Route::post('/students', [StudentController::class, 'store']);</code></pre>
-                                    <button class="copy-btn absolute top-2 right-2 px-2 py-1 text-[10px] bg-stone-800 text-stone-400 hover:text-white rounded border border-stone-700"><i class="fa-regular fa-copy"></i> 複製</button>
-                                </div>
-                            </div>
+// 2. 指向 Controller 控制器中的特定方法
+use App\Http\Controllers\StudentController;
+Route::get('/students', [StudentController::class, 'index']);
 
-                            <!-- PATCH content -->
-                            <div id="route-patch" class="tab-pane hidden space-y-3">
-                                <p class="text-xs text-stone-600 leading-relaxed">
-                                    <strong>PUT</strong> 用於替換整筆資源，而 <strong>PATCH</strong> 用於修改部分欄位。在 HTML 表單中，因為瀏覽器只支援 GET 與 POST，所以需要透過 <code>@method('PATCH')</code> 進行偽裝。
-                                </p>
-                                <div class="relative">
-                                    <pre class="bg-stone-900 text-stone-200 p-4 rounded-lg font-mono text-xs overflow-x-auto"><code>// 修改 ID 為 5 的學生資料
-Route::patch('/students/{id}', [StudentController::class, 'update']);</code></pre>
-                                    <button class="copy-btn absolute top-2 right-2 px-2 py-1 text-[10px] bg-stone-800 text-stone-400 hover:text-white rounded border border-stone-700"><i class="fa-regular fa-copy"></i> 複製</button>
-                                </div>
-                            </div>
-
-                            <!-- DELETE content -->
-                            <div id="route-delete" class="tab-pane hidden space-y-3">
-                                <p class="text-xs text-stone-600 leading-relaxed">
-                                    <strong>DELETE</strong> 用於移除伺服器上的某個資源。與 PATCH 相同，在 HTML 表單中需要寫成 POST，再利用 <code>@method('DELETE')</code> 偽裝。
-                                </p>
-                                <div class="relative">
-                                    <pre class="bg-stone-900 text-stone-200 p-4 rounded-lg font-mono text-xs overflow-x-auto"><code>// 刪除 ID 為 5 的學生資料
-Route::delete('/students/{id}', [StudentController::class, 'destroy']);</code></pre>
-                                    <button class="copy-btn absolute top-2 right-2 px-2 py-1 text-[10px] bg-stone-800 text-stone-400 hover:text-white rounded border border-stone-700"><i class="fa-regular fa-copy"></i> 複製</button>
-                                </div>
-                            </div>
-                        </div>
+// 3. 資源路由宣告 (一次綁定 Chapter 01 所述的 7 種標準 RESTful 動作)
+Route::resource('students', StudentController::class);</code></pre>
+                        <button class="copy-btn absolute top-2 right-2 px-2 py-1 text-[10px] bg-stone-800 text-stone-400 hover:text-white rounded border border-stone-700"><i class="fa-regular fa-copy"></i> 複製</button>
                     </div>
                 </div>
 
