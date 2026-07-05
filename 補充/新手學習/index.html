@@ -135,30 +135,41 @@
                     class="sidebar-link flex items-center gap-3 px-4 py-2.5 text-sm rounded-xl text-slate-600 hover:bg-slate-50 hover:text-slate-950 font-medium">
                     <span class="text-base">🧠</span> <span class="nav-text">3. 人腦 vs 電腦架構</span>
                 </a>
-                <a href="#section-2" data-target="section-2"
+                <a id="nav-sec2" href="#section-2" data-target="section-2"
                     class="sidebar-link flex items-center gap-3 px-4 py-2.5 text-sm rounded-xl text-slate-600 hover:bg-slate-50 hover:text-slate-950 font-medium">
                     <span class="text-base">💡</span> <span class="nav-text">4. AI 與 PHP 角色</span>
                 </a>
-                <a href="#section-3" data-target="section-3"
+                <a id="nav-webdev" href="#section-webdev" data-target="section-webdev"
                     class="sidebar-link flex items-center gap-3 px-4 py-2.5 text-sm rounded-xl text-slate-600 hover:bg-slate-50 hover:text-slate-950 font-medium">
-                    <span class="text-base">🏗️</span> <span class="nav-text">5. 宣告與 OOP 起源</span>
+                    <span class="text-base">🎨</span> <span class="nav-text">5. 前端與後端概念</span>
                 </a>
-                <a href="#section-4" data-target="section-4"
+                <a id="nav-sec3" href="#section-3" data-target="section-3"
                     class="sidebar-link flex items-center gap-3 px-4 py-2.5 text-sm rounded-xl text-slate-600 hover:bg-slate-50 hover:text-slate-950 font-medium">
-                    <span class="text-base">💻</span> <span class="nav-text">6. 程式碼示範</span>
+                    <span class="text-base">🏗️</span> <span class="nav-text">6. 宣告與 OOP 起源</span>
                 </a>
-                <a href="#section-summary" data-target="section-summary"
+                <a id="nav-sec4" href="#section-4" data-target="section-4"
                     class="sidebar-link flex items-center gap-3 px-4 py-2.5 text-sm rounded-xl text-slate-600 hover:bg-slate-50 hover:text-slate-950 font-medium">
-                    <span class="text-base">🏁</span> <span class="nav-text">7. 總結：分而治之</span>
+                    <span class="text-base">💻</span> <span class="nav-text">7. 程式碼示範</span>
+                </a>
+                <a id="nav-summary" href="#section-summary" data-target="section-summary"
+                    class="sidebar-link flex items-center gap-3 px-4 py-2.5 text-sm rounded-xl text-slate-600 hover:bg-slate-50 hover:text-slate-950 font-medium">
+                    <span class="text-base">🏁</span> <span class="nav-text">8. 總結：分而治之</span>
                 </a>
             </nav>
         </div>
 
-        <div class="mt-auto">
+        <div class="mt-auto flex flex-col gap-3">
             <div class="p-4 bg-slate-50 border border-slate-100 rounded-2xl text-center">
                 <p id="side-tips" class="text-[11px] text-slate-500 leading-relaxed font-medium">
                     💡 點選左上角按鈕可收合選單
                 </p>
+            </div>
+            <!-- Author Info -->
+            <div class="text-center px-4 py-2 border-t border-slate-100 pt-4">
+                <p class="text-[10px] text-slate-400 font-medium heading-font tracking-wider">AUTHOR</p>
+                <a href="https://www.linkedin.com/in/yi-ting-huang0615/" target="_blank" class="text-xs font-bold text-slate-700 hover:text-indigo-600 transition-colors inline-flex items-center gap-1.5 mt-1">
+                    👤 Edan Huang
+                </a>
             </div>
         </div>
     </aside>
@@ -361,11 +372,79 @@
                 </div>
             </section>
 
+            <!-- Section 5: Frontend vs Backend (Slide 5) -->
+            <section id="section-webdev" class="tutorial-section premium-card rounded-3xl p-5 md:p-10 mb-6">
+                <div class="flex items-center gap-3.5 mb-5 md:mb-6">
+                    <span class="text-2xl md:text-3xl">🎨</span>
+                    <h2 id="webdev-title" class="heading-font text-lg md:text-2xl font-bold text-slate-900">5. 前端與後端的概念 (Frontend & Backend)</h2>
+                </div>
+
+                <!-- Illustration Image -->
+                <div class="my-6 border border-slate-200 rounded-2xl overflow-hidden shadow-sm bg-slate-50/50 max-w-md mx-auto">
+                    <img src="assets/chapter_web_dev.png" alt="Frontend and Backend" class="w-full h-auto object-cover">
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 leading-relaxed text-xs md:text-sm text-slate-600">
+                    <!-- Frontend Column -->
+                    <div class="p-5 bg-slate-50/50 rounded-2xl border border-slate-200">
+                        <h4 id="frontend-title" class="font-extrabold text-slate-900 mb-3 text-sm md:text-base flex items-center gap-2">
+                            <span class="text-indigo-500">🎨</span> 前端 (Frontend)：網頁的「門面」
+                        </h4>
+                        <div id="frontend-content" class="space-y-3">
+                            <p class="text-slate-500 text-[11px] md:text-xs mb-3">
+                                前端負責所有「使用者看得到、點得到」的畫面與互動。就像是一間餐廳的裝潢、菜單和服務生。
+                            </p>
+                            <ul class="space-y-2.5">
+                                <li><strong>HTML (結構)</strong>：網頁的骨架（例如文字、按鈕、輸入框）。</li>
+                                <li><strong>CSS (樣式)</strong>：網頁的衣服與化妝（例如顏色、排版、字體大小）。</li>
+                                <li><strong>JavaScript (互動)</strong>：網頁的大腦動作（例如按鈕點擊後的動畫、彈出視窗）。</li>
+                                <li><strong>熱門前端框架/庫</strong>：
+                                    <ul class="list-disc pl-5 mt-1 text-[11px] text-slate-500 space-y-1">
+                                        <li><strong>React / Vue / Angular</strong>：幫助開發者更高效、更有結構地打造複雜的單頁應用程式 (SPA)。</li>
+                                        <li><strong>Next.js</strong>：基於 React 的框架，提供更好的網頁載入效能與 SEO 優化。</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Backend Column -->
+                    <div class="p-5 bg-slate-50/50 rounded-2xl border border-slate-200">
+                        <h4 id="backend-title" class="font-extrabold text-slate-900 mb-3 text-sm md:text-base flex items-center gap-2">
+                            <span class="text-blue-500">⚙️</span> 後端 (Backend)：網頁的「大腦與廚房」
+                        </h4>
+                        <div id="backend-content" class="space-y-3">
+                            <p class="text-slate-500 text-[11px] md:text-xs mb-3">
+                                後端負責處理「看不見的邏輯、資料運算與儲存」。就像是餐廳廚房裡的廚師、食材庫存管理與收銀系統。
+                            </p>
+                            <ul class="space-y-3">
+                                <li>
+                                    <strong>Node.js (JS系)</strong>：
+                                    <span class="block text-[11px] text-slate-500">讓 JavaScript 也能在伺服器端執行，常用框架如 <strong>Express</strong>, <strong>NestJS</strong>。適合高併發、即時應用（如聊天室）。</span>
+                                </li>
+                                <li>
+                                    <strong>PHP</strong>：
+                                    <span class="block text-[11px] text-slate-500">傳統網頁開發霸主，搭配框架 <strong>Laravel</strong>。開發速度極快、市占率極高（全世界 78% 網站）。</span>
+                                </li>
+                                <li>
+                                    <strong>Java</strong>：
+                                    <span class="block text-[11px] text-slate-500">穩定、安全、適合超大型企業系統，搭配框架 <strong>Spring Boot</strong>。是金融與大型電商系統的首選。</span>
+                                </li>
+                                <li>
+                                    <strong>Python</strong>：
+                                    <span class="block text-[11px] text-slate-500">語法簡潔，搭配框架 <strong>Django</strong> (全功能大包) 或 <strong>Flask</strong> (輕量級)。在人工智慧與數據分析領域最受歡迎。</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             <!-- Section 5 (Slide 5) -->
             <section id="section-3" class="tutorial-section premium-card rounded-3xl p-5 md:p-10 mb-6">
                 <div class="flex items-center gap-3.5 mb-4 md:mb-5">
                     <span class="text-xl md:text-2xl">🏗️</span>
-                    <h2 id="sec3-title" class="heading-font text-lg md:text-2xl font-bold text-slate-900">5. 從資料型態到物件導向 (OOP) 的發明</h2>
+                    <h2 id="sec3-title" class="heading-font text-lg md:text-2xl font-bold text-slate-900">6. 從資料型態到物件導向 (OOP) 的發明</h2>
                 </div>
                 <div id="sec3-content-1" class="text-slate-600 space-y-4 leading-relaxed mb-6 text-xs md:text-base">
                     <p>
@@ -415,7 +494,7 @@
             <section id="section-4" class="tutorial-section premium-card rounded-3xl p-5 md:p-10 mb-6">
                 <div class="flex items-center gap-3.5 mb-4 md:mb-5">
                     <span class="text-xl md:text-2xl">💻</span>
-                    <h2 id="sec4-title" class="heading-font text-lg md:text-2xl font-bold text-slate-900">6. 讓我們用程式碼跟電腦介紹「一瓶水」</h2>
+                    <h2 id="sec4-title" class="heading-font text-lg md:text-2xl font-bold text-slate-900">7. 讓我們用程式碼跟電腦介紹「一瓶水」</h2>
                 </div>
 
                 <!-- Code Block -->
@@ -476,7 +555,7 @@ echo <span class="text-blue-400">$cocaCola</span>->drink();
             <section id="section-summary" class="tutorial-section premium-card rounded-3xl p-5 md:p-10 mb-6">
                 <div class="flex items-center gap-3.5 mb-5 md:mb-6">
                     <span class="text-2xl md:text-3xl">🏁</span>
-                    <h2 id="summary-title" class="heading-font text-lg md:text-2xl font-bold text-slate-900">7. 總結：分而治之 (Divide & Conquer) 與你的總工程師大腦</h2>
+                    <h2 id="summary-title" class="heading-font text-lg md:text-2xl font-bold text-slate-900">8. 總結：分而治之 (Divide & Conquer) 與你的總工程師大腦</h2>
                 </div>
                 <div id="summary-content"
                     class="text-slate-600 space-y-4 md:space-y-5 leading-relaxed text-xs md:text-base">
@@ -533,6 +612,7 @@ echo <span class="text-blue-400">$cocaCola</span>->drink();
                 "section-hurdles",
                 "section-brain-pc",
                 "section-2",
+                "section-webdev",
                 "section-3",
                 "section-4",
                 "section-summary"
@@ -663,9 +743,48 @@ echo <span class="text-blue-400">$cocaCola</span>->drink();
                     "nav-hurdles": "2. 學習程式兩大難關",
                     "nav-brain-pc": "3. 人腦 vs 電腦架構",
                     "nav-sec2": "4. AI 與 PHP 角色",
-                    "nav-sec3": "5. 宣告與 OOP 起源",
-                    "nav-sec4": "6. 程式碼示範",
-                    "nav-summary": "7. 總結：分而治之",
+                    "nav-webdev": "5. 前端與後端概念",
+                    "nav-sec3": "6. 宣告與 OOP 起源",
+                    "nav-sec4": "7. 程式碼示範",
+                    "nav-summary": "8. 總結：分而治之",
+                    "webdev-title": "5. 前端與後端的概念 (Frontend & Backend)",
+                    "frontend-title": "前端 (Frontend)：網頁的「門面」",
+                                        "frontend-content": `<p class="text-slate-500 text-[11px] md:text-xs mb-3">
+                                前端負責所有「使用者看得到、點得到」的畫面與互動。就像是一間餐廳的裝潢、菜單和服務生。
+                            </p>
+                            <ul class="space-y-2.5">
+                                <li><strong>HTML (結構)</strong>：網頁的骨架（例如文字、按鈕、輸入框）。</li>
+                                <li><strong>CSS (樣式)</strong>：網頁的衣服與化妝（例如顏色、排版、字體大小）。</li>
+                                <li><strong>JavaScript (互動)</strong>：網頁的大腦動作（例如按鈕點擊後的動畫、彈出視窗）。</li>
+                                <li><strong>熱門前端框架/庫</strong>：
+                                    <ul class="list-disc pl-5 mt-1 text-[11px] text-slate-500 space-y-1">
+                                        <li><strong>React / Vue / Angular</strong>：幫助開發者更高效、更有結構地打造複雜的單頁應用程式 (SPA)。</li>
+                                        <li><strong>Next.js</strong>：基於 React 的框架，提供更好的網頁載入效能與 SEO 優化。</li>
+                                    </ul>
+                                </li>
+                            </ul>`,
+                    "backend-title": "後端 (Backend)：網頁的「大腦與廚房」",
+                                        "backend-content": `<p class="text-slate-500 text-[11px] md:text-xs mb-3">
+                                後端負責處理「看不見的邏輯、資料運算與儲存」。就像是餐廳廚房裡的廚師、食材庫存管理與收銀系統。
+                            </p>
+                            <ul class="space-y-3">
+                                <li>
+                                    <strong>Node.js (JS系)</strong>：
+                                    <span class="block text-[11px] text-slate-500">讓 JavaScript 也能在伺服器端執行，常用框架如 <strong>Express</strong>, <strong>NestJS</strong>。適合高併發、即時應用（如聊天室）。</span>
+                                </li>
+                                <li>
+                                    <strong>PHP</strong>：
+                                    <span class="block text-[11px] text-slate-500">傳統網頁開發霸主，搭配框架 <strong>Laravel</strong>。開發速度極快、市占率極高（全世界 78% 網站）。</span>
+                                </li>
+                                <li>
+                                    <strong>Java</strong>：
+                                    <span class="block text-[11px] text-slate-500">穩定、安全、適合超大型企業系統，搭配框架 <strong>Spring Boot</strong>。是金融與大型電商系統的首選。</span>
+                                </li>
+                                <li>
+                                    <strong>Python</strong>：
+                                    <span class="block text-[11px] text-slate-500">語法簡潔，搭配框架 <strong>Django</strong> (全功能大包) 或 <strong>Flask</strong> (輕量級)。在人工智慧與數據分析領域最受歡迎。</span>
+                                </li>
+                            </ul>`,
                     "side-tips": "💡 點選左上角按鈕可收合選單",
                     "hero-title": "學程式的前哨站：認識電腦、人腦與物件導向 (OOP)",
                     "hero-subtitle": "用最直觀、最生活化的比喻，帶你理解電腦的運作邏輯，以及為什麼我們要使用「物件導向」來寫程式。",
@@ -692,7 +811,7 @@ echo <span class="text-blue-400">$cocaCola</span>->drink();
                     "sec2-ai-content": "現代 AI 看起來非常聰明，但這並非因為它真的會自主思考。其本質上是工程師設計了算法，讓電腦<strong>在特定事情上重複學習了上百億次</strong>，它才終於學會了該怎麼做。它依舊是建立在「重複執行指令」的極致體現。",
                     "sec2-php-title": "4.2 PHP 與 Laravel 的市占地位",
                     "sec2-php-content": "在非 AI 領域的網站開發中，最常使用的是像 <strong>Laravel</strong> 這樣的框架。它底層採用的語言是 **PHP**。你知道嗎？目前全世界高達 <strong>78% 的網站</strong> 都是由 PHP 在幕後默默支持的。不論是 PHP 還是其他程式語言，本質上都是我們人類用來指引電腦這個「笨孩子」的一步步步驟說明書。",
-                    "sec3-title": "5. 從資料型態到物件導向 (OOP) 的發明",
+                    "sec3-title": "6. 從資料型態到物件導向 (OOP) 的發明",
                     "sec3-content-1": `<p>在寫程式時，有許多種不同的風格，而現在最流行、也最被廣泛應用的風格叫做 <strong>物件導向 (Object-Oriented Programming, 簡稱 OOP)</strong>。我們所學的 Laravel 本質上就是使用這個風格撰寫的。</p>
                                        <p>在傳統寫程式時，變數是用來儲存資料的容器。在強型別語言（如 Java/C++）中，你必須嚴格<strong>宣告（Declare）</strong>變數能存什麼資料；而在弱型別語言（如 PHP/JS）中，雖然不強迫宣告，但電腦自己也會在執行時去判斷它的型態。</p>
                                        <p>然而，傳統的資料型態只有 \`string\` (字串)、\`int\` (整數)、\`bool\` (布林值) 等。但在現實生活中，我們要描述一個東西，例如「一隻筆」或「一瓶水」，是無法單純用這幾個基本型別就定義清楚的。</p>`,
@@ -701,12 +820,12 @@ echo <span class="text-blue-400">$cocaCola</span>->drink();
                                        <p>既然是個東西，我們就會在腦袋中給它賦予很多屬性。例如<strong>「一瓶水」</strong>，我們知道它包含：瓶子、蓋子、內容物、標籤、高度、圓周和功用。</p>`,
                     "sec3-transition-p": "在這裡，我們就碰到了前面提到的<strong>第二個難關：『理所當然』與『實際操作』的思維落差</strong>。人類看到一瓶水覺得理所當然，但對電腦來說，如果不進行具體的操作拆解，它就完全無法理解。這就是為什麼我們需要使用 **物件導向 (OOP)** 的語法，老老實實地為電腦寫一份「水瓶說明書」（類別 Class）。",
                     "sec3-outro-text": "對於程式而言，電腦不知道什麼是一瓶水，所以我們要寫一份<strong>「類別 (Class) 藍圖」</strong>介紹給它看：",
-                    "sec4-title": "6. 讓我們用程式碼跟電腦介紹「一瓶水」",
+                    "sec4-title": "7. 讓我們用程式碼跟電腦介紹「一瓶水」",
                     "concept-inherit-title": "🧬 繼承 (Inheritance) 的概念",
                     "concept-inherit-desc": "如果我們寫好了一個「動物」的類別（有呼吸、會睡覺的特質），當我們想創造「小狗」的類別時，我們不需要重複去寫呼吸和睡覺。我們直接讓小狗「繼承 (extends)」動物，小狗就會自動學會呼吸和睡覺！我們距離只需要專注在寫小狗專屬的特徵（例如：會汪汪叫）。",
                     "concept-access-title": "🔒 存取控制修飾詞 (Access Modifiers)",
                     "concept-access-desc": "電腦很聽話，但有時候我們想保護一些內部秘密。我們可以用 \`public\` (大家都能用)、\`private\` (只有這瓶水自己知道，別人不能看)、\`protected\` (只有親屬繼承的人能看) 來控管權限，確保程式安全又整潔。",
-                    "summary-title": "7. 總結：分而治之 (Divide & Conquer) 與你的總工程師大腦",
+                    "summary-title": "8. 總結：分而治之 (Divide & Conquer) 與你的總工程師大腦",
                     "summary-content": `<p>學習了這麼多知識後，我們該如何串聯它們？無論你是要自己動手手寫程式，還是在 AI 時代下進行 <strong>Vibe Coding</strong>，有一個最重要的計算機科學核心思維你必須掌握：<strong>「分而治之 (Divide and Conquer)」</strong>，這叫做 computational thinking。</p>
                                     <p>電腦很笨、只懂得 0 與 1、對與錯、陰與陽。要讓這個笨孩子幫你解決龐大的現實問題，你必須學會兩件事：</p>
                                     <ul class="list-disc pl-5 space-y-2 text-xs md:text-base">
@@ -723,9 +842,48 @@ echo <span class="text-blue-400">$cocaCola</span>->drink();
                     "nav-hurdles": "2. 学习程式两大难关",
                     "nav-brain-pc": "3. 人脑 vs 电脑架构",
                     "nav-sec2": "4. AI 与 PHP 角色",
-                    "nav-sec3": "5. 宣告与 OOP 起源",
-                    "nav-sec4": "6. 程式码示范",
-                    "nav-summary": "7. 总结：分而治之",
+                    "nav-webdev": "5. 前端与后端概念",
+                    "nav-sec3": "6. 宣告与 OOP 起源",
+                    "nav-sec4": "7. 程式码示范",
+                    "nav-summary": "8. 总结：分而治之",
+                    "webdev-title": "5. 前端与后端概念 (Frontend & Backend)",
+                    "frontend-title": "前端 (Frontend)：网页的「门面」",
+                                        "frontend-content": `<p class="text-slate-500 text-[11px] md:text-xs mb-3">
+                                前端负责所有「使用者看得到、点得到」的画面与互动。就像是一间餐厅的装潢、菜单和服务生。
+                            </p>
+                            <ul class="space-y-2.5">
+                                <li><strong>HTML (结构)</strong>：网页的骨架（例如文字、按钮、输入框）。</li>
+                                <li><strong>CSS (样式)</strong>：网页的衣服与化妆（例如颜色、排版、字体大小）。</li>
+                                <li><strong>JavaScript (互动)</strong>：网页的大脑动作（例如按钮点击后的动画、弹出窗口）。</li>
+                                <li><strong>热门前端框架/库</strong>：
+                                    <ul class="list-disc pl-5 mt-1 text-[11px] text-slate-500 space-y-1">
+                                        <li><strong>React / Vue / Angular</strong>：帮助开发者更高效、更有结构地打造复杂的单页应用程序 (SPA)。</li>
+                                        <li><strong>Next.js</strong>：基于 React 的框架，提供更好的网页载入效能与 SEO 优化。</li>
+                                    </ul>
+                                </li>
+                            </ul>`,
+                    "backend-title": "后端 (Backend)：网页的「大脑与厨房」",
+                                        "backend-content": `<p class="text-slate-500 text-[11px] md:text-xs mb-3">
+                                后端负责处理「看不见的逻辑、数据运算与储存」。就像是餐厅厨房里的厨师、食材库存管理与收银系统。
+                            </p>
+                            <ul class="space-y-3">
+                                <li>
+                                    <strong>Node.js (JS系)</strong>：
+                                    <span class="block text-[11px] text-slate-500">让 JavaScript 也能在服务器端执行，常用框架如 <strong>Express</strong>, <strong>NestJS</strong>。适合高并发、即时应用（如聊天室）。</span>
+                                </li>
+                                <li>
+                                    <strong>PHP</strong>：
+                                    <span class="block text-[11px] text-slate-500">传统网页开发霸主，搭配框架 <strong>Laravel</strong>。开发速度极快、市占率极高（全世界 78% 网站）。</span>
+                                </li>
+                                <li>
+                                    <strong>Java</strong>：
+                                    <span class="block text-[11px] text-slate-500">稳定、安全、适合超大型企业系统，搭配框架 <strong>Spring Boot</strong>。是金融与大型电商系统的首选。</span>
+                                </li>
+                                <li>
+                                    <strong>Python</strong>：
+                                    <span class="block text-[11px] text-slate-500">语法简洁，搭配框架 <strong>Django</strong> (全功能大包) 或 <strong>Flask</strong> (轻量级)。在人工智能与数据分析领域最受欢迎。</span>
+                                </li>
+                            </ul>`,
                     "side-tips": "💡 點選左上角按鈕可收合選單",
                     "hero-title": "学程序的第一堂课：认识电脑、人脑与面向对象 (OOP)",
                     "hero-subtitle": "用最直观、最生活化的比喻，带你理解电脑的运作逻辑，以及为什么我们要使用「面向对象」来写程序。",
@@ -752,7 +910,7 @@ echo <span class="text-blue-400">$cocaCola</span>->drink();
                     "sec2-ai-content": "现代 AI 看起来非常聪明，但这并非因为它真的会自主思考。其本质上是工程师设计了算法，让电脑<strong>在特定事情上重复学习了上百亿次</strong>，它才终于学会了该怎么做。它依旧是建立在「重复执行指令」的极致体现。",
                     "sec2-php-title": "4.2 PHP 与 Laravel 的市占地位",
                     "sec2-php-content": "在非 AI 领域的网站开发中，最常使用的是像 <strong>Laravel</strong> 這樣框架。它底层采用的语言是 **PHP**。你知道吗？目前全世界高达 <strong>78% 的网站</strong> 都是由 PHP 在幕后默默支持的。不论是 PHP 还是其他程序语言，本质上都是我们人类用来指引电脑这个「笨孩子」的一步步步骤说明书。",
-                    "sec3-title": "5. 从数据类型到面向对象 (OOP) 的发明",
+                    "sec3-title": "6. 从数据类型到面向对象 (OOP) 的发明",
                     "sec3-content-1": `<p>在写程序时，有许多种不同的风格，而现在最流行、也最被广泛应用的风格叫做 <strong>面向对象 (Object-Oriented Programming, 简称 OOP)</strong>。我们所学的 Laravel 本质上就是使用这个风格撰写的。</p>
                                        <p>在传统写程序時，变量是用来源数据存储的容器。在强类型语言（如 Java/C++）中，你必须严格<strong>宣告（Declare）</strong>变量能存什么数据；而在弱类型语言（如 PHP/JS）中，虽然不强迫宣告，但电脑自己也会在运行时去判断它的型態。</p>
                                        <p>然而，传统的数据类型只有 \`string\` (字符串)、\`int\` (整数)、\`bool\` (布林值) 等。但在现实生活中，我们要描述一個东西，例如「一双笔」或「一瓶水」，是无法单纯用这几个基本型態就定义清楚的。</p>`,
@@ -761,12 +919,12 @@ echo <span class="text-blue-400">$cocaCola</span>->drink();
                                        <p>既然是个东西，我们就会在脑袋中给它赋予很多属性。例如<strong>「一瓶水」</strong>，我们知道它包含：瓶子、盖子、内容物、标签、高度、圆周和功用。</p>`,
                     "sec3-transition-p": "在这里，我们就碰到了前面提到的<strong>第二个难关：『理所当然』与『实际操作』的思维落差</strong>。人类看到一瓶水觉得理所当然，但对电脑来说，如果不进行具体的操作拆解，它就完全无法理解。这就是为什么我们需要使用 **面向对象 (OOP)** 的语法，老老实实地為电脑写一份「水瓶说明书」（类别 Class）。",
                     "sec3-outro-text": "对于程序而言，电脑不知道什么是一瓶水，所以我们要写一份<strong>「类别 (Class) 蓝图」</strong>介绍给它看：",
-                    "sec4-title": "6. 讓我們用程式碼跟電腦介紹「一瓶水」",
+                    "sec4-title": "7. 讓我們用程式碼跟電腦介紹「一瓶水」",
                     "concept-inherit-title": "🧬 继承 (Inheritance) 的概念",
                     "concept-inherit-desc": "如果我们写好了一个「动物」的类别（有呼吸、会睡觉的特质），当我们想创造「小狗」的类别时，我们不需要重复去寫呼吸和睡觉。我们直接讓小狗「继承 (extends)」动物，小狗就会自动学会呼吸和睡觉！我们只需要专注于写小狗专属的特征（例如：会汪汪叫）。",
                     "concept-access-title": "🔒 存取控制修饰词 (Access Modifiers)",
                     "concept-access-desc": "电脑很听话，但有时候我们想保护一些内部秘密。我们可以用 \`public\` (大家都能用)、\`private\` (只有这瓶水自己知道，别人不能看)、\`protected\` (只有亲属继承的人能看) 來控管权限，确保程序安全又整洁。",
-                    "summary-title": "7. 总结：分而治之 (Divide & Conquer) 与你的总工程师大脑",
+                    "summary-title": "8. 总结：分而治之 (Divide & Conquer) 与你的总工程师大脑",
                     "summary-content": `<p>学习了这么多知识后，我们该如何串联它们？无论你是要自己动手手写程序，还是在 AI 时代下进行 <strong>Vibe Coding</strong>，有一个最重要的计算机科学核心思维你必须掌握：<strong>「分而治之 (Divide and Conquer)」</strong>，这叫做 computational thinking。</p>
                                     <p>电脑很笨、只懂得 0 與 1、对与错、阴与阳。要让这个笨孩子帮你解决庞大的现实问题，你必须学会两件事：</p>
                                     <ul class="list-disc pl-5 space-y-2 text-xs md:text-base">
@@ -821,12 +979,12 @@ echo <span class="text-blue-400">$cocaCola</span>->drink();
                                        <p>Since it's an object, we give it properties. For a <strong>'Water Bottle'</strong>, we know it has: bottle, cap, contents, label, height, and purpose.</p>`,
                     "sec3-transition-p": "Here, we run into the <strong>second hurdle mentioned earlier: the thought gap between 'taking it for granted' and 'explicit operations'</strong>. While a human takes a bottle of water for granted, a computer has no concept of it unless we explicitly define and break down every detail. This is exactly why we use <strong>Object-Oriented Programming (OOP)</strong> syntax to write a detailed 'User Manual' (Class) for the computer.",
                     "sec3-outro-text": "For a computer, it doesn't know what a water bottle is, so we must write a <strong>'Class blueprint'</strong> to introduce it:",
-                    "sec4-title": "6. Introducing 'Water Bottle' to Computers in Code",
+                    "sec4-title": "7. Introducing 'Water Bottle' to Computers in Code",
                     "concept-inherit-title": "🧬 Understanding Inheritance",
                     "concept-inherit-desc": "If we define an 'Animal' class (which can breathe and sleep), we don't need to rewrite breathe and sleep when defining a 'Dog'. We just let the Dog 'inherit' (extends) from Animal, and it gets those traits automatically. We only code Dog-specific traits (like barks).",
                     "concept-access-title": "🔒 Access Modifiers",
                     "concept-access-desc": "Computers are obedient, but we want to secure internal data. We use \`public\` (open to all), \`private\` (hidden, accessible only internally), and \`protected\` (accessible by descendants) to govern permissions for safe, clean code.",
-                    "summary-title": "7. Summary: Divide & Conquer and Your Chief Engineer Brain",
+                    "summary-title": "8. Summary: Divide & Conquer and Your Chief Engineer Brain",
                     "summary-content": `<p>After acquiring all this knowledge, how do we connect the dots? Whether you are hand-coding yourself or performing <strong>Vibe Coding</strong> with AI assistance, there is one supreme computer science mindset you must master: <strong>'Divide and Conquer'</strong>, which is called computational thinking.</p>
                                     <p>Computers are literal and only understand 0/1, true/false, right/wrong. To let this dumb machine solve complex real-life challenges, you must master two steps:</p>
                                     <ul class="list-disc pl-5 space-y-2 text-xs md:text-base">
@@ -888,6 +1046,13 @@ echo <span class="text-blue-400">$cocaCola</span>->drink();
 
                 $('#sec2-php-title').html('<span class="text-2xl">🐘</span> ' + dict["sec2-php-title"]);
                 $('#sec2-php-content').html(dict["sec2-php-content"]);
+
+                $('#nav-webdev .nav-text').text(dict["nav-webdev"]);
+                $('#webdev-title').text(dict["webdev-title"]);
+                $('#frontend-title').html('<span class="text-indigo-500">🎨</span> ' + dict["frontend-title"]);
+                $('#frontend-content').html(dict["frontend-content"]);
+                $('#backend-title').html('<span class="text-blue-500">⚙️</span> ' + dict["backend-title"]);
+                $('#backend-content').html(dict["backend-content"]);
 
                 $('#sec3-title').text(dict["sec3-title"]);
                 $('#sec3-content-1').html(dict["sec3-content-1"]);
