@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>降低資訊密度與故事化引流教學</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f8fafc',
+                            100: '#f1f5f9',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            900: '#0f172a',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'Noto Sans TC', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- jQuery CDN -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased selection:bg-blue-100 selection:text-blue-600">
+
+    <!-- Header / Navigation -->
+    <header class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-100 shadow-sm transition-all duration-300">
+        <div class="max-w-6xl mx-auto px-6 h-20 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-500 to-indigo-500 flex items-center justify-center text-white font-bold text-xl shadow-md shadow-blue-200">
+                    S
+                </div>
+                <span class="font-bold text-xl tracking-tight bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent">StoryFlow Design</span>
+            </div>
+            <nav class="hidden md:flex items-center space-x-8 text-sm font-medium text-slate-600">
+                <a href="#concept" class="hover:text-blue-600 transition-colors">核心概念</a>
+                <a href="#examples" class="hover:text-blue-600 transition-colors">案例解析 (iframe)</a>
+                <a href="#storyboarding" class="hover:text-blue-600 transition-colors">故事化引流</a>
+                <a href="#comparison" class="hover:text-blue-600 transition-colors">對比與拆解</a>
+                <a href="#action" class="hover:text-blue-600 transition-colors">實踐指南</a>
+            </nav>
+            <a href="#demo-modal" id="open-cta" class="bg-slate-900 text-white px-5 py-2.5 rounded-full text-sm font-medium hover:bg-blue-600 hover:shadow-lg hover:shadow-blue-200 transition-all duration-300 transform hover:-translate-y-0.5">
+                開始學習
+            </a>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="relative py-24 md:py-32 overflow-hidden bg-gradient-to-b from-white to-slate-50">
+        <div class="max-w-4xl mx-auto px-6 text-center relative z-10">
+            <span class="inline-block px-4 py-1.5 rounded-full bg-blue-50 text-blue-600 text-xs font-semibold tracking-wide uppercase mb-6 border border-blue-100">
+                專案二 · 第一堂課
+            </span>
+            <h1 class="text-4xl md:text-6xl font-bold text-slate-900 tracking-tight leading-tight mb-8">
+                用<span class="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">極簡資訊密度</span>與<span class="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">故事化敘事</span>引導使用者
+            </h1>
+            <p class="text-lg md:text-xl text-slate-600 leading-relaxed font-light mb-12 max-w-2xl mx-auto">
+                完美的網頁體驗不是展示你擁有一切，而是精準引導使用者前往他們想去的地方。告別擁擠的畫面，用說故事的力量打動人心。
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <a href="#examples" class="px-8 py-4 bg-blue-600 text-white rounded-2xl font-medium shadow-lg shadow-blue-200 hover:bg-blue-700 hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-2">
+                    觀看負面案例嵌入 <i class="fa-solid fa-arrow-down text-sm"></i>
+                </a>
+                <button id="toggle-sim-btn" class="px-8 py-4 bg-white text-slate-700 border border-slate-200 rounded-2xl font-medium hover:border-slate-300 hover:bg-slate-50 transition-all duration-300 shadow-sm flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-wand-magic-sparkles text-blue-500"></i> 體驗高/低密度差異
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Key Principle 1: 減少資訊密度 -->
+    <section id="concept" class="py-20 bg-white">
+        <div class="max-w-5xl mx-auto px-6">
+            <div class="text-center max-w-2xl mx-auto mb-16">
+                <h2 class="text-3xl font-bold text-slate-900 mb-4">一、減少資訊密度的藝術</h2>
+                <p class="text-slate-600">當注意力成為稀缺資源，簡潔即是極致的說服力。</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8 mb-12">
+                <!-- Card 1 -->
+                <div class="p-8 rounded-3xl bg-slate-50 border border-slate-100 hover:border-blue-200 hover:shadow-xl hover:shadow-blue-50/50 transition-all duration-300 group">
+                    <div class="w-14 h-14 bg-white rounded-2xl flex items-center justify-center shadow-md mb-6 text-blue-600 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-eye-slash text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3">過濾非核心雜訊</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed">
+                        一頁只聚焦一個重點。移除次要按鈕、冗長的文字說明與干擾視覺的繁複邊框。
+                    </p>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="p-8 rounded-3xl bg-slate-50 border border-slate-100 hover:border-blue-200 hover:shadow-xl hover:shadow-blue-50/50 transition-all duration-300 group">
+                    <div class="w-14 h-14 bg-white rounded-2xl flex items-center justify-center shadow-md mb-6 text-indigo-600 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-expand text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3">善用留白呼吸感</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed">
+                        留白（Whitespace）並非浪費空間，而是創造視覺階層與閱讀節奏的關鍵大師。
+                    </p>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="p-8 rounded-3xl bg-slate-50 border border-slate-100 hover:border-blue-200 hover:shadow-xl hover:shadow-blue-50/50 transition-all duration-300 group">
+                    <div class="w-14 h-14 bg-white rounded-2xl flex items-center justify-center shadow-md mb-6 text-purple-600 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-bullseye text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3">漸進式揭露資訊</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed">
+                        將複雜內容分層處理，只在使用者需要時才顯示詳細資訊，降低心理認知負擔。
+                    </p>
+                </div>
+            </div>
+
+            <!-- Attention Span Research Highlight Banner -->
+            <div class="p-8 rounded-3xl bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 border border-blue-100 shadow-sm flex flex-col md:flex-row items-center justify-between gap-6">
+                <div class="flex items-center gap-6">
+                    <div class="w-20 h-20 rounded-2xl bg-blue-600 text-white flex-shrink-0 flex flex-col items-center justify-center shadow-lg shadow-blue-300">
+                        <span class="text-3xl font-extrabold leading-none">8s</span>
+                        <span class="text-[10px] font-medium tracking-wider uppercase mt-1">Attention</span>
+                    </div>
+                    <div>
+                        <span class="text-xs font-bold text-blue-600 uppercase tracking-wider mb-1 block">🧠 權威心理學與 UX 研究報告</span>
+                        <h4 class="text-xl font-bold text-slate-900 mb-1">微軟 Attention Span 研究：人類注意力僅剩 8 秒！</h4>
+                        <p class="text-xs text-slate-600 leading-relaxed max-w-2xl">
+                            研究指出，智慧型手機普及後人類平均注意力時間從 12 秒驟降至 <strong>8 秒</strong>（甚至短於金魚的 9 秒）。訪客進入網站後只有 <strong>3 秒鐘黃金決策期</strong>。這正是為什麼複雜密集的畫面會直接促使訪客關閉分頁！
+                        </p>
+                    </div>
+                </div>
+                <a href="#rwd-flow" class="px-5 py-2.5 bg-slate-900 text-white rounded-xl text-xs font-semibold hover:bg-blue-600 transition flex-shrink-0">
+                    查看 3秒極簡分流對策 <i class="fa-solid fa-arrow-right ml-1"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Embedded Bad Examples Section -->
+    <section id="examples" class="py-20 bg-slate-100/70 border-y border-slate-200">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <span class="px-3 py-1 rounded-full bg-red-100 text-red-600 text-xs font-semibold uppercase tracking-wider mb-3 inline-block">
+                    反面教材案例剖析
+                </span>
+                <h2 class="text-3xl font-bold text-slate-900 mb-4">實境觀測：做不好的「高資訊密度」網站</h2>
+                <p class="text-slate-600 leading-relaxed">
+                    下方透過 iframe 實時鑲嵌實際網站。試著操作並觀察：當頁面充斥過多資訊、缺乏視覺焦點與故事敘事時，訪客將如何產生「選擇麻痺」與注意力流失。
+                </p>
+            </div>
+
+            <!-- Web 1: Math Tutor DVD -->
+            <div class="mb-16 bg-white rounded-3xl p-6 md:p-8 border border-slate-200 shadow-md">
+                <div class="flex flex-col md:flex-row md:items-center justify-between pb-6 mb-6 border-b border-slate-100 gap-4">
+                    <div>
+                        <div class="flex items-center gap-3">
+                            <span class="w-3 h-3 rounded-full bg-red-500"></span>
+                            <h3 class="text-xl font-bold text-slate-900">案例一：Math Tutor DVD (傳統電商型資訊過載)</h3>
+                        </div>
+                        <p class="text-xs text-slate-500 mt-1">網址：<a href="https://www.mathtutordvd.com/" target="_blank" class="text-blue-600 underline hover:text-blue-800">https://www.mathtutordvd.com/</a></p>
+                    </div>
+                    <a href="https://www.mathtutordvd.com/" target="_blank" class="px-4 py-2 bg-slate-100 text-slate-700 rounded-xl text-xs font-semibold hover:bg-slate-200 transition flex items-center gap-1.5 w-fit">
+                        <i class="fa-solid fa-arrow-up-right-from-square"></i> 在新分頁開啟
+                    </a>
+                </div>
+
+                <!-- Analysis Badges -->
+                <div class="grid md:grid-cols-3 gap-4 mb-6">
+                    <div class="p-3 bg-red-50/60 rounded-xl border border-red-100 text-xs text-red-900">
+                        <span class="font-bold block mb-1">❌ 視覺焦點混亂</span>
+                        滿屏的廣告 Banner、選單列與大量文字同時搶奪注意力，找不到第一視覺落點。
+                    </div>
+                    <div class="p-3 bg-red-50/60 rounded-xl border border-red-100 text-xs text-red-900">
+                        <span class="font-bold block mb-1">❌ 缺乏敘事引流</span>
+                        直接鋪陳數十種產品分類與按鈕，未建立痛點與解答的故事化推進。
+                    </div>
+                    <div class="p-3 bg-red-50/60 rounded-xl border border-red-100 text-xs text-red-900">
+                        <span class="font-bold block mb-1">❌ 缺乏排版留白</span>
+                        組件緊貼、缺乏呼吸感，導致訪客心理負荷過高，快速離開頁面。
+                    </div>
+                </div>
+
+                <!-- iframe Wrapper -->
+                <div class="relative w-full h-[500px] rounded-2xl overflow-hidden border border-slate-300 shadow-inner bg-slate-50">
+                    <iframe src="https://www.mathtutordvd.com/" class="w-full h-full border-0" title="Math Tutor DVD Example"></iframe>
+                </div>
+            </div>
+
+            <!-- Web 2: CKJHS Sports -->
+            <div class="bg-white rounded-3xl p-6 md:p-8 border border-slate-200 shadow-md">
+                <div class="flex flex-col md:flex-row md:items-center justify-between pb-6 mb-6 border-b border-slate-100 gap-4">
+                    <div>
+                        <div class="flex items-center gap-3">
+                            <span class="w-3 h-3 rounded-full bg-red-500"></span>
+                            <h3 class="text-xl font-bold text-slate-900">案例二：傳統學校/公家單位網站 (結構極度密集)</h3>
+                        </div>
+                        <p class="text-xs text-slate-500 mt-1">網址：<a href="http://sports.ckjhs.tyc.edu.tw/" target="_blank" class="text-blue-600 underline hover:text-blue-800">http://sports.ckjhs.tyc.edu.tw/</a></p>
+                    </div>
+                    <a href="http://sports.ckjhs.tyc.edu.tw/" target="_blank" class="px-4 py-2 bg-slate-100 text-slate-700 rounded-xl text-xs font-semibold hover:bg-slate-200 transition flex items-center gap-1.5 w-fit">
+                        <i class="fa-solid fa-arrow-up-right-from-square"></i> 在新分頁開啟
+                    </a>
+                </div>
+
+                <!-- Analysis Badges -->
+                <div class="grid md:grid-cols-3 gap-4 mb-6">
+                    <div class="p-3 bg-red-50/60 rounded-xl border border-red-100 text-xs text-red-900">
+                        <span class="font-bold block mb-1">❌ 資訊堆砌無層次</span>
+                        採用舊型 Table 列表框架，所有公告與超連結密度極高，難以瀏覽。
+                    </div>
+                    <div class="p-3 bg-red-50/60 rounded-xl border border-red-100 text-xs text-red-900">
+                        <span class="font-bold block mb-1">❌ 無行動導向 (CTA)</span>
+                        使用者進站後不知道優先要看什麼、該點擊哪裡，資訊缺乏導引。
+                    </div>
+                    <div class="p-3 bg-red-50/60 rounded-xl border border-red-100 text-xs text-red-900">
+                        <span class="font-bold block mb-1">❌ 缺乏行動端優化</span>
+                        在手機裝置上難以順暢閱讀，字體過小且缺乏現代感設計系統。
+                    </div>
+                </div>
+
+                <!-- iframe Wrapper -->
+                <div class="relative w-full h-[500px] rounded-2xl overflow-hidden border border-slate-300 shadow-inner bg-slate-50">
+                    <iframe src="http://sports.ckjhs.tyc.edu.tw/" class="w-full h-full border-0" title="CKJHS Sports Example"></iframe>
+                </div>
+            </div>
+
+            <!-- Web 3: TYSH Home -->
+            <div class="mb-16 bg-white rounded-3xl p-6 md:p-8 border border-slate-200 shadow-md">
+                <div class="flex flex-col md:flex-row md:items-center justify-between pb-6 mb-6 border-b border-slate-100 gap-4">
+                    <div>
+                        <div class="flex items-center gap-3">
+                            <span class="w-3 h-3 rounded-full bg-red-500"></span>
+                            <h3 class="text-xl font-bold text-slate-900">案例三：桃園高中官網 (高密度公告與多重導覽列)</h3>
+                        </div>
+                        <p class="text-xs text-slate-500 mt-1">網址：<a href="https://www.tysh.tyc.edu.tw/home" target="_blank" class="text-blue-600 underline hover:text-blue-800">https://www.tysh.tyc.edu.tw/home</a></p>
+                    </div>
+                    <a href="https://www.tysh.tyc.edu.tw/home" target="_blank" class="px-4 py-2 bg-slate-100 text-slate-700 rounded-xl text-xs font-semibold hover:bg-slate-200 transition flex items-center gap-1.5 w-fit">
+                        <i class="fa-solid fa-arrow-up-right-from-square"></i> 在新分頁開啟
+                    </a>
+                </div>
+
+                <!-- Analysis Badges -->
+                <div class="grid md:grid-cols-3 gap-4 mb-6">
+                    <div class="p-3 bg-red-50/60 rounded-xl border border-red-100 text-xs text-red-900">
+                        <span class="font-bold block mb-1">❌ 資訊過載與分類紛雜</span>
+                        首頁充斥大量即時公告列表、側邊欄連結與多重次選單，視覺無法聚焦。
+                    </div>
+                    <div class="p-3 bg-red-50/60 rounded-xl border border-red-100 text-xs text-red-900">
+                        <span class="font-bold block mb-1">❌ 缺乏主題故事性</span>
+                        資訊直接條列呈現，未能針對不同使用者（學生、家長、教職員）進行情境化引流。
+                    </div>
+                    <div class="p-3 bg-red-50/60 rounded-xl border border-red-100 text-xs text-red-900">
+                        <span class="font-bold block mb-1">❌ 色彩與區塊缺乏層次</span>
+                        元件邊界混濁，資訊塊密度過高，訪客需要費勁搜尋關鍵資訊。
+                    </div>
+                </div>
+
+                <!-- iframe Wrapper -->
+                <div class="relative w-full h-[500px] rounded-2xl overflow-hidden border border-slate-300 shadow-inner bg-slate-50">
+                    <iframe src="https://www.tysh.tyc.edu.tw/home" class="w-full h-full border-0" title="TYSH Home Example"></iframe>
+                </div>
+            </div>
+
+            <!-- Web 4: Arngren (Classic Web Design Anti-Pattern) -->
+            <div class="mb-16 bg-white rounded-3xl p-6 md:p-8 border border-slate-200 shadow-md">
+                <div class="flex flex-col md:flex-row md:items-center justify-between pb-6 mb-6 border-b border-slate-100 gap-4">
+                    <div>
+                        <div class="flex items-center gap-3">
+                            <span class="w-3 h-3 rounded-full bg-red-500"></span>
+                            <h3 class="text-xl font-bold text-slate-900">案例四：Arngren.net (全球公認資訊密度炸裂代表)</h3>
+                        </div>
+                        <p class="text-xs text-slate-500 mt-1">網址：<a href="http://www.arngren.net/" target="_blank" class="text-blue-600 underline hover:text-blue-800">http://www.arngren.net/</a></p>
+                    </div>
+                    <a href="http://www.arngren.net/" target="_blank" class="px-4 py-2 bg-slate-100 text-slate-700 rounded-xl text-xs font-semibold hover:bg-slate-200 transition flex items-center gap-1.5 w-fit">
+                        <i class="fa-solid fa-arrow-up-right-from-square"></i> 在新分頁開啟
+                    </a>
+                </div>
+
+                <!-- Analysis Badges -->
+                <div class="grid md:grid-cols-3 gap-4 mb-6">
+                    <div class="p-3 bg-red-50/60 rounded-xl border border-red-100 text-xs text-red-900">
+                        <span class="font-bold block mb-1">❌ 視覺震撼的無秩序鋪設</span>
+                        數百張商品圖片、價格與文字未經任何網格或卡片系統分類，直接堆疊在畫面上。
+                    </div>
+                    <div class="p-3 bg-red-50/60 rounded-xl border border-red-100 text-xs text-red-900">
+                        <span class="font-bold block mb-1">❌ 完全喪失引流路徑</span>
+                        訪客眼花繚亂，完全無法依照邏輯進行瀏覽，屬於極端的設計失敗示範。
+                    </div>
+                    <div class="p-3 bg-red-50/60 rounded-xl border border-red-100 text-xs text-red-900">
+                        <span class="font-bold block mb-1">❌ 顏色衝突與干擾文字</span>
+                        大量螢光色文字與紅藍綠背景並存，大幅增加視覺疲勞。
+                    </div>
+                </div>
+
+                <!-- iframe Wrapper -->
+                <div class="relative w-full h-[500px] rounded-2xl overflow-hidden border border-slate-300 shadow-inner bg-slate-50">
+                    <iframe src="http://www.arngren.net/" class="w-full h-full border-0" title="Arngren Example"></iframe>
+                </div>
+            </div>
+
+            <!-- Web 5: Yodobashi Camera -->
+            <div class="mb-16 bg-white rounded-3xl p-6 md:p-8 border border-slate-200 shadow-md">
+                <div class="flex flex-col md:flex-row md:items-center justify-between pb-6 mb-6 border-b border-slate-100 gap-4">
+                    <div>
+                        <div class="flex items-center gap-3">
+                            <span class="w-3 h-3 rounded-full bg-red-500"></span>
+                            <h3 class="text-xl font-bold text-slate-900">案例五：Yodobashi.com (日式典型極密資訊量網頁)</h3>
+                        </div>
+                        <p class="text-xs text-slate-500 mt-1">網址：<a href="https://www.yodobashi.com/" target="_blank" class="text-blue-600 underline hover:text-blue-800">https://www.yodobashi.com/</a></p>
+                    </div>
+                    <a href="https://www.yodobashi.com/" target="_blank" class="px-4 py-2 bg-slate-100 text-slate-700 rounded-xl text-xs font-semibold hover:bg-slate-200 transition flex items-center gap-1.5 w-fit">
+                        <i class="fa-solid fa-arrow-up-right-from-square"></i> 在新分頁開啟
+                    </a>
+                </div>
+
+                <!-- Analysis Badges -->
+                <div class="grid md:grid-cols-3 gap-4 mb-6">
+                    <div class="p-3 bg-red-50/60 rounded-xl border border-red-100 text-xs text-red-900">
+                        <span class="font-bold block mb-1">❌ 資訊極高壓密貼</span>
+                        典型日系電商風，一屏內有數十個分類標籤、特價標籤與商品圖片緊密相連。
+                    </div>
+                    <div class="p-3 bg-red-50/60 rounded-xl border border-red-100 text-xs text-red-900">
+                        <span class="font-bold block mb-1">❌ 缺乏故事化包裝</span>
+                        僅適合已有明確購買目標搜尋的使用者，對盲瀏覽使用者無法形成故事吸引。
+                    </div>
+                    <div class="p-3 bg-red-50/60 rounded-xl border border-red-100 text-xs text-red-900">
+                        <span class="font-bold block mb-1">❌ 留白極微小</span>
+                        邊距與組件間距極小，畫面被文字與圖片塞滿，容易造成認知負擔。
+                    </div>
+                </div>
+
+                <!-- iframe Wrapper -->
+                <div class="relative w-full h-[500px] rounded-2xl overflow-hidden border border-slate-300 shadow-inner bg-slate-50">
+                    <iframe src="https://www.yodobashi.com/" class="w-full h-full border-0" title="Yodobashi Example"></iframe>
+                </div>
+            </div>
+
+            <!-- Web 6: Taobao.com -->
+            <div class="bg-white rounded-3xl p-6 md:p-8 border border-slate-200 shadow-md">
+                <div class="flex flex-col md:flex-row md:items-center justify-between pb-6 mb-6 border-b border-slate-100 gap-4">
+                    <div>
+                        <div class="flex items-center gap-3">
+                            <span class="w-3 h-3 rounded-full bg-orange-500"></span>
+                            <h3 class="text-xl font-bold text-slate-900">案例六：淘寶網 Taobao.com (巨量促銷與高密度閃爍區塊)</h3>
+                        </div>
+                        <p class="text-xs text-slate-500 mt-1">網址：<a href="https://www.taobao.com/" target="_blank" class="text-blue-600 underline hover:text-blue-800">https://www.taobao.com/</a></p>
+                    </div>
+                    <a href="https://www.taobao.com/" target="_blank" class="px-4 py-2 bg-slate-100 text-slate-700 rounded-xl text-xs font-semibold hover:bg-slate-200 transition flex items-center gap-1.5 w-fit">
+                        <i class="fa-solid fa-arrow-up-right-from-square"></i> 在新分頁開啟
+                    </a>
+                </div>
+
+                <!-- Analysis Badges -->
+                <div class="grid md:grid-cols-3 gap-4 mb-6">
+                    <div class="p-3 bg-red-50/60 rounded-xl border border-red-100 text-xs text-red-900">
+                        <span class="font-bold block mb-1">❌ 狂轟濫炸的促銷元件</span>
+                        滿頁閃爍的紅包、限時倒數、動態輪播與各種優惠券標籤，視覺神經容易極度疲勞。
+                    </div>
+                    <div class="p-3 bg-red-50/60 rounded-xl border border-red-100 text-xs text-red-900">
+                        <span class="font-bold block mb-1">❌ 多層級多側邊欄佈局</span>
+                        左側三級商品選單 + 中間動態 Banner + 右側個人登入與公告 + 下方推薦，缺乏單一故事敘事。
+                    </div>
+                    <div class="p-3 bg-red-50/60 rounded-xl border border-red-100 text-xs text-red-900">
+                        <span class="font-bold block mb-1">❌ 強迫安全限制 (X-Frame)</span>
+                        大型商業平台通常設定安全協議阻止外部嵌入（若 iframe 顯示空白，可點擊上方按鈕開啟分頁），正是電商為了鎖住流量的常見作法。
+                    </div>
+                </div>
+
+                <!-- iframe Wrapper -->
+                <div class="relative w-full h-[500px] rounded-2xl overflow-hidden border border-slate-300 shadow-inner bg-slate-50">
+                    <iframe src="https://www.taobao.com/" class="w-full h-full border-0" title="Taobao Example"></iframe>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Interactive Density Simulator -->
+    <section class="py-16 bg-slate-50">
+        <div class="max-w-4xl mx-auto px-6">
+            <div class="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm">
+                <div class="flex flex-col md:flex-row md:items-center justify-between pb-6 mb-6 border-b border-slate-100 gap-4">
+                    <div>
+                        <h3 class="text-xl font-bold text-slate-900">即時模擬：資訊密度比較</h3>
+                        <p class="text-xs text-slate-500 mt-1">點擊下方按鈕切換畫面，感受視覺壓迫感與清晰度差異</p>
+                    </div>
+                    <div class="flex bg-slate-100 p-1 rounded-xl w-fit">
+                        <button id="btn-low-density" class="px-4 py-2 rounded-lg text-xs font-semibold transition-all bg-white text-blue-600 shadow-sm">
+                            低密度（優化後）
+                        </button>
+                        <button id="btn-high-density" class="px-4 py-2 rounded-lg text-xs font-semibold text-slate-500 transition-all hover:text-slate-800">
+                            高密度（擁擠舊版）
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Low Density View -->
+                <div id="view-low-density" class="p-8 bg-slate-50 rounded-2xl border border-dashed border-slate-200">
+                    <div class="max-w-md mx-auto text-center py-6">
+                        <span class="text-xs font-bold uppercase tracking-wider text-blue-600 mb-2 block">精選課程</span>
+                        <h4 class="text-2xl font-bold text-slate-900 mb-4">掌握網頁體驗設計的視覺文法</h4>
+                        <p class="text-sm text-slate-600 mb-6 leading-relaxed">專為想打造高轉換率與絕佳質感網頁的設計師與開發者量身打造。</p>
+                        <button class="bg-blue-600 text-white px-6 py-3 rounded-xl font-medium shadow-md hover:bg-blue-700 transition">
+                            立即開啟體驗
+                        </button>
+                    </div>
+                </div>
+
+                <!-- High Density View (Hidden initially) -->
+                <div id="view-high-density" class="hidden p-4 bg-amber-50 rounded-2xl border border-amber-200">
+                    <div class="text-xs text-amber-900 space-y-2">
+                        <div class="flex justify-between items-center bg-amber-200 p-1">
+                            <span class="font-bold">最新公告！限時打折！特價最後一天！</span>
+                            <button class="bg-red-600 text-white px-2 py-0.5 text-[10px]">搶購</button>
+                        </div>
+                        <h4 class="text-lg font-bold text-red-700">網頁設計大全：HTML/CSS/JS/React/Vue/Angular/Tailwind/Node/Python課程！</h4>
+                        <div class="flex gap-1 flex-wrap">
+                            <span class="bg-yellow-300 px-1 border border-yellow-500">超值方案</span>
+                            <span class="bg-yellow-300 px-1 border border-yellow-500">熱銷NO.1</span>
+                            <span class="bg-yellow-300 px-1 border border-yellow-500">終身觀看</span>
+                            <span class="bg-yellow-300 px-1 border border-yellow-500">提供證書</span>
+                        </div>
+                        <p class="text-[11px] leading-tight text-slate-700">
+                            這門課程包含50個單元、300小時影片、免費討論區、導師一對一答疑、每週作業批改、履歷健檢服務、面試模擬、推薦就業機會。現在購買還送額外素材包！
+                        </p>
+                        <div class="grid grid-cols-3 gap-1 pt-1">
+                            <button class="bg-green-600 text-white py-1 text-[10px]">加入購物車</button>
+                            <button class="bg-blue-600 text-white py-1 text-[10px]">直接購買</button>
+                            <button class="bg-gray-600 text-white py-1 text-[10px]">收藏課程</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Key Principle 2: 故事化引流 -->
+    <section id="storyboarding" class="py-20 bg-white">
+        <div class="max-w-5xl mx-auto px-6">
+            <div class="text-center max-w-2xl mx-auto mb-16">
+                <h2 class="text-3xl font-bold text-slate-900 mb-4">二、網頁引流：像說故事一樣自然</h2>
+                <p class="text-slate-600">別急著賣產品，先帶著使用者經歷一場引人入勝的視覺探索旅程。</p>
+            </div>
+
+            <!-- Story Steps -->
+            <div class="relative border-l-2 border-slate-100 ml-4 md:ml-32 space-y-12 py-4">
+                
+                <!-- Step 1 -->
+                <div class="relative pl-8 md:pl-12 group">
+                    <div class="absolute -left-[17px] top-1 w-8 h-8 rounded-full bg-white border-2 border-blue-500 flex items-center justify-center text-blue-600 font-bold text-xs shadow">
+                        1
+                    </div>
+                    <span class="text-xs font-semibold text-blue-600 uppercase tracking-wider">Hook 鋪陳共鳴</span>
+                    <h3 class="text-xl font-bold text-slate-900 mt-1 mb-2">指出痛點，建立共同記憶</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed max-w-xl">
+                        開頭第一屏（Hero Banner）不需要急著放報名表單。用一句打動人心的問句或經典情境，讓訪客停下腳步感覺「這就是在說我」。
+                    </p>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="relative pl-8 md:pl-12 group">
+                    <div class="absolute -left-[17px] top-1 w-8 h-8 rounded-full bg-white border-2 border-indigo-500 flex items-center justify-center text-indigo-600 font-bold text-xs shadow">
+                        2
+                    </div>
+                    <span class="text-xs font-semibold text-indigo-600 uppercase tracking-wider">Conflict 轉折與發現</span>
+                    <h3 class="text-xl font-bold text-slate-900 mt-1 mb-2">揭露傳統做法的瓶頸</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed max-w-xl">
+                        說明為什麼過去的方式行不通（例如：資訊太多反而讓人流失）。進而引出全新的思維模式與解決方案。
+                    </p>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="relative pl-8 md:pl-12 group">
+                    <div class="absolute -left-[17px] top-1 w-8 h-8 rounded-full bg-white border-2 border-purple-500 flex items-center justify-center text-purple-600 font-bold text-xs shadow">
+                        3
+                    </div>
+                    <span class="text-xs font-semibold text-purple-600 uppercase tracking-wider">Resolution 方案與展現</span>
+                    <h3 class="text-xl font-bold text-slate-900 mt-1 mb-2">展現清晰可見的轉變成果</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed max-w-xl">
+                        用潔淨優雅的對比、動態示範或客戶見證，呈現使用新方案後的理想狀態，激發獲得感。
+                    </p>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="relative pl-8 md:pl-12 group">
+                    <div class="absolute -left-[17px] top-1 w-8 h-8 rounded-full bg-white border-2 border-slate-900 flex items-center justify-center text-slate-900 font-bold text-xs shadow">
+                        4
+                    </div>
+                    <span class="text-xs font-semibold text-slate-900 uppercase tracking-wider">Call to Action 水到渠成的行動</span>
+                    <h3 class="text-xl font-bold text-slate-900 mt-1 mb-2">唯一的下一步指引</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed max-w-xl">
+                        當故事進行到高潮，給予明確、單一且毫無阻力的行動按鈕（CTA），引導使用者自然點擊轉換。
+                    </p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Key Principle 3: RWD 響應式與極簡雙分流導引實戰 -->
+    <section id="rwd-flow" class="py-20 bg-slate-900 text-white relative overflow-hidden">
+        <!-- Ambient Light -->
+        <div class="absolute top-0 right-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl"></div>
+        <div class="absolute bottom-0 left-1/4 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl"></div>
+
+        <div class="max-w-6xl mx-auto px-6 relative z-10">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <span class="px-3 py-1 rounded-full bg-blue-500/20 text-blue-300 text-xs font-semibold uppercase tracking-wider mb-3 inline-block border border-blue-400/30">
+                    實務應用：RWD + 極簡動線分流
+                </span>
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">首頁極簡化：雙大按鈕分流法則</h2>
+                <p class="text-slate-300 text-base md:text-lg leading-relaxed font-light">
+                    不需要把所有產品擺在第一頁！透過<strong>兩個明確的直覺按鈕</strong>（例如：「我是學生/探索課程」與「我是企業/專案合作」），在首頁 3 秒內完成族群分流，帶領訪客精準到達專屬落地頁。
+                </p>
+            </div>
+
+            <!-- Interactive Dual-Button Flow Simulator -->
+            <div class="bg-slate-800/80 rounded-3xl p-8 border border-slate-700 backdrop-blur-md shadow-2xl mb-16">
+                <div class="text-center mb-8">
+                    <span class="text-xs text-blue-400 font-semibold uppercase tracking-wider block mb-1">【互動演示】第一頁極簡分流入口</span>
+                    <h3 class="text-2xl font-bold text-white">你想開啟哪一段探索旅程？</h3>
+                    <p class="text-xs text-slate-400 mt-1">點擊下方任一按鈕，體驗流暢、極簡無干擾的引導路徑</p>
+                </div>
+
+                <!-- Dual CTA Big Buttons -->
+                <div class="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto mb-8">
+                    <!-- Button A -->
+                    <button id="flow-btn-student" class="group p-8 rounded-2xl bg-gradient-to-br from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-left transition-all duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-blue-500/25 border border-blue-400/30 flex flex-col justify-between h-48">
+                        <div class="flex justify-between items-start">
+                            <div class="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center text-xl text-white group-hover:scale-110 transition-transform">
+                                🎓
+                            </div>
+                            <i class="fa-solid fa-arrow-right text-white/50 group-hover:text-white group-hover:translate-x-1 transition-all"></i>
+                        </div>
+                        <div>
+                            <span class="text-xs font-semibold uppercase tracking-wider text-blue-200 block mb-1">路線 A · 學員/創作者</span>
+                            <h4 class="text-xl font-bold text-white mb-1">探索學習課程與教學資源</h4>
+                            <p class="text-xs text-blue-100 font-light">帶你前往：資訊密度簡化講義與實戰工作坊</p>
+                        </div>
+                    </button>
+
+                    <!-- Button B -->
+                    <button id="flow-btn-client" class="group p-8 rounded-2xl bg-slate-700 hover:bg-slate-650 hover:border-slate-500 text-left transition-all duration-300 transform hover:-translate-y-1 shadow-lg border border-slate-600 flex flex-col justify-between h-48">
+                        <div class="flex justify-between items-start">
+                            <div class="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center text-xl text-white group-hover:scale-110 transition-transform">
+                                💼
+                            </div>
+                            <i class="fa-solid fa-arrow-right text-white/50 group-hover:text-white group-hover:translate-x-1 transition-all"></i>
+                        </div>
+                        <div>
+                            <span class="text-xs font-semibold uppercase tracking-wider text-indigo-300 block mb-1">路線 B · 企業/品牌主</span>
+                            <h4 class="text-xl font-bold text-white mb-1">客製化網站視覺 redesign 諮詢</h4>
+                            <p class="text-xs text-slate-300 font-light">帶你前往：故事化引流案例庫與改版預約表單</p>
+                        </div>
+                    </button>
+                </div>
+
+                <!-- Dynamic Output Flow Window -->
+                <div id="flow-output-window" class="p-6 rounded-2xl bg-slate-900/90 border border-slate-700 text-slate-300 transition-all duration-300">
+                    <div class="flex items-center gap-3 text-sm text-slate-400 pb-3 mb-3 border-b border-slate-800">
+                        <span class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></span>
+                        <span class="font-mono text-xs">網頁引流狀態：<span id="flow-status-text" class="text-emerald-400 font-semibold">等待訪客選擇分流方向...</span></span>
+                    </div>
+                    <div id="flow-details-content" class="text-center py-4 text-slate-400 text-sm">
+                        請點擊上方兩個大按鈕之一，模擬觀看頁面如何精準跳轉並提供高相關度內容。
+                    </div>
+                </div>
+            </div>
+
+            <!-- RWD Responsive Design Concept Cards -->
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="p-6 rounded-2xl bg-slate-800/50 border border-slate-700/60">
+                    <div class="w-10 h-10 rounded-lg bg-blue-500/20 text-blue-400 flex items-center justify-center mb-4 text-lg">
+                        <i class="fa-solid fa-mobile-screen-button"></i>
+                    </div>
+                    <h4 class="text-lg font-bold mb-2">1. 手機端 Mobile-First</h4>
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                        手機螢幕狹長，雙按鈕垂直堆疊（Flex Col），單手即可輕鬆點擊，徹底消除繁複的主選單（Hamburger Menu）。
+                    </p>
+                </div>
+
+                <div class="p-6 rounded-2xl bg-slate-800/50 border border-slate-700/60">
+                    <div class="w-10 h-10 rounded-lg bg-indigo-500/20 text-indigo-400 flex items-center justify-center mb-4 text-lg">
+                        <i class="fa-solid fa-laptop"></i>
+                    </div>
+                    <h4 class="text-lg font-bold mb-2">2. 平板與電腦端 (Grid/Flex)</h4>
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                        寬螢幕自動轉為並排雙按鈕（Grid Cols 2），運用充足的 Padding 留白，讓按鈕成為整個 Viewport 的視覺重心。
+                    </p>
+                </div>
+
+                <div class="p-6 rounded-2xl bg-slate-800/50 border border-slate-700/60">
+                    <div class="w-10 h-10 rounded-lg bg-purple-500/20 text-purple-400 flex items-center justify-center mb-4 text-lg">
+                        <i class="fa-solid fa-route"></i>
+                    </div>
+                    <h4 class="text-lg font-bold mb-2">3. 故事引流零阻力</h4>
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                        不強迫訪客第一時間看全部資訊。分流後只提供該目標族群最關心的 3 個核心模組，完成極簡引流轉換。
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Story Workflow Accordion -->
+    <section id="comparison" class="py-20 bg-slate-50">
+        <div class="max-w-4xl mx-auto px-6">
+            <div class="text-center max-w-2xl mx-auto mb-12">
+                <h2 class="text-3xl font-bold text-slate-900 mb-4">三、故事化引流實戰步驟拆解</h2>
+                <p class="text-slate-600">點擊下方卡片查看每個階段的頁面元件設計細節</p>
+            </div>
+
+            <div class="space-y-4">
+                <!-- Accordion 1 -->
+                <div class="accordion-item bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm transition">
+                    <button class="accordion-header w-full px-6 py-5 text-left font-bold text-slate-800 flex justify-between items-center hover:bg-slate-50">
+                        <span>1. 頁頭與第一屏：引起好奇，非直接販售</span>
+                        <i class="fa-solid fa-chevron-down text-slate-400 transition-transform duration-300"></i>
+                    </button>
+                    <div class="accordion-content hidden px-6 pb-6 pt-2 border-t border-slate-100 text-sm text-slate-600 leading-relaxed">
+                        <p class="mb-3">第一屏的核心目標是<strong>「留住訪客」</strong>而非「立刻成交」。</p>
+                        <ul class="list-disc pl-5 space-y-1 text-slate-500">
+                            <li>使用具吸引力的大字體標題（Headline）</li>
+                            <li>副標題補充情緒價值或核心優勢</li>
+                            <li>避免放置過多的導覽連結與多餘圖示</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Accordion 2 -->
+                <div class="accordion-item bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm transition">
+                    <button class="accordion-header w-full px-6 py-5 text-left font-bold text-slate-800 flex justify-between items-center hover:bg-slate-50">
+                        <span>2. 中段內容：漸進式推進，建立信任鏈</span>
+                        <i class="fa-solid fa-chevron-down text-slate-400 transition-transform duration-300"></i>
+                    </button>
+                    <div class="accordion-content hidden px-6 pb-6 pt-2 border-t border-slate-100 text-sm text-slate-600 leading-relaxed">
+                        <p class="mb-3">透過卡片化（Cards）與大圖留白的方式，一區塊講述一個小要點。</p>
+                        <ul class="list-disc pl-5 space-y-1 text-slate-500">
+                            <li>保持合理的段落間距（Padding y-16 以上）</li>
+                            <li>圖文交替排列，創造滾動閱讀時的節奏感</li>
+                            <li>運用簡短的社會認同（客戶評價、數據）為信任加分</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Accordion 3 -->
+                <div class="accordion-item bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm transition">
+                    <button class="accordion-header w-full px-6 py-5 text-left font-bold text-slate-800 flex justify-between items-center hover:bg-slate-50">
+                        <span>3. 結尾頁尾：創造臨門一腳的自然轉換</span>
+                        <i class="fa-solid fa-chevron-down text-slate-400 transition-transform duration-300"></i>
+                    </button>
+                    <div class="accordion-content hidden px-6 pb-6 pt-2 border-t border-slate-100 text-sm text-slate-600 leading-relaxed">
+                        <p class="mb-3">當故事鋪陳完畢，結尾只需一個簡潔強力的召喚行動（CTA Block）。</p>
+                        <ul class="list-disc pl-5 space-y-1 text-slate-500">
+                            <li>按鈕色彩使用全頁高對比的主色</li>
+                            <li>周圍給予充分的留白，讓按鈕成為唯一的焦點</li>
+                            <li>文字使用具有行動導向的詞彙（例如：「開始我的極簡設計」）</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Final CTA Section -->
+    <section id="action" class="py-24 bg-white relative overflow-hidden">
+        <div class="max-w-4xl mx-auto px-6 text-center">
+            <div class="p-12 rounded-3xl bg-slate-900 text-white relative shadow-2xl overflow-hidden">
+                <!-- Background ambient blur -->
+                <div class="absolute -top-24 -right-24 w-72 h-72 bg-blue-500/20 rounded-full blur-3xl"></div>
+                <div class="absolute -bottom-24 -left-24 w-72 h-72 bg-purple-500/20 rounded-full blur-3xl"></div>
+
+                <h2 class="text-3xl md:text-4xl font-bold mb-6 relative z-10">準備好打造充滿吸引力的極簡網站了嗎？</h2>
+                <p class="text-slate-300 text-base md:text-lg mb-8 max-w-xl mx-auto leading-relaxed font-light relative z-10">
+                    從小處開始：嘗試刪除頁面上記錄的 30% 繁複文字，讓核心故事脫穎而出。
+                </p>
+                <button id="modal-trigger" class="px-8 py-4 bg-blue-600 text-white rounded-2xl font-medium hover:bg-blue-500 hover:shadow-lg hover:shadow-blue-500/30 transition duration-300 relative z-10">
+                    下載「資訊簡化與故事設計重點清單」
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 border-t border-slate-100 text-center text-slate-400 text-sm">
+        <div class="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <p>© 2026 蘇品樺 - 專案二 第一堂課教學示範</p>
+            <p class="text-xs text-slate-400">Powered by Tailwind CSS & jQuery</p>
+        </div>
+    </footer>
+
+    <!-- Interactive Modal (jQuery Powered) -->
+    <div id="download-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300">
+        <div class="bg-white rounded-3xl p-8 max-w-md w-full mx-4 shadow-2xl border border-slate-100 transform scale-95 transition-transform duration-300">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-bold text-slate-900">學習重點清單已準備完成</h3>
+                <button id="close-modal" class="text-slate-400 hover:text-slate-600 w-8 h-8 rounded-full flex items-center justify-center hover:bg-slate-100">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="space-y-3 mb-6 text-sm text-slate-600">
+                <div class="flex items-start gap-3 p-3 bg-blue-50/50 rounded-xl">
+                    <i class="fa-solid fa-check text-blue-600 mt-1"></i>
+                    <span><strong>減少密度：</strong>每屏不超過 1 個主要目標</span>
+                </div>
+                <div class="flex items-start gap-3 p-3 bg-indigo-50/50 rounded-xl">
+                    <i class="fa-solid fa-check text-indigo-600 mt-1"></i>
+                    <span><strong>故事引流：</strong>痛點 ➔ 轉折 ➔ 視覺方案 ➔ 行動</span>
+                </div>
+                <div class="flex items-start gap-3 p-3 bg-purple-50/50 rounded-xl">
+                    <i class="fa-solid fa-check text-purple-600 mt-1"></i>
+                    <span><strong>純白美學：</strong>運用柔和陰影與呼吸感留白</span>
+                </div>
+            </div>
+            <button id="confirm-download" class="w-full py-3 bg-slate-900 text-white rounded-xl font-medium hover:bg-blue-600 transition">
+                確認領取教材講義
+            </button>
+        </div>
+    </div>
+
+    <!-- jQuery Interactions -->
+    <script>
+        $(document).ready(function() {
+            // Density Simulator Toggle
+            $('#btn-low-density').on('click', function() {
+                $(this).addClass('bg-white text-blue-600 shadow-sm').removeClass('text-slate-500');
+                $('#btn-high-density').removeClass('bg-white text-blue-600 shadow-sm').addClass('text-slate-500');
+                $('#view-low-density').removeClass('hidden');
+                $('#view-high-density').addClass('hidden');
+            });
+
+            $('#btn-high-density').on('click', function() {
+                $(this).addClass('bg-white text-blue-600 shadow-sm').removeClass('text-slate-500');
+                $('#btn-low-density').removeClass('bg-white text-blue-600 shadow-sm').addClass('text-slate-500');
+                $('#view-high-density').removeClass('hidden');
+                $('#view-low-density').addClass('hidden');
+            });
+
+            $('#toggle-sim-btn').on('click', function() {
+                if ($('#view-low-density').hasClass('hidden')) {
+                    $('#btn-low-density').click();
+                } else {
+                    $('#btn-high-density').click();
+                }
+            });
+
+            // Dual Button Flow Simulation Logic
+            $('#flow-btn-student').on('click', function() {
+                $('#flow-status-text').text('已導向【路線 A：學員與創作者落地頁】').removeClass('text-indigo-400').addClass('text-emerald-400');
+                $('#flow-details-content').html(`
+                    <div class="bg-blue-950/60 p-4 rounded-xl border border-blue-500/30 text-left animate-fadeIn">
+                        <div class="flex items-center gap-2 text-blue-400 font-bold mb-2">
+                            <i class="fa-solid fa-graduation-cap"></i> 專屬落地頁已加載（資訊密度極低）
+                        </div>
+                        <p class="text-xs text-blue-100 mb-3">首頁僅用 1 個點擊，就精準為學員過濾掉 90% 無關的企業諮詢內容。頁面接著順暢展示：</p>
+                        <div class="grid grid-cols-3 gap-2 text-[11px] text-center">
+                            <span class="bg-blue-900/80 py-1.5 rounded text-blue-200 border border-blue-700">1. 精選講義下載</span>
+                            <span class="bg-blue-900/80 py-1.5 rounded text-blue-200 border border-blue-700">2. 實戰影片教學</span>
+                            <span class="bg-blue-900/80 py-1.5 rounded text-blue-200 border border-blue-700">3. 社群討論區入口</span>
+                        </div>
+                    </div>
+                `);
+            });
+
+            $('#flow-btn-client').on('click', function() {
+                $('#flow-status-text').text('已導向【路線 B：企業與品牌主落地頁】').removeClass('text-emerald-400').addClass('text-indigo-400');
+                $('#flow-details-content').html(`
+                    <div class="bg-indigo-950/60 p-4 rounded-xl border border-indigo-500/30 text-left animate-fadeIn">
+                        <div class="flex items-center gap-2 text-indigo-400 font-bold mb-2">
+                            <i class="fa-solid fa-briefcase"></i> 專屬落地頁已加載（高說服力故事流）
+                        </div>
+                        <p class="text-xs text-indigo-100 mb-3">首頁避免將學生課程與企業服務混在一起。專案客戶將直接看到符合 commercial 需求的：</p>
+                        <div class="grid grid-cols-3 gap-2 text-[11px] text-center">
+                            <span class="bg-indigo-900/80 py-1.5 rounded text-indigo-200 border border-indigo-700">1. Redesign 成功案例</span>
+                            <span class="bg-indigo-900/80 py-1.5 rounded text-indigo-200 border border-indigo-700">2. 顧問諮詢流程</span>
+                            <span class="bg-indigo-900/80 py-1.5 rounded text-indigo-200 border border-indigo-700">3. 預約評估表單</span>
+                        </div>
+                    </div>
+                `);
+            });
+
+            // Accordion Functionality
+            $('.accordion-header').on('click', function() {
+                const $content = $(this).next('.accordion-content');
+                const $icon = $(this).find('i');
+
+                // Toggle current content
+                $content.slideToggle(200);
+                $icon.toggleClass('rotate-180');
+
+                // Close other accordion items
+                $('.accordion-content').not($content).slideUp(200);
+                $('.accordion-header i').not($icon).removeClass('rotate-180');
+            });
+
+            // Open first accordion by default
+            $('.accordion-header').first().click();
+
+            // Modal Interactions
+            function openModal() {
+                $('#download-modal').removeClass('hidden').addClass('flex');
+                setTimeout(function() {
+                    $('#download-modal').removeClass('opacity-0').addClass('opacity-100');
+                    $('#download-modal > div').removeClass('scale-95').addClass('scale-100');
+                }, 10);
+            }
+
+            function closeModal() {
+                $('#download-modal').removeClass('opacity-100').addClass('opacity-0');
+                $('#download-modal > div').removeClass('scale-100').addClass('scale-95');
+                setTimeout(function() {
+                    $('#download-modal').addClass('hidden').removeClass('flex');
+                }, 300);
+            }
+
+            $('#modal-trigger, #open-cta').on('click', function(e) {
+                e.preventDefault();
+                openModal();
+            });
+
+            $('#close-modal, #confirm-download').on('click', function() {
+                closeModal();
+            });
+
+            // Close modal when clicking outside of it
+            $('#download-modal').on('click', function(e) {
+                if (e.target === this) {
+                    closeModal();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

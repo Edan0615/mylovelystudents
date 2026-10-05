@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue.js 現代前端開發與核心概念教學 | 第二堂課</title>
+    <meta name="description" content="專為初學者打造的 Vue.js 現代前端開發教學網站，帶你快速理解 Vue 核心概念、前端框架演進、譯者打包工具 Vite 與 Webpack 差異，以及 AI 時代下的開發新思維。">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        vue: {
+                            green: '#42b883',
+                            dark: '#35495e',
+                            light: '#f3f9f6',
+                            accent: '#34495e'
+                        },
+                        brand: {
+                            50: '#fafafa',
+                            100: '#f4f4f5',
+                            500: '#3b82f6',
+                            900: '#09090b',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'Noto Sans TC', 'sans-serif'],
+                        mono: ['Fira Code', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <!-- Vue 3 CDN (Options & Composition API demo) -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <!-- Highlight.js for Code Syntax -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+</head>
+<body class="bg-white text-slate-800 font-sans antialiased selection:bg-emerald-100 selection:text-emerald-700">
+
+    <!-- Header / Navigation -->
+    <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-100 shadow-sm transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-600 flex items-center justify-center text-white font-black text-xl shadow-md shadow-emerald-200">
+                    V
+                </div>
+                <div class="flex flex-col">
+                    <span class="font-black text-xl tracking-tight bg-gradient-to-r from-slate-900 via-slate-800 to-emerald-700 bg-clip-text text-transparent">Vue.js Masterclass</span>
+                    <span class="text-[10px] text-slate-400 font-medium tracking-widest uppercase -mt-1">專案二 · 第二堂課</span>
+                </div>
+            </div>
+            
+            <nav class="hidden md:flex items-center space-x-8 text-sm font-medium text-slate-600">
+                <a href="#what-is-vue" class="hover:text-emerald-600 transition-colors">什麼是 Vue</a>
+                <a href="#browser-translator" class="hover:text-emerald-600 transition-colors">瀏覽器與翻譯官</a>
+                <a href="#ecosystem" class="hover:text-emerald-600 transition-colors">前端演進生態系</a>
+                <a href="#ai-era" class="hover:text-emerald-600 transition-colors">AI 時代開發觀點</a>
+                <a href="#sfc-structure" class="hover:text-emerald-600 transition-colors">元件單一檔案結構</a>
+                <a href="#live-demo" class="hover:text-emerald-600 transition-colors">Vue3 CDN 實機演示</a>
+            </nav>
+            
+            <a href="#live-demo" class="bg-slate-900 text-white px-5 py-2.5 rounded-full text-sm font-medium hover:bg-emerald-600 hover:shadow-lg hover:shadow-emerald-200 transition-all duration-300 transform hover:-translate-y-0.5 flex items-center gap-2">
+                <i class="fa-solid fa-play text-xs text-emerald-400"></i> 開啟實機演練
+            </a>
+        </div>
+    </header>
+
+    <!-- Hero Section (白色高大上極簡風格) -->
+    <section class="relative py-24 md:py-32 overflow-hidden bg-gradient-to-b from-slate-50/80 via-white to-white">
+        <div class="absolute inset-0 bg-[linear-gradient(to_right,#f0f0f0_1px,transparent_1px),linear-gradient(to_bottom,#f0f0f0_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] opacity-40"></div>
+        
+        <div class="max-w-5xl mx-auto px-6 text-center relative z-10">
+            <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-50 text-emerald-700 text-xs font-semibold tracking-wide uppercase mb-8 border border-emerald-200 shadow-sm">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> 第二堂課 · Vue.js 現代化前端視覺化課堂
+            </span>
+            <h1 class="text-4xl md:text-7xl font-extrabold text-slate-900 tracking-tight leading-tight mb-8">
+                解密 <span class="bg-gradient-to-r from-emerald-500 via-teal-600 to-slate-800 bg-clip-text text-transparent">Vue.js 核心與前端框架</span> 的極致視覺體驗
+            </h1>
+            <p class="text-lg md:text-xl text-slate-600 leading-relaxed font-light mb-12 max-w-3xl mx-auto">
+                從 JavaScript 原生邏輯到 Vue 響應式框架、打包工具 Vite/Webpack 翻譯機制，再到 AI 時代下的原生開發與框架思考。
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <a href="#what-is-vue" class="px-8 py-4 bg-emerald-600 text-white rounded-2xl font-semibold shadow-lg shadow-emerald-200 hover:bg-emerald-700 hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-2">
+                    開始探索課程單元 <i class="fa-solid fa-arrow-down text-sm"></i>
+                </a>
+                <a href="#sfc-structure" class="px-8 py-4 bg-white text-slate-800 border border-slate-200 rounded-2xl font-semibold hover:border-emerald-300 hover:bg-emerald-50/50 transition-all duration-300 shadow-sm flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-code text-emerald-600"></i> 單一檔案元件 SFC 拆解
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 1: 什麼是 Vue & 框架 vs 原生 JS -->
+    <section id="what-is-vue" class="py-20 bg-white border-t border-slate-100">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <span class="text-xs font-bold text-emerald-600 uppercase tracking-widest block mb-2">MODULE 01</span>
+                <h2 class="text-3xl md:text-4xl font-bold text-slate-900 mb-4">Vue 是什麼？框架與 JavaScript 的差異</h2>
+                <p class="text-slate-600 leading-relaxed">
+                    學習前端框架前，必須先了解原生 JS 的手動 DOM 操作與 Vue 數據驅動（Data-driven）的本質區別。
+                </p>
+            </div>
+
+            <!-- Card Grid -->
+            <div class="grid md:grid-cols-2 gap-8 mb-12">
+                <!-- Native JS Card -->
+                <div class="p-8 rounded-3xl bg-slate-50 border border-slate-200 shadow-sm hover:shadow-md transition">
+                    <div class="flex items-center justify-between mb-6">
+                        <span class="px-3 py-1 rounded-full bg-slate-200 text-slate-700 text-xs font-bold">原生 Vanilla JS</span>
+                        <i class="fa-brands fa-js text-yellow-500 text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3"> imperative 命令式編程</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed mb-6">
+                        開發者需要親自搜尋 DOM 節點、手動監聽事件、並手動修改 innerText。隨著 UI 變複雜，程式碼容易變得極度混亂且難以維護。
+                    </p>
+                    <div class="bg-slate-900 rounded-xl p-4 text-xs font-mono text-slate-200">
+                        <span class="text-slate-500">// 手動操控 DOM 範例</span><br>
+                        <span class="text-blue-400">const</span> btn = document.querySelector(<span class="text-emerald-400">'#btn'</span>);<br>
+                        <span class="text-blue-400">const</span> countEl = document.querySelector(<span class="text-emerald-400">'#count'</span>);<br>
+                        <span class="text-purple-400">let</span> count = 0;<br>
+                        btn.addEventListener(<span class="text-emerald-400">'click'</span>, () => {<br>
+                        &nbsp;&nbsp;count++;<br>
+                        &nbsp;&nbsp;countEl.innerText = count; <span class="text-slate-500">// 必須手動更新!</span><br>
+                        });
+                    </div>
+                </div>
+
+                <!-- Vue.js Card -->
+                <div class="p-8 rounded-3xl bg-gradient-to-br from-emerald-50/50 via-teal-50/30 to-white border border-emerald-200 shadow-sm hover:shadow-md transition relative">
+                    <div class="flex items-center justify-between mb-6">
+                        <span class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold">Vue.js 漸進式框架</span>
+                        <i class="fa-brands fa-vuejs text-emerald-500 text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3"> declarative 聲明式編程 + 響應式 (Reactivity)</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed mb-6">
+                        只需綁定資料與 HTML 畫面。當數據狀態變更時，Vue 的「響應式系統」會自動精準更新對應的畫面，完全不需手動寫修改 DOM 的繁瑣命令！
+                    </p>
+                    <div class="bg-slate-900 rounded-xl p-4 text-xs font-mono text-slate-200">
+                        <span class="text-slate-500">&lt;!-- Vue 自動監聽與渲染 --&gt;</span><br>
+                        &lt;<span class="text-red-400">button</span> <span class="text-emerald-400">@click</span>=<span class="text-yellow-300">"count++"</span>&gt;<br>
+                        &nbsp;&nbsp;點擊次數：&#123;&#123; count &#125;&#125;<br>
+                        &lt;/<span class="text-red-400">button</span>&gt;
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analogy Banner -->
+            <div class="p-8 rounded-3xl bg-slate-900 text-white shadow-xl flex flex-col md:flex-row items-center justify-between gap-8">
+                <div class="flex items-center gap-6">
+                    <div class="w-16 h-16 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 flex items-center justify-center text-3xl flex-shrink-0">
+                        💡
+                    </div>
+                    <div>
+                        <h4 class="text-xl font-bold mb-1 text-white">用蓋房子形容：「原生 JS」vs「Vue 框架」</h4>
+                        <p class="text-xs text-slate-300 leading-relaxed max-w-2xl">
+                            <strong>原生 JavaScript：</strong> 像用鋸子、鐵鎚、磚頭手動打地基蓋房，彈性最大但效率低且耗時。<br>
+                            <strong>Vue 框架：</strong> 像預製鋼骨鋼筋結構包，提供現代化藍圖與安全地基，讓你心無旁騖聚焦在設計出色的房間 logic 與裝潢！
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 2: 瀏覽器只能閱讀 HTML/CSS/JS & 打包工具 (Webpack vs Vite) -->
+    <section id="browser-translator" class="py-20 bg-slate-50/70 border-y border-slate-100">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <span class="text-xs font-bold text-emerald-600 uppercase tracking-widest block mb-2">MODULE 02</span>
+                <h2 class="text-3xl md:text-4xl font-bold text-slate-900 mb-4">瀏覽器的翻譯官：打包工具 Webpack vs Vite</h2>
+                <p class="text-slate-600 leading-relaxed">
+                    瀏覽器本質上只看得懂最基礎的 <strong>HTML, CSS, 和原生的 JS</strong>。當我們使用 .vue 單一檔案元件、TypeScript 或 Sass 時，都需要經過「翻譯/編譯」過程。
+                </p>
+            </div>
+
+            <!-- Workflow Graph -->
+            <div class="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm mb-16">
+                <h3 class="text-lg font-bold text-slate-900 mb-6 flex items-center gap-2">
+                    <i class="fa-solid fa-[#translate] text-emerald-600"></i> 前端編譯與打包流水線 (Build Pipeline)
+                </h3>
+                
+                <div class="grid md:grid-cols-4 gap-4 text-center relative">
+                    <!-- Step 1 -->
+                    <div class="p-6 rounded-2xl bg-slate-50 border border-slate-200">
+                        <span class="w-8 h-8 rounded-full bg-slate-200 text-slate-700 font-bold text-xs flex items-center justify-center mx-auto mb-3">1</span>
+                        <h4 class="font-bold text-slate-800 text-sm mb-1">開發者撰寫原始碼</h4>
+                        <p class="text-xs text-slate-500">.vue / .ts / .scss / JSX</p>
+                    </div>
+                    <!-- Arrow -->
+                    <div class="hidden md:flex items-center justify-center text-slate-300 text-xl">
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </div>
+                    <!-- Step 2 -->
+                    <div class="p-6 rounded-2xl bg-emerald-50 border border-emerald-200">
+                        <span class="w-8 h-8 rounded-full bg-emerald-600 text-white font-bold text-xs flex items-center justify-center mx-auto mb-3">2</span>
+                        <h4 class="font-bold text-emerald-900 text-sm mb-1">打包工具 (Vite/Webpack)</h4>
+                        <p class="text-xs text-emerald-700">編譯、轉譯、轉碼、打包壓縮</p>
+                    </div>
+                    <!-- Step 3 -->
+                    <div class="p-6 rounded-2xl bg-slate-50 border border-slate-200">
+                        <span class="w-8 h-8 rounded-full bg-slate-200 text-slate-700 font-bold text-xs flex items-center justify-center mx-auto mb-3">3</span>
+                        <h4 class="font-bold text-slate-800 text-sm mb-1">瀏覽器 (Chrome / Safari)</h4>
+                        <p class="text-xs text-slate-500">執行標準 HTML, CSS, JS</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Webpack vs Vite Comparison Grid -->
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- Webpack Card -->
+                <div class="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm relative overflow-hidden">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center text-2xl font-bold">
+                            <i class="fa-solid fa-cube"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-slate-900">Webpack (傳統老字號打包霸主)</h3>
+                            <span class="text-xs text-slate-400">Bundle-based Builder</span>
+                        </div>
+                    </div>
+                    <ul class="space-y-4 text-xs text-slate-600">
+                        <li class="flex items-start gap-3">
+                            <i class="fa-solid fa-circle-check text-blue-500 mt-0.5"></i>
+                            <div><strong>原理：</strong> 啟動開發伺服器前，必須先從 Entry 開始「將所有模組抓過來打包成一份 big bundle.js」，再交給瀏覽器。</div>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fa-solid fa-circle-exclamation text-amber-500 mt-0.5"></i>
+                            <div><strong>痛點：</strong> 當專案規模變龐大（成百上千個元件）時，每次修改啟動 HMR 需要等待數秒至十幾秒，建置速度較慢。</div>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Vite Card -->
+                <div class="bg-gradient-to-br from-purple-50/60 via-white to-emerald-50/40 rounded-3xl p-8 border border-purple-200 shadow-sm relative overflow-hidden">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-12 h-12 rounded-2xl bg-purple-100 text-purple-600 flex items-center justify-center text-2xl font-bold">
+                            <i class="fa-solid fa-bolt"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-slate-900">Vite (法文：快！新世代前端建置神器)</h3>
+                            <span class="text-xs text-purple-600 font-medium">ES Modules + esbuild</span>
+                        </div>
+                    </div>
+                    <ul class="space-y-4 text-xs text-slate-600">
+                        <li class="flex items-start gap-3">
+                            <i class="fa-solid fa-circle-check text-emerald-500 mt-0.5"></i>
+                            <div><strong>原理：</strong> 善用現代瀏覽器原生的 <code>&lt;script type="module"&gt;</code>，直接由瀏覽器按需請求（On-Demand）載入，底層轉碼採用超快的 Go 語言編寫的 esbuild。</div>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fa-solid fa-rocket text-purple-600 mt-0.5"></i>
+                            <div><strong>優勢：</strong> 毫秒級熱重載（HMR），瞬間啟動開發伺服器！是目前 Vue 3 官方首推的預設工具。</div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 3: 前端生態系歷史 (jQuery, React, Vue 等) -->
+    <section id="ecosystem" class="py-20 bg-white">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <span class="text-xs font-bold text-emerald-600 uppercase tracking-widest block mb-2">MODULE 03</span>
+                <h2 class="text-3xl md:text-4xl font-bold text-slate-900 mb-4">前端框架演進簡史與現代選擇</h2>
+                <p class="text-slate-600 leading-relaxed">
+                    從早期的 jQueryDOM 操作時代，到現代的三大框架（React, Vue, Angular），了解前端的演進脈絡。
+                </p>
+            </div>
+
+            <!-- Timeline / Framework Comparison Grid -->
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- jQuery -->
+                <div class="p-8 rounded-3xl bg-slate-50 border border-slate-200">
+                    <div class="w-12 h-12 rounded-2xl bg-blue-100 text-blue-700 flex items-center justify-center text-xl font-bold mb-6">
+                        $
+                    </div>
+                    <span class="px-2.5 py-0.5 rounded bg-slate-200 text-slate-600 text-[10px] font-bold uppercase">Web 2.0 時代霸主</span>
+                    <h3 class="text-xl font-bold text-slate-900 mt-2 mb-3">jQuery</h3>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        解決舊時代瀏覽器相容性（IE時代）與簡化 DOM 選取（<code>$('#app')</code>）。但在現代單頁應用（SPA）中逐漸被框架替代，新專案已鮮少使用。
+                    </p>
+                </div>
+
+                <!-- React -->
+                <div class="p-8 rounded-3xl bg-slate-50 border border-slate-200">
+                    <div class="w-12 h-12 rounded-2xl bg-cyan-100 text-cyan-600 flex items-center justify-center text-2xl font-bold mb-6">
+                        <i class="fa-brands fa-react"></i>
+                    </div>
+                    <span class="px-2.5 py-0.5 rounded bg-cyan-100 text-cyan-800 text-[10px] font-bold uppercase">Meta 推出 · 全球市占最高</span>
+                    <h3 class="text-xl font-bold text-slate-900 mt-2 mb-3">React</h3>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        強調 JSX 與單向資料流，具有龐大的生態系與社群資源。極度靈活但學習曲線相對較陡峭。
+                    </p>
+                </div>
+
+                <!-- Vue -->
+                <div class="p-8 rounded-3xl bg-emerald-50/60 border border-emerald-200 shadow-sm relative">
+                    <div class="w-12 h-12 rounded-2xl bg-emerald-500 text-white flex items-center justify-center text-2xl font-bold mb-6 shadow-md shadow-emerald-200">
+                        <i class="fa-brands fa-vuejs"></i>
+                    </div>
+                    <span class="px-2.5 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[10px] font-bold uppercase">尤雨溪 (Evan You) 打造</span>
+                    <h3 class="text-xl font-bold text-slate-900 mt-2 mb-3">Vue.js</h3>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        主打「漸進式（Progressive）」與極高的親和度，HTML 範本語法上手最快，在全球與亞洲市場極受歡迎。
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 4: AI 時代下的開發觀點 (純 HTML/CSS/JS vs 框架) -->
+    <section id="ai-era" class="py-20 bg-slate-900 text-white relative overflow-hidden">
+        <!-- Ambient Lighting -->
+        <div class="absolute top-0 right-1/4 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl"></div>
+        <div class="absolute bottom-0 left-1/4 w-96 h-96 bg-teal-500/10 rounded-full blur-3xl"></div>
+
+        <div class="max-w-6xl mx-auto px-6 relative z-10">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <span class="px-4 py-1.5 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-semibold uppercase tracking-wider mb-3 inline-block border border-emerald-400/30">
+                    💡 深度思維討論
+                </span>
+                <h2 class="text-3xl md:text-4xl font-bold mb-4 text-white">AI 時代下：純粹 HTML/CSS/JS 也是好選擇？</h2>
+                <p class="text-slate-300 text-base md:text-lg leading-relaxed font-light">
+                    現在前端基本上都在使用 React / Vue 進行大型開發，但在生成式 AI（ChatGPT, Claude, Gemini）爆發的時代，開發哲學正在迎來有趣的反思。
+                </p>
+            </div>
+
+            <!-- Comparison Boxes -->
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- Human Engineering Point -->
+                <div class="p-8 rounded-3xl bg-slate-800/80 border border-slate-700 backdrop-blur-md">
+                    <div class="flex items-center gap-3 mb-4 text-emerald-400 font-bold text-lg">
+                        <i class="fa-solid fa-user-gear"></i> 人類團隊協作：為什麼需要框架？
+                    </div>
+                    <p class="text-xs text-slate-300 leading-relaxed mb-4">
+                        人類記憶力有限、溝通成本高，且容易在大型專案寫出泥潭程式碼。框架強制規範了「元件化、狀態管理與寫法標準」，讓數十人的開發團隊能夠依照統一規範進行長期維護。
+                    </p>
+                    <ul class="text-xs text-slate-400 space-y-2 list-disc pl-4">
+                        <li>統一的程式碼架構與模組化</li>
+                        <li>社群成熟的生態系（Router, Pinia）</li>
+                        <li>大型複雜系統的長期維護性</li>
+                    </ul>
+                </div>
+
+                <!-- AI Era Point -->
+                <div class="p-8 rounded-3xl bg-gradient-to-br from-slate-800 via-slate-800 to-emerald-950/60 border border-emerald-500/30 backdrop-blur-md">
+                    <div class="flex items-center gap-3 mb-4 text-teal-300 font-bold text-lg">
+                        <i class="fa-solid fa-robot"></i> AI 時代：純 HTML/CSS/JS 的逆襲
+                    </div>
+                    <p class="text-xs text-slate-300 leading-relaxed mb-4">
+                        AI 大型語言模型沒有人類的記憶疲勞問題，能以驚人的速度一次生成或調整數千行原生代碼。對於中小型網站或快速 PoC 驗證，直接使用單一 HTML 搭配純 JS/CSS CDN，<strong>沒有 Node.js 依賴過期、打包工具設定複雜的困擾</strong>，反而達成最快狠準的開發！
+                    </p>
+                    <ul class="text-xs text-emerald-200/80 space-y-2 list-disc pl-4">
+                        <li>零 Build step，開箱即用</li>
+                        <li>極輕量，瀏覽器直接原生執行</li>
+                        <li>AI 寫原生 JS 極度精準且完全可控</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 5: Vue 單一檔案元件 (SFC) 三大區塊拆解 -->
+    <section id="sfc-structure" class="py-20 bg-white">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <span class="text-xs font-bold text-emerald-600 uppercase tracking-widest block mb-2">MODULE 04</span>
+                <h2 class="text-3xl md:text-4xl font-bold text-slate-900 mb-4">Vue 元件核心：Single File Component (.vue)</h2>
+                <p class="text-slate-600 leading-relaxed">
+                    在 Vue 中，一個完整獨立的元件（.vue）是由三大靈魂區塊組成：<code>&lt;template&gt;</code>、<code>&lt;script&gt;</code> 與 <code>&lt;style&gt;</code>。
+                </p>
+            </div>
+
+            <!-- SFC Anatomy Graphic -->
+            <div class="grid md:grid-cols-3 gap-6 mb-12">
+                <!-- 1. Template -->
+                <div class="p-6 rounded-3xl bg-amber-50/70 border border-amber-200">
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="w-8 h-8 rounded-xl bg-amber-500 text-white font-mono font-bold flex items-center justify-center text-sm">1</span>
+                        <span class="text-xs font-mono font-bold text-amber-800">&lt;template&gt;</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-900 mb-2">HTML 視圖結構</h3>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        負責定義網頁骨架與 DOM 結構。在這裡可以直接使用 Vue 特有的模板雙大括號插值 <code>&#123;&#123; &#125;&#125;</code> 與指令（v-if, v-for, @click）。
+                    </p>
+                </div>
+
+                <!-- 2. Script -->
+                <div class="p-6 rounded-3xl bg-blue-50/70 border border-blue-200">
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="w-8 h-8 rounded-xl bg-blue-600 text-white font-mono font-bold flex items-center justify-center text-sm">2</span>
+                        <span class="text-xs font-mono font-bold text-blue-800">&lt;script setup&gt;</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-900 mb-2">JS/TS 數據邏輯</h3>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        元件的大腦！宣告狀態數據（ref/reactive）、計算屬性（computed）、API 請求與函式邏輯。
+                    </p>
+                </div>
+
+                <!-- 3. Style -->
+                <div class="p-6 rounded-3xl bg-purple-50/70 border border-purple-200">
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="w-8 h-8 rounded-xl bg-purple-600 text-white font-mono font-bold flex items-center justify-center text-sm">3</span>
+                        <span class="text-xs font-mono font-bold text-purple-800">&lt;style scoped&gt;</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-900 mb-2">CSS 外觀樣式</h3>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        負責元件的視覺裝潢。加上 <code>scoped</code> 屬性後，樣式將「僅作用於當前元件」，徹底解決全域 CSS 命名污染衝突。
+                    </p>
+                </div>
+            </div>
+
+            <!-- Code Preview Box -->
+            <div class="bg-slate-900 rounded-3xl overflow-hidden shadow-xl border border-slate-800">
+                <div class="px-6 py-4 bg-slate-950 border-b border-slate-800 flex items-center justify-between">
+                    <div class="flex items-center space-x-2">
+                        <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                        <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                        <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                        <span class="text-xs font-mono text-slate-400 ml-2">MyCardComponent.vue</span>
+                    </div>
+                    <span class="text-[11px] font-mono text-emerald-400">Vue 3 Composition API</span>
+                </div>
+                <pre class="p-6 text-xs md:text-sm font-mono text-slate-200 overflow-x-auto"><code><span class="text-blue-400">&lt;script setup&gt;</span>
+<span class="text-purple-400">import</span> { ref } <span class="text-purple-400">from</span> <span class="text-emerald-400">'vue'</span>;
+
+<span class="text-slate-500">// 宣告響應式狀態 (Data)</span>
+<span class="text-blue-400">const</span> studentName = ref(<span class="text-emerald-400">'品樺'</span>);
+<span class="text-blue-400">const</span> score = ref(<span class="text-yellow-400">95</span>);
+
+<span class="text-blue-400">function</span> addScore() {
+  score.value += <span class="text-yellow-400">5</span>;
+}
+<span class="text-blue-400">&lt;/script&gt;</span>
+
+<span class="text-amber-400">&lt;template&gt;</span>
+  &lt;<span class="text-red-400">div</span> <span class="text-emerald-400">class</span>=<span class="text-emerald-300">"student-card"</span>&gt;
+    &lt;<span class="text-red-400">h3</span>&gt;&#123;&#123; studentName &#125;&#125; 的 Vue 學習成績&lt;/<span class="text-red-400">h3</span>&gt;
+    &lt;<span class="text-red-400">p</span>&gt;當前分數：&lt;<span class="text-red-400">span</span>&gt;&#123;&#123; score &#125;&#125;&lt;/<span class="text-red-400">span</span>&gt;&lt;/<span class="text-red-400">p</span>&gt;
+    &lt;<span class="text-red-400">button</span> <span class="text-emerald-400">@click</span>=<span class="text-emerald-300">"addScore"</span>&gt;加分按鈕&lt;/<span class="text-red-400">button</span>&gt;
+  &lt;/<span class="text-red-400">div</span>&gt;
+<span class="text-amber-400">&lt;/template&gt;</span>
+
+<span class="text-purple-400">&lt;style scoped&gt;</span>
+<span class="text-emerald-300">.student-card</span> {
+  <span class="text-blue-300">padding</span>: <span class="text-yellow-300">1.5rem</span>;
+  <span class="text-blue-300">border-radius</span>: <span class="text-yellow-300">1rem</span>;
+  <span class="text-blue-300">background-color</span>: <span class="text-emerald-400">#f8fafc</span>;
+}
+<span class="text-purple-400">&lt;/style&gt;</span></code></pre>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 6: Vue 3 CDN 實機互動演練小工具 -->
+    <section id="live-demo" class="py-20 bg-slate-50 border-t border-slate-200">
+        <div class="max-w-5xl mx-auto px-6">
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <span class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-semibold uppercase tracking-wider mb-3 inline-block">
+                    LIVE DEMO · 純 Vue CDN 實機體驗
+                </span>
+                <h2 class="text-3xl font-bold text-slate-900 mb-4">體驗 Vue 3 響應式強大魅力</h2>
+                <p class="text-slate-600 text-sm">
+                    本區塊直接在 HTML 瀏覽器中透過 CDN 運行 Vue 3 App，無須配置繁雜的建置環境即可立即體驗！
+                </p>
+            </div>
+
+            <!-- Vue 3 Interactive App Box -->
+            <div id="vue-interactive-app" class="bg-white rounded-3xl p-8 border border-slate-200 shadow-xl max-w-3xl mx-auto">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-6 mb-6">
+                    <div class="flex items-center gap-3">
+                        <div class="w-3 h-3 rounded-full bg-emerald-500 animate-ping"></div>
+                        <h3 class="font-bold text-slate-900 text-lg">Vue 學生選課與狀態管理體驗</h3>
+                    </div>
+                    <span class="text-xs font-mono bg-emerald-50 text-emerald-700 px-3 py-1 rounded-full font-bold">Vue 3 CDN Ready</span>
+                </div>
+
+                <!-- Input area -->
+                <div class="space-y-4 mb-6">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">新增欲學習的前端技術卡片：</label>
+                        <div class="flex gap-2">
+                            <input 
+                                v-model="newTech" 
+                                @keyup.enter="addTech" 
+                                type="text" 
+                                placeholder="例如：Pinia, Vue Router, TypeScript..." 
+                                class="flex-1 px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 transition"
+                            >
+                            <button 
+                                @click="addTech" 
+                                class="px-6 py-2.5 bg-emerald-600 text-white text-sm font-semibold rounded-xl hover:bg-emerald-700 transition shadow-md shadow-emerald-200"
+                            >
+                                新增
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tech Cards Grid -->
+                <div class="mb-6">
+                    <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">清單 (雙向綁定 count: {{ techList.length }})</h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div 
+                            v-for="(item, index) in techList" 
+                            :key="index"
+                            class="p-4 rounded-xl border border-slate-100 bg-slate-50 flex items-center justify-between group hover:border-emerald-200 transition"
+                        >
+                            <div class="flex items-center gap-2">
+                                <input type="checkbox" v-model="item.completed" class="w-4 h-4 text-emerald-600 rounded focus:ring-emerald-500">
+                                <span :class="{'line-through text-slate-400': item.completed, 'text-slate-800 font-medium text-sm': !item.completed}">
+                                    {{ item.name }}
+                                </span>
+                            </div>
+                            <button @click="removeTech(index)" class="text-slate-400 hover:text-red-500 text-xs opacity-0 group-hover:opacity-100 transition">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- State Feedback Banner -->
+                <div class="p-4 rounded-xl bg-emerald-50/70 border border-emerald-100 text-xs text-emerald-900 flex justify-between items-center">
+                    <span>🎉 掌握度進度：<strong>{{ completedCount }} / {{ techList.length }}</strong></span>
+                    <button @click="resetList" class="text-emerald-700 underline font-semibold hover:text-emerald-900">重置狀態</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-100 py-12 text-center text-xs text-slate-400">
+        <div class="max-w-6xl mx-auto px-6">
+            <p class="mb-2">專案二 · 第二堂課 | 高大上極簡風格 Vue.js 視覺化教學網站</p>
+            <p>Powered by Vue 3, Tailwind CSS & Modern Web Standards</p>
+        </div>
+    </footer>
+
+    <!-- Vue 3 App Initialization Script -->
+    <script>
+        const { createApp, ref, computed } = Vue;
+
+        createApp({
+            setup() {
+                const newTech = ref('');
+                const techList = ref([
+                    { name: 'Vue 3 響應式原理 (ref / reactive)', completed: true },
+                    { name: 'SFC 單一檔案元件 (<template>, <script>, <style>)', completed: true },
+                    { name: '打包工具翻譯官 (Webpack vs Vite)', completed: false },
+                    { name: '前端演進 (jQuery -> React / Vue)', completed: false },
+                    { name: 'AI 時代下的純 HTML/CSS/JS 開發思考', completed: false }
+                ]);
+
+                const addTech = () => {
+                    if (newTech.value.trim()) {
+                        techList.value.push({ name: newTech.value.trim(), completed: false });
+                        newTech.value = '';
+                    }
+                };
+
+                const removeTech = (index) => {
+                    techList.value.splice(index, 1);
+                };
+
+                const completedCount = computed(() => {
+                    return techList.value.filter(item => item.completed).length;
+                });
+
+                const resetList = () => {
+                    techList.value.forEach(item => item.completed = false);
+                };
+
+                return {
+                    newTech,
+                    techList,
+                    addTech,
+                    removeTech,
+                    completedCount,
+                    resetList
+                };
+            }
+        }).mount('#vue-interactive-app');
+
+        hljs.highlightAll();
+    </script>
+</body>
+</html>

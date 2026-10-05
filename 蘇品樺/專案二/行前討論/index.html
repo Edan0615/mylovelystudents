@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue.js 現代化前端實戰課 | 從零到 AI 專案實作</title>
+    <meta name="description" content="全方位 Vue.js 6 大核心模組課程，帶你從基礎語法、Component 元件化、Reactivity 響應式系統、Axios API 串接，一路實戰到 AI 智慧應用開發！">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-vue: #42b883;
+            --primary-vue-dark: #33a06f;
+            --secondary-dark: #35495e;
+            --bg-light: #f8fafc;
+            --surface-white: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --card-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.05), 0 4px 12px -2px rgba(0, 0, 0, 0.03);
+            --card-shadow-hover: 0 20px 40px -10px rgba(66, 184, 131, 0.15), 0 8px 20px -6px rgba(0, 0, 0, 0.06);
+            --gradient-vue: linear-gradient(135deg, #42b883 0%, #347278 100%);
+            --gradient-light: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', 'Noto Sans TC', sans-serif;
+            color: var(--text-main);
+            background-color: var(--bg-light);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* Navbar Styling */
+        .navbar {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .navbar-brand {
+            font-weight: 800;
+            font-size: 1.4rem;
+            color: var(--secondary-dark);
+        }
+
+        .navbar-brand span {
+            color: var(--primary-vue);
+        }
+
+        .nav-link {
+            font-weight: 600;
+            color: var(--text-main);
+            margin: 0 8px;
+            transition: color 0.2s ease;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: var(--primary-vue);
+        }
+
+        /* Hero Section */
+        .hero-section {
+            padding: 120px 0 80px;
+            background: radial-gradient(circle at 80% 20%, rgba(66, 184, 131, 0.08) 0%, transparent 50%),
+                        radial-gradient(circle at 20% 80%, rgba(53, 73, 94, 0.05) 0%, transparent 50%);
+            position: relative;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 16px;
+            background: rgba(66, 184, 131, 0.1);
+            color: var(--primary-vue-dark);
+            border-radius: 50px;
+            font-size: 0.875rem;
+            font-weight: 700;
+            margin-bottom: 24px;
+            border: 1px solid rgba(66, 184, 131, 0.2);
+        }
+
+        .hero-title {
+            font-weight: 900;
+            font-size: 3.2rem;
+            letter-spacing: -0.02em;
+            color: var(--secondary-dark);
+            margin-bottom: 20px;
+        }
+
+        .hero-title span {
+            background: linear-gradient(135deg, #42b883 0%, #2c3e50 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            margin-bottom: 36px;
+            max-width: 600px;
+        }
+
+        /* Buttons */
+        .btn-vue-primary {
+            background: var(--gradient-vue);
+            color: #fff;
+            font-weight: 700;
+            padding: 14px 32px;
+            border-radius: 12px;
+            border: none;
+            box-shadow: 0 10px 20px rgba(66, 184, 131, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .btn-vue-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px rgba(66, 184, 131, 0.4);
+            color: #fff;
+        }
+
+        .btn-vue-outline {
+            background: #ffffff;
+            color: var(--secondary-dark);
+            font-weight: 700;
+            padding: 14px 32px;
+            border-radius: 12px;
+            border: 2px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .btn-vue-outline:hover {
+            border-color: var(--primary-vue);
+            color: var(--primary-vue);
+            transform: translateY(-2px);
+        }
+
+        /* Stats Card */
+        .stat-card {
+            background: var(--surface-white);
+            border-radius: 16px;
+            padding: 24px;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--card-shadow);
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--primary-vue);
+        }
+
+        .stat-label {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        /* Section Header */
+        .section-title {
+            font-weight: 800;
+            font-size: 2.25rem;
+            color: var(--secondary-dark);
+            text-align: center;
+            margin-bottom: 12px;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            margin-bottom: 50px;
+        }
+
+        /* Course Modules Section */
+        .course-card {
+            background: var(--surface-white);
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            padding: 32px;
+            box-shadow: var(--card-shadow);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .course-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--gradient-vue);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .course-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--card-shadow-hover);
+        }
+
+        .course-card:hover::before {
+            opacity: 1;
+        }
+
+        .module-number {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: rgba(66, 184, 131, 0.1);
+            color: var(--primary-vue-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1.25rem;
+            margin-bottom: 20px;
+        }
+
+        .course-card-title {
+            font-weight: 700;
+            font-size: 1.35rem;
+            color: var(--secondary-dark);
+            margin-bottom: 12px;
+        }
+
+        .course-card-desc {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 20px;
+        }
+
+        .course-topics {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 24px 0;
+        }
+
+        .course-topics li {
+            padding: 6px 0;
+            font-size: 0.9rem;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .course-topics li i {
+            color: var(--primary-vue);
+            font-size: 0.8rem;
+        }
+
+        .badge-tag {
+            background: #f1f5f9;
+            color: var(--text-muted);
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        /* Features Section */
+        .feature-icon-box {
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, rgba(66, 184, 131, 0.15) 0%, rgba(53, 73, 94, 0.15) 100%);
+            color: var(--primary-vue-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            background: linear-gradient(135deg, #2c3e50 0%, #1e293b 100%);
+            color: #ffffff;
+            border-radius: 28px;
+            padding: 60px 40px;
+            margin: 80px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-section::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 400px;
+            height: 400px;
+            background: rgba(66, 184, 131, 0.15);
+            border-radius: 50%;
+            filter: blur(80px);
+        }
+
+        /* Accordions / Syllabus Detail */
+        .accordion-item {
+            border: 1px solid var(--border-color);
+            border-radius: 12px !important;
+            margin-bottom: 12px;
+            overflow: hidden;
+        }
+
+        .accordion-button:not(.collapsed) {
+            background-color: rgba(66, 184, 131, 0.08);
+            color: var(--primary-vue-dark);
+            font-weight: 700;
+        }
+
+        .accordion-button:focus {
+            box-shadow: none;
+            border-color: var(--primary-vue);
+        }
+
+        /* Footer */
+        footer {
+            background: #ffffff;
+            border-top: 1px solid var(--border-color);
+            padding: 40px 0;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* Smooth Scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center gap-2" href="#">
+                <i class="fa-brands fa-vuejs fa-lg" style="color: var(--primary-vue);"></i>
+                Vue3 <span>Masterclass</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item"><a class="nav-link" href="#about">課程亮點</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#curriculum">六大堂大綱</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#projects">專案作品</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#faq">常見問題</a></li>
+                    <li class="nav-item ms-lg-3">
+                        <a href="#enroll" class="btn btn-vue-primary btn-sm px-4">立即報名</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="row align-items-center gy-5">
+                <div class="col-lg-7">
+                    <div class="hero-badge">
+                        <i class="fa-solid fa-sparkles"></i> 2026 前端終極實戰特訓班
+                    </div>
+                    <h1 class="hero-title">
+                        掌握 <span>Vue.js 核心與 AI 實戰</span><br>打造高薪前端開發力
+                    </h1>
+                    <p class="hero-subtitle">
+                        專為初學者與進階開發者打造的 6 堂漸進式課程。從基礎語法、Component 設計模式、Reactivity 響應式核心到串接 OpenAI 實做 AI 前端應用！
+                    </p>
+                    <div class="d-flex flex-wrap gap-3">
+                        <a href="#curriculum" class="btn btn-vue-primary">解鎖完整 6 堂課程</a>
+                        <button class="btn btn-vue-outline" id="btnPreviewModal">
+                            <i class="fa-solid fa-circle-play me-2" style="color: var(--primary-vue);"></i>觀看課程介紹
+                        </button>
+                    </div>
+                </div>
+                <div class="col-lg-5">
+                    <div class="row g-3">
+                        <div class="col-6">
+                            <div class="stat-card">
+                                <div class="stat-number" id="counter1">6</div>
+                                <div class="stat-label">主題精華模組</div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="stat-card">
+                                <div class="stat-number">100%</div>
+                                <div class="stat-label">手把手實作導向</div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="stat-card">
+                                <div class="stat-number">Vite+Vue3</div>
+                                <div class="stat-label">最新現代化技術棧</div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="stat-card">
+                                <div class="stat-number">AI 整合</div>
+                                <div class="stat-label">生成式 AI 作品打造</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Highlights Section -->
+    <section id="about" class="py-5">
+        <div class="container py-4">
+            <h2 class="section-title">為什麼選擇這門 Vue 課程？</h2>
+            <p class="section-subtitle">打破傳統繁雜理論，以實戰專案引導，迅速建立企業級開發邏輯</p>
+
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 p-4 shadow-sm rounded-4 bg-white">
+                        <div class="feature-icon-box">
+                            <i class="fa-solid fa-layer-group"></i>
+                        </div>
+                        <h4 class="fw-bold mb-3">模組化循序漸進</h4>
+                        <p class="text-muted">由淺入深規劃 6 大模組，從開發環境建置、語法拆解到高級響應式架構，學習曲線最平緩。</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 p-4 shadow-sm rounded-4 bg-white">
+                        <div class="feature-icon-box">
+                            <i class="fa-solid fa-code-merge"></i>
+                        </div>
+                        <h4 class="fw-bold mb-3">API 與異步資料整合</h4>
+                        <p class="text-muted">實戰 Axios 資料串接與 Promise / Async-Await 處理，掌握真正在企業專案中發揮價值的關鍵技能。</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 p-4 shadow-sm rounded-4 bg-white">
+                        <div class="feature-icon-box">
+                            <i class="fa-solid fa-robot"></i>
+                        </div>
+                        <h4 class="fw-bold mb-3">AI 時代前沿實作</h4>
+                        <p class="text-muted">第六堂壓軸專案！帶你將 Vue 3 結合 AI API，完成具備串流回應與智慧對話的 Web App 作品集。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Curriculum Section (6 Lessons) -->
+    <section id="curriculum" class="py-5 bg-white">
+        <div class="container py-4">
+            <h2 class="section-title">精心規劃的 6 堂核心課程</h2>
+            <p class="section-subtitle">每堂課皆包含理論講解、範例實作與課後作業，確保學以致用</p>
+
+            <div class="row g-4">
+                <!-- Lesson 1 -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="course-card">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="module-number">01</div>
+                            <span class="badge-tag">第一堂</span>
+                        </div>
+                        <h3 class="course-card-title">認識 Vue、認識框架與安裝工具</h3>
+                        <p class="course-card-desc">進入 Vue 3 現代前端世界，建置高效開發環境，了解 Options API 與 Composition API 的魅力。</p>
+                        <ul class="course-topics">
+                            <li><i class="fa-solid fa-check-circle"></i> Vue 3 核心優勢與前端框架演進</li>
+                            <li><i class="fa-solid fa-check-circle"></i> Vite 工具鏈快速建立專案</li>
+                            <li><i class="fa-solid fa-check-circle"></i> VS Code + Volar 插件環境配置</li>
+                            <li><i class="fa-solid fa-check-circle"></i> Vue DevTools 偵錯神器操作</li>
+                        </ul>
+                        <button class="btn btn-sm btn-outline-secondary w-100 rounded-3 btn-detail" data-lesson="1">檢視詳細大綱</button>
+                    </div>
+                </div>
+
+                <!-- Lesson 2 -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="course-card">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="module-number">02</div>
+                            <span class="badge-tag">第二堂</span>
+                        </div>
+                        <h3 class="course-card-title">學習基礎語法與指令應用</h3>
+                        <p class="course-card-desc">掌握 Vue 的聲明式渲染與動態指令，快速學會資料與 DOM 的互動邏輯。</p>
+                        <ul class="course-topics">
+                            <li><i class="fa-solid fa-check-circle"></i> 模板語法與 Mustache 內插值</li>
+                            <li><i class="fa-solid fa-check-circle"></i> v-bind 屬性綁定與 Class/Style 操作</li>
+                            <li><i class="fa-solid fa-check-circle"></i> v-on 事件監聽與修飾符</li>
+                            <li><i class="fa-solid fa-check-circle"></i> v-model 雙向綁定與表單元素</li>
+                        </ul>
+                        <button class="btn btn-sm btn-outline-secondary w-100 rounded-3 btn-detail" data-lesson="2">檢視詳細大綱</button>
+                    </div>
+                </div>
+
+                <!-- Lesson 3 -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="course-card">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="module-number">03</div>
+                            <span class="badge-tag">第三堂</span>
+                        </div>
+                        <h3 class="course-card-title">學習 Component 元件化開發</h3>
+                        <p class="course-card-desc">學習高複用性的組件化架構設計，掌握父子組件資料流與 Event Emit 機制。</p>
+                        <ul class="course-topics">
+                            <li><i class="fa-solid fa-check-circle"></i> Single File Component (SFC) 結構</li>
+                            <li><i class="fa-solid fa-check-circle"></i> Props 資料傳遞與 Validation 驗證</li>
+                            <li><i class="fa-solid fa-check-circle"></i> Emits 自訂事件與資料回傳</li>
+                            <li><i class="fa-solid fa-check-circle"></i> Slot 插槽與具名/作用域插槽</li>
+                        </ul>
+                        <button class="btn btn-sm btn-outline-secondary w-100 rounded-3 btn-detail" data-lesson="3">檢視詳細大綱</button>
+                    </div>
+                </div>
+
+                <!-- Lesson 4 -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="course-card">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="module-number">04</div>
+                            <span class="badge-tag">第四堂</span>
+                        </div>
+                        <h3 class="course-card-title">Reactivity 響應式系統深剖</h3>
+                        <p class="course-card-desc">深入 Vue 3 的心臟：Proxy 響應式機制，靈活運用 State 與副作用計算。</p>
+                        <ul class="course-topics">
+                            <li><i class="fa-solid fa-check-circle"></i> ref() vs reactive() 抉擇與差異</li>
+                            <li><i class="fa-solid fa-check-circle"></i> computed 計算屬性與效能優化</li>
+                            <li><i class="fa-solid fa-check-circle"></i> watch 與 watchEffect 監聽器應用</li>
+                            <li><i class="fa-solid fa-check-circle"></i> 生命週期鉤子 (Lifecycle Hooks)</li>
+                        </ul>
+                        <button class="btn btn-sm btn-outline-secondary w-100 rounded-3 btn-detail" data-lesson="4">檢視詳細大綱</button>
+                    </div>
+                </div>
+
+                <!-- Lesson 5 -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="course-card">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="module-number">05</div>
+                            <span class="badge-tag">第五堂</span>
+                        </div>
+                        <h3 class="course-card-title">Axios 傳送資料與 API 整合</h3>
+                        <p class="course-card-desc">學習如何透過 Axios 與後端 RESTful API 進行非同步資料交互與狀態管理。</p>
+                        <ul class="course-topics">
+                            <li><i class="fa-solid fa-check-circle"></i> HTTP 協定基礎與 REST API 觀念</li>
+                            <li><i class="fa-solid fa-check-circle"></i> Axios 安裝與 GET / POST 請求</li>
+                            <li><i class="fa-solid fa-check-circle"></i> Async / Await 處理非同步流程</li>
+                            <li><i class="fa-solid fa-check-circle"></i> Loading 遮罩與 Try-Catch 錯誤處理</li>
+                        </ul>
+                        <button class="btn btn-sm btn-outline-secondary w-100 rounded-3 btn-detail" data-lesson="5">檢視詳細大綱</button>
+                    </div>
+                </div>
+
+                <!-- Lesson 6 -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="course-card" style="border: 2px solid var(--primary-vue);">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="module-number" style="background: var(--gradient-vue); color: #fff;">06</div>
+                            <span class="badge-tag" style="background: rgba(66, 184, 131, 0.15); color: var(--primary-vue-dark);">終極專案</span>
+                        </div>
+                        <h3 class="course-card-title">AI 實作作品：打造生成式 AI 應用</h3>
+                        <p class="course-card-desc">整合全課知識，串接 OpenAI / LLM API，實作專屬的高質感 AI 智慧對話應用。</p>
+                        <ul class="course-topics">
+                            <li><i class="fa-solid fa-star" style="color: #f59e0b;"></i> OpenAI / Claude API 端點串接</li>
+                            <li><i class="fa-solid fa-star" style="color: #f59e0b;"></i> AI 對話串流 (SSE / ReadableStream)</li>
+                            <li><i class="fa-solid fa-star" style="color: #f59e0b;"></i> 互動式聊天 UI 與 Markdown 渲染</li>
+                            <li><i class="fa-solid fa-star" style="color: #f59e0b;"></i> 專案打包優化與 GitHub Pages 部署</li>
+                        </ul>
+                        <button class="btn btn-sm btn-vue-primary w-100 rounded-3 btn-detail" data-lesson="6">檢視終極專案細節</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Interactive Preview Section -->
+    <section id="projects" class="py-5">
+        <div class="container py-4">
+            <h2 class="section-title">課堂實戰專案展演</h2>
+            <p class="section-subtitle">每堂課都有明確的作品產出，累積精美 GitHub 作品集</p>
+
+            <div class="row align-items-center g-5">
+                <div class="col-lg-6">
+                    <div class="p-4 bg-white rounded-4 shadow-sm border">
+                        <div class="d-flex align-items-center gap-3 mb-3">
+                            <span class="badge bg-success">Lesson 6 實戰成果</span>
+                            <h5 class="mb-0 fw-bold">Vue3 + AI 智慧對話 Web App</h5>
+                        </div>
+                        <p class="text-muted">
+                            運用前面 5 堂課學到的 Component 架構、Reactivity 響應式狀態與 Axios 串接，加上第六堂 AI API 實務，打造支援語音、文字輸入與串流輸出的現代化 AI 工具。
+                        </p>
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><i class="fa-solid fa-check text-success me-2"></i> 支援多輪對話歷史記錄儲存 (LocalStorage)</li>
+                            <li class="mb-2"><i class="fa-solid fa-check text-success me-2"></i> 打字機效果與即時語意高亮渲染</li>
+                            <li class="mb-2"><i class="fa-solid fa-check text-success me-2"></i> 響應式 RWD 介面適配手機與桌面端</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="p-4 bg-dark text-white rounded-4 shadow-lg position-relative overflow-hidden">
+                        <div class="d-flex align-items-center justify-content-between pb-3 mb-3 border-bottom border-secondary">
+                            <div class="d-flex gap-2">
+                                <span class="rounded-circle bg-danger d-inline-block" style="width: 12px; height: 12px;"></span>
+                                <span class="rounded-circle bg-warning d-inline-block" style="width: 12px; height: 12px;"></span>
+                                <span class="rounded-circle bg-success d-inline-block" style="width: 12px; height: 12px;"></span>
+                            </div>
+                            <small class="text-muted font-monospace">AIChatbot.vue</small>
+                        </div>
+                        <pre class="mb-0" style="font-size: 0.85rem; color: #a7f3d0;"><code>&lt;script setup&gt;
+import { ref, reactive } from 'vue';
+import axios from 'axios';
+
+const userQuery = ref('');
+const messages = reactive([]);
+const isLoading = ref(false);
+
+const sendMessage = async () => {
+  if (!userQuery.value.trim()) return;
+  messages.push({ role: 'user', content: userQuery.value });
+  isLoading.value = true;
+  
+  // Axios 送出請求至 AI API
+  const res = await axios.post('/api/ai/chat', { prompt: userQuery.value });
+  messages.push({ role: 'assistant', content: res.data.reply });
+  isLoading.value = false;
+  userQuery.value = '';
+};
+&lt;/script&gt;</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Accordion -->
+    <section id="faq" class="py-5 bg-white">
+        <div class="container py-4" style="max-width: 800px;">
+            <h2 class="section-title">常見問題解答 (FAQ)</h2>
+            <p class="section-subtitle">有疑問嗎？我們為你整理了最常問的問題</p>
+
+            <div class="accordion" id="faqAccordion">
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                            這門課需要什麼基礎？
+                        </button>
+                    </h2>
+                    <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body text-muted">
+                            建議具備基礎的 HTML, CSS 與原生 JavaScript (ES6+ 觀念如變數、函式、Array 方法) 知識。若完全零基礎，第一堂課也會補充開發工具與基本觀念！
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                            課程是用 Vue 2 還是 Vue 3？
+                        </button>
+                    </h2>
+                    <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body text-muted">
+                            本課程 100% 使用最新的 **Vue 3** 配合 **Composition API (`<script setup>`)** 與 Vite 建置工具，完全符合當前與未來的企業級開發標準。
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                            第六堂 AI 實作課會需要付費 API Key 嗎？
+                        </button>
+                    </h2>
+                    <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body text-muted">
+                            課堂上會提供測試用 API 試用額度，也會教學如何申請免費試用額度或使用免費開源 LLM 端點，不需額外負擔高昂費用。
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action Section -->
+    <section id="enroll" class="container">
+        <div class="cta-section text-center">
+            <h2 class="fw-bold mb-3 display-6">準備好邁向進階 Vue 前端工程師了嗎？</h2>
+            <p class="mb-4 text-light opacity-75" style="max-width: 600px; margin: 0 auto;">
+                立即報名參加 6 堂 Vue.js 實戰課，打下紮實前端架構基礎，創造屬於你的 AI 實作作品！
+            </p>
+            <div class="d-flex justify-content-center gap-3">
+                <button class="btn btn-vue-primary px-5 py-3 fs-5" id="btnEnrollNow">立即預約試聽 / 報名</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modal for Lesson Details -->
+    <div class="modal fade" id="lessonModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content rounded-4 border-0">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-bold" id="lessonModalTitle">課程詳細大綱</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4" id="lessonModalBody">
+                    <!-- Dynamic Content inserted via jQuery -->
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-secondary rounded-3 px-4" data-bs-dismiss="modal">關閉</button>
+                    <a href="#enroll" class="btn btn-vue-primary rounded-3 px-4" data-bs-dismiss="modal">報名此課程</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container text-center">
+            <div class="mb-3">
+                <a class="navbar-brand d-inline-flex align-items-center gap-2" href="#">
+                    <i class="fa-brands fa-vuejs" style="color: var(--primary-vue);"></i>
+                    Vue3 Masterclass
+                </a>
+            </div>
+            <p class="mb-2">© 2026 Vue.js 現代化前端實戰課版權所有。All Rights Reserved.</p>
+            <div class="d-flex justify-content-center gap-3 mt-3">
+                <a href="#" class="text-decoration-none text-muted"><i class="fa-brands fa-github fa-lg"></i></a>
+                <a href="#" class="text-decoration-none text-muted"><i class="fa-brands fa-discord fa-lg"></i></a>
+                <a href="#" class="text-decoration-none text-muted"><i class="fa-brands fa-youtube fa-lg"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- jQuery & Bootstrap 5 JS -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- jQuery Custom Logic -->
+    <script>
+        $(document).ready(function() {
+            // Lesson Details Data Map
+            const lessonData = {
+                1: {
+                    title: "Lesson 1: 認識 Vue、認識框架與安裝對應工具",
+                    content: `
+                        <h6 class="fw-bold text-success mb-2">學習目標</h6>
+                        <p class="text-muted">理解 Vue.js 的響應式設計哲學，並掌握現代前端 tooling (Vite) 的基本使用。</p>
+                        <h6 class="fw-bold text-dark mb-2">單元細節：</h6>
+                        <ul class="list-group list-group-flush mb-3">
+                            <li class="list-group-item bg-transparent">1.1 什麼是前端框架？SPA (Single Page Application) 原理剖析</li>
+                            <li class="list-group-item bg-transparent">1.2 Vue 3 核心亮點：Performance、Tree-shaking 與 Composition API</li>
+                            <li class="list-group-item bg-transparent">1.3 安裝 Node.js 環境與使用 npm / pnpm / yarn 封包管理器</li>
+                            <li class="list-group-item bg-transparent">1.4 透過 Vite 建立第一個 Vue 3 專案 (`npm create vue@latest`)</li>
+                            <li class="list-group-item bg-transparent">1.5 VS Code 必備擴充：Volar, ESLint, Prettier 設定</li>
+                        </ul>
+                    `
+                },
+                2: {
+                    title: "Lesson 2: 學習基礎語法與指令",
+                    content: `
+                        <h6 class="fw-bold text-success mb-2">學習目標</h6>
+                        <p class="text-muted">熟練 Vue 的核心指令 (Directives)，處理動態資料綁定與使用者事件觸發。</p>
+                        <h6 class="fw-bold text-dark mb-2">單元細節：</h6>
+                        <ul class="list-group list-group-flush mb-3">
+                            <li class="list-group-item bg-transparent">2.1 模板內插語法 (Text Interpolation) 與 JavaScript 表達式</li>
+                            <li class="list-group-item bg-transparent">2.2 `v-bind` 縮寫 `:` 的動態屬性、Class 與 Style 樣式綁定</li>
+                            <li class="list-group-item bg-transparent">2.3 `v-on` 縮寫 `@` 的事件處理與常見修飾符 (.prevent, .stop)</li>
+                            <li class="list-group-item bg-transparent">2.4 `v-if`, `v-else-if`, `v-else` 與 `v-show` 的效能選擇比較</li>
+                            <li class="list-group-item bg-transparent">2.5 `v-for` 列表渲染與 `key` 屬性的重要性</li>
+                            <li class="list-group-item bg-transparent">2.6 課堂實作：互動式 TodoList 待辦事項清單</li>
+                        </ul>
+                    `
+                },
+                3: {
+                    title: "Lesson 3: 學習 Component 元件化開發",
+                    content: `
+                        <h6 class="fw-bold text-success mb-2">學習目標</h6>
+                        <p class="text-muted">學會將複雜 UI 拆解為獨立、可複用的組件，並建立健全的父子組件溝通管道。</p>
+                        <h6 class="fw-bold text-dark mb-2">單元細節：</h6>
+                        <ul class="list-group list-group-flush mb-3">
+                            <li class="list-group-item bg-transparent">3.1 單檔案組件 (Single-File Component, .vue) 構造解析</li>
+                            <li class="list-group-item bg-transparent">3.2 Props 父傳子：單向資料流原則與 Prop 類型提示</li>
+                            <li class="list-group-item bg-transparent">3.3 Emits 子傳父：觸發自訂事件與傳遞 payload 資料</li>
+                            <li class="list-group-item bg-transparent">3.4 Slot 插槽：預設插槽、具名插槽 (Named Slots) 與作用域插槽</li>
+                            <li class="list-group-item bg-transparent">3.5 課堂實作：打造可封裝複用的通用 UI Modal 與 Product Card 組件</li>
+                        </ul>
+                    `
+                },
+                4: {
+                    title: "Lesson 4: Reactivity 響應式系統深剖",
+                    content: `
+                        <h6 class="fw-bold text-success mb-2">學習目標</h6>
+                        <p class="text-muted">透視 Vue 3 Proxy 響應式機制，掌控狀態維護、動態計算與副作用追蹤。</p>
+                        <h6 class="fw-bold text-dark mb-2">單元細節：</h6>
+                        <ul class="list-group list-group-flush mb-3">
+                            <li class="list-group-item bg-transparent">4.1 深入 `ref()` 與 `reactive()`：使用時機與解構陷阱</li>
+                            <li class="list-group-item bg-transparent">4.2 `computed()` 計算屬性：快取機制與與方法 (Methods) 的差別</li>
+                            <li class="list-group-item bg-transparent">4.3 `watch()` 與 `watchEffect()` 偵聽器：異步監聽與 deep 深度監聽</li>
+                            <li class="list-group-item bg-transparent">4.4 說明 Vue 3 生命週期：onMounted, onUpdated, onUnmounted</li>
+                            <li class="list-group-item bg-transparent">4.5 課堂實作：即時購物車金額計算與庫存警告器</li>
+                        </ul>
+                    `
+                },
+                5: {
+                    title: "Lesson 5: Axios 傳送資料與 API 整合",
+                    content: `
+                        <h6 class="fw-bold text-success mb-2">學習目標</h6>
+                        <p class="text-muted">靈活運用 Axios 連接真實後端 API，處理非同步請求、載入狀態與異常攔截。</p>
+                        <h6 class="fw-bold text-dark mb-2">單元細節：</h6>
+                        <ul class="list-group list-group-flush mb-3">
+                            <li class="list-group-item bg-transparent">5.1 RESTful API 規範概念與 HTTP Methods (GET, POST, PUT, DELETE)</li>
+                            <li class="list-group-item bg-transparent">5.2 Axios 套件導入與基本的 Instance 封裝</li>
+                            <li class="list-group-item bg-transparent">5.3 Promise 與 Async / Await 語法優雅處理解構</li>
+                            <li class="list-group-item bg-transparent">5.4 Loading 轉圈效果與 Try...Catch 錯誤捕獲與提示 UI</li>
+                            <li class="list-group-item bg-transparent">5.5 課堂實作：串接 OpenWeather API 打造即時氣象預報面板</li>
+                        </ul>
+                    `
+                },
+                6: {
+                    title: "Lesson 6: AI 實作作品：打造生成式 AI 應用",
+                    content: `
+                        <h6 class="fw-bold text-success mb-2">終極專案目標</h6>
+                        <p class="text-muted">結合 Vue 3 全套技術與 OpenAI RESTful / SSE API，完成展現前端實力的 AI 生態作品。</p>
+                        <h6 class="fw-bold text-dark mb-2">單元細節：</h6>
+                        <ul class="list-group list-group-flush mb-3">
+                            <li class="list-group-item bg-transparent">6.1 OpenAI API 密鑰管理與 安全代理 (Proxy) 概念</li>
+                            <li class="list-group-item bg-transparent">6.2 串接 Chat Completions API 與 Prompt Engineering 技巧</li>
+                            <li class="list-group-item bg-transparent">6.3 實作打字機串流 (Streaming) 回應效果與 Markdown 高亮解析</li>
+                            <li class="list-group-item bg-transparent">6.4 對話歷史紀錄 State 持久化管理 (Pinia / LocalStorage)</li>
+                            <li class="list-group-item bg-transparent">6.5 專案效能 Bundle 優化、Vite Build 與免費部署至 Vercel / GitHub Pages</li>
+                        </ul>
+                    `
+                }
+            };
+
+            // Click Handler for Lesson Detail Modal via jQuery
+            $('.btn-detail').on('click', function() {
+                const lessonId = $(this).data('lesson');
+                const data = lessonData[lessonId];
+                if (data) {
+                    $('#lessonModalTitle').text(data.title);
+                    $('#lessonModalBody').html(data.content);
+                    const myModal = new bootstrap.Modal(document.getElementById('lessonModal'));
+                    myModal.show();
+                }
+            });
+
+            // Smooth Scroll for Navigation
+            $('a[href^="#"]').on('click', function(e) {
+                e.preventDefault();
+                const target = $(this.hash);
+                if (target.length) {
+                    $('html, body').animate({
+                        scrollTop: target.offset().top - 70
+                    }, 500);
+                }
+            });
+
+            // Enroll Now Action
+            $('#btnEnrollNow').on('click', function() {
+                alert('🎉 感謝您的興趣！預約試聽與報名表單已成功送出，導師團隊將儘快與您聯繫。');
+            });
+
+            // Preview Video Action
+            $('#btnPreviewModal').on('click', function() {
+                alert('🎬 課程導讀影片即將播放！準備好跟我們一起進入 Vue.js 的美妙世界。');
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1103 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laravel ➔ Vue.js 漸進式跨界開發 - 互動式白色課本</title>
+    <!-- Bootstrap 5 CSS CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome for Premium Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Inter, Noto Sans TC, JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <!-- Custom CSS for Designer Premium Feel -->
+    <style>
+        :root {
+            --bg-canvas: #f8fafc;
+            --bg-paper: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --accent-color: #3b82f6;
+            --accent-bg: #eff6ff;
+            --sidebar-width: 320px;
+            --sidebar-collapsed-width: 0px;
+            --transition-speed: 0.3s;
+            --font-sans: 'Inter', 'Noto Sans TC', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        body {
+            background-color: var(--bg-canvas);
+            color: var(--text-main);
+            font-family: var(--font-sans);
+            overflow-x: hidden;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Design */
+        #sidebar {
+            width: var(--sidebar-width);
+            min-width: var(--sidebar-width);
+            background-color: var(--bg-paper);
+            border-right: 1px solid var(--border-color);
+            transition: all var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 4px 0 24px rgba(15, 23, 42, 0.02);
+        }
+
+        #sidebar.collapsed {
+            left: calc(var(--sidebar-width) * -1);
+        }
+
+        .sidebar-header {
+            padding: 2rem 1.5rem 1.5rem 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            position: relative;
+        }
+
+        .sidebar-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .brand-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            background-color: var(--text-main);
+            color: var(--bg-paper);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.1);
+        }
+
+        .brand-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin: 0;
+        }
+
+        .brand-subtitle {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin: 0;
+        }
+
+        .sidebar-menu {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1.5rem 1rem;
+        }
+
+        .sidebar-menu::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .sidebar-menu::-webkit-scrollbar-thumb {
+            background-color: var(--border-color);
+            border-radius: 2px;
+        }
+
+        .nav-item-header {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+            padding-left: 0.75rem;
+        }
+
+        .nav-item-header:first-child {
+            margin-top: 0;
+        }
+
+        .toc-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            border-radius: 10px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            margin-bottom: 0.25rem;
+        }
+
+        .toc-link:hover {
+            background-color: var(--bg-canvas);
+            color: var(--text-main);
+        }
+
+        .toc-link.active {
+            background-color: var(--accent-bg);
+            color: var(--accent-color);
+            font-weight: 600;
+        }
+
+        .toc-num {
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
+            background-color: var(--bg-canvas);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-muted);
+        }
+
+        .toc-link.active .toc-num {
+            background-color: var(--accent-color);
+            color: var(--bg-paper);
+        }
+
+        /* Main Content Wrapper */
+        #content-wrapper {
+            margin-left: var(--sidebar-width);
+            width: calc(100% - var(--sidebar-width));
+            transition: all var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #content-wrapper.expanded {
+            margin-left: 0;
+            width: 100%;
+        }
+
+        /* Floating Sidebar Toggle Button */
+        #toggle-sidebar-btn {
+            position: fixed;
+            left: 20px;
+            bottom: 20px;
+            z-index: 1050;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background-color: var(--text-main);
+            color: var(--bg-paper);
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.16);
+            cursor: pointer;
+            transition: transform 0.2s ease, background-color 0.2s ease;
+        }
+
+        #toggle-sidebar-btn:hover {
+            transform: scale(1.05);
+            background-color: #1e293b;
+        }
+
+        /* Section Styling */
+        main {
+            padding: 4rem 3rem;
+            max-width: 1000px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        @media (max-width: 768px) {
+            #sidebar {
+                left: calc(var(--sidebar-width) * -1);
+            }
+            #sidebar.active {
+                left: 0;
+            }
+            #content-wrapper {
+                margin-left: 0;
+                width: 100%;
+            }
+            #content-wrapper.expanded {
+                margin-left: 0;
+            }
+            main {
+                padding: 2rem 1.5rem;
+            }
+        }
+
+        /* Card / Textbook Page Style */
+        .textbook-card {
+            background: var(--bg-paper);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 2.5rem;
+            margin-bottom: 3rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02), 0 10px 40px rgba(15, 23, 42, 0.015);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .textbook-card:hover {
+            box-shadow: 0 10px 50px rgba(15, 23, 42, 0.03);
+        }
+
+        .chapter-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--accent-color);
+            background-color: var(--accent-bg);
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .card-title {
+            font-size: 1.75rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            color: var(--text-main);
+            margin-bottom: 1.5rem;
+            line-height: 1.3;
+        }
+
+        .concept-block {
+            border-left: 3px solid var(--accent-color);
+            background-color: var(--accent-bg);
+            padding: 1.25rem 1.5rem;
+            border-radius: 0 16px 16px 0;
+            margin: 1.5rem 0;
+        }
+
+        .concept-block p {
+            margin: 0;
+            font-size: 0.925rem;
+            line-height: 1.6;
+            color: #1e3a8a;
+        }
+
+        /* Code Block Premium Style */
+        .code-container {
+            position: relative;
+            margin: 1.5rem 0;
+            border-radius: 14px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        .code-header {
+            background-color: #f8fafc;
+            padding: 0.75rem 1.25rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .code-title {
+            font-size: 0.75rem;
+            font-family: var(--font-mono);
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        pre {
+            margin: 0;
+            padding: 1.25rem;
+            background-color: #0f172a;
+            color: #e2e8f0;
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            line-height: 1.6;
+            overflow-x: auto;
+        }
+
+        .copy-btn {
+            background: none;
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background-color: var(--bg-paper);
+        }
+
+        .copy-btn:hover {
+            color: var(--text-main);
+            border-color: #94a3b8;
+            background-color: #f1f5f9;
+        }
+
+        /* Prompt Box Premium Style */
+        .prompt-box {
+            background-color: #fafaf9;
+            border: 1px dashed #d6d3d1;
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            position: relative;
+        }
+
+        .prompt-tag {
+            font-size: 0.7rem;
+            font-weight: 800;
+            color: #78716c;
+            background-color: #f5f5f4;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            display: inline-block;
+            margin-bottom: 0.75rem;
+            letter-spacing: 0.05em;
+        }
+
+        .prompt-text {
+            font-size: 0.875rem;
+            color: #44403c;
+            line-height: 1.6;
+            margin-bottom: 1.25rem;
+            white-space: pre-wrap;
+        }
+
+        .prompt-btn {
+            background-color: #1c1917;
+            color: #ffffff;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: background-color 0.2s ease;
+        }
+
+        .prompt-btn:hover {
+            background-color: #44403c;
+        }
+
+        /* Comparison Table Style */
+        .table-premium {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 0.875rem;
+        }
+
+        .table-premium th {
+            background-color: #f8fafc;
+            border-bottom: 2px solid var(--border-color);
+            padding: 1rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .table-premium td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            color: #334155;
+            vertical-align: top;
+        }
+
+        .table-premium tr:hover td {
+            background-color: #f8fafc;
+        }
+
+        /* Quiz Modal styling */
+        .quiz-option-btn {
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-paper);
+            color: var(--text-main);
+            padding: 1rem;
+            border-radius: 12px;
+            text-align: left;
+            width: 100%;
+            margin-bottom: 0.75rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .quiz-option-btn:hover:not(:disabled) {
+            border-color: var(--accent-color);
+            background-color: var(--accent-bg);
+            color: var(--accent-color);
+        }
+
+        .quiz-option-btn.correct {
+            background-color: #d1fae5;
+            border-color: #10b981;
+            color: #065f46;
+        }
+
+        .quiz-option-btn.incorrect {
+            background-color: #fee2e2;
+            border-color: #ef4444;
+            color: #991b1b;
+        }
+
+        .footer {
+            margin-top: auto;
+            border-top: 1px solid var(--border-color);
+            background-color: var(--bg-paper);
+            padding: 2.5rem 0;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Left Sidebar (Collapsible Chapter Navigation) -->
+    <aside id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-brand">
+                <div class="brand-icon">
+                    <i class="fa-solid fa-code-merge"></i>
+                </div>
+                <div>
+                    <h1 class="brand-title">Laravel ➔ Vue 跨界</h1>
+                    <p class="brand-subtitle">朱珮瑜專案三 · 第六次上課</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="sidebar-menu">
+            <nav class="nav flex-column">
+                <div class="nav-item-header">課程主導航</div>
+                <a href="#welcome" class="toc-link active" data-section="welcome">
+                    <div class="toc-num">0</div>
+                    學習引言與目標
+                </a>
+
+                <div class="nav-item-header">第一階段：Laravel 精華複習</div>
+                <a href="#section-review" class="toc-link" data-section="section-review">
+                    <div class="toc-num">1</div>
+                    MVC 運作架構大複習
+                </a>
+                <a href="#section-blade-intro" class="toc-link" data-section="section-blade-intro">
+                    <div class="toc-num">2</div>
+                    為什麼 Blade 那麼強？
+                </a>
+
+                <div class="nav-item-header">第二階段：Vue 概念漸進引進</div>
+                <a href="#section-vue-concept" class="toc-link" data-section="section-vue-concept">
+                    <div class="toc-num">3</div>
+                    什麼是 Vue.js？與他牌比較
+                </a>
+                <a href="#section-axios" class="toc-link" data-section="section-axios">
+                    <div class="toc-num">4</div>
+                    Axios 核心與非同步傳輸
+                </a>
+                <a href="#section-vue-struct" class="toc-link" data-section="section-vue-struct">
+                    <div class="toc-num">5</div>
+                    Vue 專案結構與決策指標
+                </a>
+
+                <div class="nav-item-header">第三階段：AI 協同開發實踐</div>
+                <a href="#section-ai-blueprint" class="toc-link" data-section="section-ai-blueprint">
+                    <div class="toc-num">6</div>
+                    AI 施工藍圖與路徑規劃
+                </a>
+                <a href="#section-ai-practice" class="toc-link" data-section="section-ai-practice">
+                    <div class="toc-num">7</div>
+                    利用 AI 實作 Laravel 新功能
+                </a>
+            </nav>
+        </div>
+    </aside>
+
+    <!-- Floating Toggle Button for Sidebar -->
+    <button id="toggle-sidebar-btn" title="切換側邊欄">
+        <i class="fa-solid fa-bars-staggered"></i>
+    </button>
+
+    <!-- Content Area Wrapper -->
+    <div id="content-wrapper">
+        <main>
+            <!-- Welcome Header Section -->
+            <section id="welcome" class="scroll-mt-4">
+                <div class="textbook-card border-0 bg-transparent p-0 mb-4">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <span class="badge bg-dark px-3 py-2 rounded-3">
+                            <i class="fa-regular fa-calendar-check me-2"></i>第六堂課實戰講義
+                        </span>
+                        <button class="btn btn-outline-dark btn-sm rounded-3 px-3" id="open-quiz-btn">
+                            <i class="fa-solid fa-graduation-cap me-2"></i>課後觀念小檢測
+                        </button>
+                    </div>
+                    <h2 class="display-5 fw-extrabold tracking-tight mb-3">Laravel 到 Vue 的漸進式探索</h2>
+                    <p class="lead text-muted">
+                        哈囉珮瑜！在前面五堂課中，我們已經成功地使用 Laravel 基礎架構完成了<strong>會員註冊與登入系統</strong>。
+                        今天這堂課，我們將先幫你<strong>統整與複習</strong>前面的後端流程，接著跨出大步，探討現代前端的霸主 <strong>Vue.js</strong>。
+                        你將會理解「為什麼要元件化」、「傳統網頁跳轉與非同步更新的巨大差別」，並學會如何用 AI 幫你寫出<strong>施工藍圖 (Blueprint)</strong>。
+                    </p>
+                </div>
+            </section>
+
+            <!-- 1. MVC Review -->
+            <section id="section-review" class="scroll-mt-4">
+                <div class="textbook-card">
+                    <div class="chapter-badge">
+                        <i class="fa-solid fa-arrows-spin"></i> Chapter 01
+                    </div>
+                    <h3 class="card-title">回顧 Laravel：web.php ➔ Controller ➔ Blade ➔ Migration 的完美循環</h3>
+                    <p class="text-muted mb-4">
+                        寫後端程式最重要的是<strong>「資料與資料傳遞的生命週期」</strong>。以下是我們之前串接會員系統的底層運作邏輯：
+                    </p>
+
+                    <div class="row g-4 mb-4">
+                        <div class="col-md-6">
+                            <div class="p-4 rounded-4 bg-light border h-100">
+                                <h5 class="fw-bold mb-2 text-primary"><i class="fa-solid fa-route me-2"></i>1. 路由 (web.php)</h5>
+                                <p class="small text-muted mb-0">定義門牌號碼。當瀏覽器請求特定網址，路由負責指定由哪一個控制器的哪一個 function 來接單。</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="p-4 rounded-4 bg-light border h-100">
+                                <h5 class="fw-bold mb-2 text-success"><i class="fa-solid fa-gears me-2"></i>2. 控制器 (Controller)</h5>
+                                <p class="small text-muted mb-0">系統的大腦。負責處理邏輯、調度 Model 去資料庫撈資料，然後把包好的變數傳送給前台視圖渲染。</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="p-4 rounded-4 bg-light border h-100">
+                                <h5 class="fw-bold mb-2 text-warning"><i class="fa-regular fa-eye me-2"></i>3. 視圖 (Blade Template)</h5>
+                                <p class="small text-muted mb-0">前台的衣服。將後端丟過來的變數印在 HTML 的正確區塊上，渲染出讓使用者驚艷的漂亮畫面。</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="p-4 rounded-4 bg-light border h-100">
+                                <h5 class="fw-bold mb-2 text-info"><i class="fa-solid fa-database me-2"></i>4. 資料遷移 (Migration)</h5>
+                                <p class="small text-muted mb-0">資料表的程式碼藍圖。定義資料庫要有哪些欄位（例如 `name`, `email`），確保每位開發者的資料表欄位長得一模一樣。</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="concept-block">
+                        <p><strong>珮瑜心法：</strong> 之後寫任何功能，第一步是想「我要存什麼資料」（寫 Migration），第二步是「網址叫什麼」（寫 web.php），第三步是「處理邏輯與撈資料」（寫 Controller），第四步才是「畫面怎麼呈現」（寫 Blade）。</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. Blade Engine -->
+            <section id="section-blade-intro" class="scroll-mt-4">
+                <div class="textbook-card">
+                    <div class="chapter-badge">
+                        <i class="fa-solid fa-feather-pointed"></i> Chapter 02
+                    </div>
+                    <h3 class="card-title">學習 Laravel Blade 模板：為什麼它如此強大？</h3>
+                    <p class="text-muted">
+                        初學者最容易混淆：「Blade 是不是一種新的程式語言？」<br>
+                        <strong>答案是：不是！</strong> Blade 純粹是 Laravel 的「樣板引擎」，它最後還是會被編譯成純 PHP 程式碼。在 Blade 檔案中（以 `.blade.php` 結尾），你可以完全自由地混合編寫 **HTML、CSS、以及 JS**。
+                    </p>
+
+                    <div class="concept-block bg-light border-start border-dark">
+                        <p class="text-dark"><strong>為什麼不直接寫純 HTML？Blade 強在哪？</strong></p>
+                        <ul class="small text-muted mt-2 mb-0">
+                            <li><strong>結構繼承 (`@extends` / `@yield`)</strong>：不需要在每個網頁重複複製貼上 Navbar 與 Footer。只寫一次主外框，子頁面套用即可。</li>
+                            <li><strong>乾淨的印出語法 (`{{ $variable }}`)</strong>：取代以往 PHP 冗長的 <code>&lt;?php echo htmlspecialchars($variable); ?&gt;</code>，還能自動防範 XSS 惡意指令注入。</li>
+                            <li><strong>直覺的邏輯控制 (`@if`, `@foreach`)</strong>：直接在 HTML 中跑資料迴圈，結構清晰易讀。</li>
+                        </ul>
+                    </div>
+
+                    <div class="code-container">
+                        <div class="code-header">
+                            <span class="code-title">views/member/profile.blade.php</span>
+                            <button class="copy-btn"><i class="fa-regular fa-copy"></i> 複製</button>
+                        </div>
+                        <pre><code>&#64;extends('layouts.app')
+
+&#64;section('content')
+&lt;div class="container my-5"&gt;
+    &lt;div class="card p-4 shadow-sm"&gt;
+        &lt;h2&gt;歡迎回來，{{ $user->name }}！&lt;/h2&gt;
+        &lt;p class="text-muted"&gt;您的登入信箱是：{{ $user->email }}&lt;/p&gt;
+        
+        &#64;if($user->is_admin)
+            &lt;span class="badge bg-danger"&gt;管理員帳號&lt;/span&gt;
+        &#64;else
+            &lt;span class="badge bg-secondary"&gt;一般會員&lt;/span&gt;
+        &#64;endif
+    &lt;/div&gt;
+&lt;/div&gt;
+&#64;endsection</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. Vue Concept -->
+            <section id="section-vue-concept" class="scroll-mt-4">
+                <div class="textbook-card">
+                    <div class="chapter-badge">
+                        <i class="fa-brands fa-vuejs"></i> Chapter 03
+                    </div>
+                    <h3 class="card-title">漸進式引進 Vue 的觀念：它跟 JS 與其它框架的關係</h3>
+                    <p class="text-muted">
+                        在學習 Vue 之前，我們要先搞清楚現代前端群雄割據的生態：
+                    </p>
+
+                    <div class="concept-block">
+                        <p><strong>核心定義：</strong> Vue.js 是一個<strong>前端 JavaScript 框架 (Framework)</strong>。它並不是用來取代 JavaScript，而是建立在 JavaScript 之上，幫助我們更有效率、更有結構地控制網頁畫面的工具。</p>
+                    </div>
+
+                    <table class="table-premium">
+                        <thead>
+                            <tr>
+                                <th>技術別</th>
+                                <th>角色 / 定義</th>
+                                <th>優點與主要特色</th>
+                                <th>為什麼不只用它？</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>JavaScript</strong></td>
+                                <td>網頁的靈魂 (原生語言)</td>
+                                <td>所有瀏覽器都看得懂，功能無極限。</td>
+                                <td>若要寫複雜的動態畫面，程式碼會變得極其混亂（俗稱義大利麵代碼）。</td>
+                            </tr>
+                            <tr>
+                                <td><strong>jQuery</strong></td>
+                                <td>DOM 操作的工具函式庫</td>
+                                <td>簡化 JS 的寫法（例如 <code>$('#btn').click()</code>）。</td>
+                                <td>無法處理大型、資料高度連動的複雜網頁。在現代開發中逐漸邊緣化。</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Vue.js</strong></td>
+                                <td>漸進式 JavaScript 框架</td>
+                                <td><strong>雙向資料綁定、元件化</strong>。學習曲線最平緩，適合與 Laravel 混搭。</td>
+                                <td>對極度單純的靜態網頁（如一頁式形象網頁）來說，屬於過度設計。</td>
+                            </tr>
+                            <tr>
+                                <td><strong>React / Angular</strong></td>
+                                <td>大型前端框架</td>
+                                <td>React 生態系極大，適合大型單頁應用。</td>
+                                <td>React 陡峭的學習曲線、Angular 的複雜度，對初學者門檻極高。</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h5 class="fw-bold mt-4 mb-3">Vue 為什麼快？</h5>
+                    <p class="text-muted small">
+                        傳統 JS 或 jQuery 在每次資料更新時，都會強行把整區的 HTML 移除重新繪製，這在瀏覽器渲染中非常耗能。
+                        而 Vue 在記憶體中建立了一套 <strong>虛擬 DOM (Virtual DOM)</strong>。當資料改變時，Vue 會先在記憶體中比對新舊畫面的差別，<strong>只去修改真正需要變動的那一小塊 HTML 節點</strong>，因此速度奇快無比，互動極度流暢。
+                    </p>
+                </div>
+            </section>
+
+            <!-- 4. Axios -->
+            <section id="section-axios" class="scroll-mt-4">
+                <div class="textbook-card">
+                    <div class="chapter-badge">
+                        <i class="fa-solid fa-cloud-arrow-right"></i> Chapter 04
+                    </div>
+                    <h3 class="card-title">元件化與非同步傳輸：Vue Axios vs 傳統表單傳送</h3>
+                    <p class="text-muted">
+                        當我們在寫會員登入時，傳統的做法是：使用者輸入資料 ➔ 按下送出 ➔ <strong>整頁重新載入 (Reload)</strong> ➔ 瀏覽器出現一片白屏 ➔ 後端驗證完送回新畫面。
+                    </p>
+
+                    <div class="row g-4 my-2">
+                        <div class="col-md-6">
+                            <div class="p-4 rounded-4 border bg-white">
+                                <span class="badge bg-secondary mb-2">傳統整頁傳送</span>
+                                <p class="small text-muted">
+                                    資料打包送去伺服器，伺服器重新渲染「整張 HTML」吐回來。使用者體驗差，網速慢時會不斷轉圈圈。
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="p-4 rounded-4 border bg-white">
+                                <span class="badge bg-primary mb-2">Vue Axios 非同步 (AJAX)</span>
+                                <p class="small text-muted">
+                                    網頁不重整！只透過 **Axios** 在背景默默把資料丟給 Laravel，Laravel 處理完回傳 **JSON 格式資料**，Vue 收到後動態修改局部畫面。
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h5 class="fw-bold mt-4 mb-2"><i class="fa-solid fa-cubes me-2"></i>什麼是元件化（Componentization）？</h5>
+                    <p class="text-muted small">
+                        想像一個購物網站，有「商品卡片」、「購物車側欄」、「評論清單」。在傳統 HTML 中，這些程式碼會混在一起。
+                        Vue 允許我們把每一塊功能拆封成獨立的 <strong>`.vue` 元件</strong>。這個元件自己擁有自己的 HTML、CSS、以及控制邏輯，就像樂高積木一樣。需要用時，只需要引入 <code>&lt;ProductCard /&gt;</code>，整個網頁頓時變得非常乾淨，工程師也能輕鬆重複利用代碼！
+                    </p>
+                </div>
+            </section>
+
+            <!-- 5. Vue Structure -->
+            <section id="section-vue-struct" class="scroll-mt-4">
+                <div class="textbook-card">
+                    <div class="chapter-badge">
+                        <i class="fa-regular fa-folder-open"></i> Chapter 05
+                    </div>
+                    <h3 class="card-title">Vue 的檔案結構與是否引進 Vue 的決策指標</h3>
+                    <p class="text-muted">
+                        在 Laravel 專案中引入 Vue，其約定俗成的檔案擺放位置如下：
+                    </p>
+
+                    <div class="code-container">
+                        <div class="code-header">
+                            <span class="code-title">Laravel 專案內的前端目錄結構</span>
+                        </div>
+                        <pre><code>專案根目錄/
+├── resources/
+│   ├── js/
+│   │   ├── components/            # 存放所有 Vue 元件的資料夾
+│   │   │   ├── MemberProfile.vue  # 個人檔案元件
+│   │   │   └── TodoList.vue       # 待辦清單元件
+│   │   ├── app.js                 # 前端進入點 (在這邊註冊 Vue 與 Axios)
+│   │   └── bootstrap.js           # 載入 axios 等前端套件
+│   └── views/
+│       └── app.blade.php          # 唯一的後端 Blade 外框，裡面會掛載 &lt;div id="app"&gt;</code></pre>
+                    </div>
+
+                    <div class="p-4 rounded-4 border bg-light my-4">
+                        <h5 class="fw-bold mb-3"><i class="fa-solid fa-compass me-2"></i>珮瑜評估指標：我們的專案可用可不用 Vue 嗎？</h5>
+                        <p class="small text-muted">
+                            是的！Laravel 是個非常包容的框架。你可以依據功能複雜度來決定：
+                        </p>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="p-3 rounded-3 bg-white border border-success-subtle h-100">
+                                    <span class="text-success fw-bold d-block mb-1">適合直接用 Blade + JQuery 的場景</span>
+                                    <span class="small text-muted">
+                                        首頁形象展示、純文章列表、聯絡表單、或是簡單的後台表格。這類網頁主要目的是「展示資訊」，不需要高度即時互動，直接用 Laravel 渲染速度最快且最單純。
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="p-3 rounded-3 bg-white border border-primary-subtle h-100">
+                                    <span class="text-primary fw-bold d-block mb-1">建議引進 Vue.js 的場景</span>
+                                    <span class="small text-muted">
+                                        購物車即時加減、拖曳式看板、多人聊天室、複雜的多步驟表單。當網頁畫面上有大量元素需要「因為一個按鈕點擊而同時產生連動變化」時，用 Vue 寫會比 jQuery 輕鬆 10 倍。
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 6. AI Blueprint -->
+            <section id="section-ai-blueprint" class="scroll-mt-4">
+                <div class="textbook-card">
+                    <div class="chapter-badge">
+                        <i class="fa-solid fa-map-location-dot"></i> Chapter 06
+                    </div>
+                    <h3 class="card-title">學習叫 AI 建立 md 施工藍圖檔案</h3>
+                    <p class="text-muted">
+                        當我們要寫一個稍微複雜的前後端功能時，<strong>絕對不要直接叫 AI 寫程式碼！</strong><br>
+                        你應該先叫 AI 生成一份<strong>施工藍圖 (Blueprint) Markdown 檔案</strong>，確認邏輯路徑無誤後，再逐步命令 AI 實作程式碼。這可以徹底避免 AI 寫出拼裝不起來的垃圾代碼。
+                    </p>
+
+                    <div class="prompt-box">
+                        <span class="prompt-tag">AI Prompt 範本</span>
+                        <div class="prompt-text">我想要在 Laravel + Vue 專案中，實作一個「購物車新增商品與即時結帳」功能。
+請幫我撰寫一份詳細的「施工藍圖 (.md 格式)」，明確規劃出：
+1. 資料庫設計 (Migrations) 的欄位與型態。
+2. 後端 API 路由與 Controller 的對應方法，以及回傳的 JSON 結構。
+3. 前端 Vue 元件的檔案路徑、元件名稱、與後端對接的 Axios 路徑。
+4. 預期檔案的目錄配置圖。
+先不要寫實作代碼，只提供施工藍圖。</div>
+                        <button class="prompt-btn copy-prompt-btn"><i class="fa-regular fa-copy"></i> 複製 AI 提示詞</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 7. AI Practice -->
+            <section id="section-ai-practice" class="scroll-mt-4">
+                <div class="textbook-card">
+                    <div class="chapter-badge">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i> Chapter 07
+                    </div>
+                    <h3 class="card-title">使用 AI 實作 Laravel 新功能</h3>
+                    <p class="text-muted">
+                        珮瑜，既然我們的「會員系統」已經做完了。如果現在要在專案中實作一個新功能（例如：<strong>留言板系統</strong>），我們如何命令 AI 一口氣生成後端的所有基本骨架（Migration, Route, Controller, Blade）？
+                    </p>
+
+                    <div class="prompt-box">
+                        <span class="prompt-tag">AI Prompt 範本</span>
+                        <div class="prompt-text">我已經在 Laravel 專案中實作好了會員註冊登入系統。
+現在，我想基於現有架構新增一個「留言板功能 (Guestbook)」。請幫我寫出：
+1. Migration：留言板資料表 `guestbooks`，包含欄位：id, user_id (關聯 users 表), content (留言內容), created_at。
+2. web.php 路由：使用 Resource 路由。
+3. GuestbookController：實作 index (顯示所有留言)、store (儲存留言，並限制必須登入且字數 100 字內) 方法。
+4. 提供 Blade 視圖的簡易區塊，說明如何用 @foreach 印出留言，以及一個表單讓使用者輸入並 POST 提交。</div>
+                        <button class="prompt-btn copy-prompt-btn"><i class="fa-regular fa-copy"></i> 複製 AI 提示詞</button>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="container">
+                <p class="mb-1">用 AI 提速你的程式開發，把精力留給產品的設計與互動！</p>
+                <p class="mb-0">© 2026 朱珮瑜專案三 · 第六次上課互動電子課本</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Quiz Modal (Bootstrap 5 Modal styled with designer look) -->
+    <div class="modal fade" id="quizModal" tabindex="-1" aria-labelledby="quizModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content rounded-4 border-0 shadow-lg">
+                <div class="modal-header border-bottom-0 pt-4 px-4">
+                    <h5 class="modal-title fw-bold" id="quizModalLabel">
+                        <i class="fa-solid fa-graduation-cap text-primary me-2"></i>觀念吸收挑戰
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body px-4 pb-4">
+                    <div id="quiz-intro-pane">
+                        <p class="text-muted small mb-4">
+                            挑戰三個精心設計的問題，測試你對今天 Laravel 與 Vue.js 觀念的掌握程度！
+                        </p>
+                        <button id="start-quiz-btn" class="btn btn-dark w-100 py-3 rounded-3 fw-bold">
+                            開始檢測
+                        </button>
+                    </div>
+
+                    <div id="quiz-question-pane" class="d-none">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="badge bg-secondary-subtle text-secondary small" id="quiz-counter">問題 1 / 3</span>
+                        </div>
+                        <h6 class="fw-bold mb-4" id="quiz-question-text">讀取中...</h6>
+                        <div id="quiz-options-container">
+                            <!-- Options go here -->
+                        </div>
+                    </div>
+
+                    <div id="quiz-result-pane" class="d-none text-center py-4">
+                        <div class="display-3 text-success mb-3">
+                            <i class="fa-solid fa-circle-check"></i>
+                        </div>
+                        <h4 class="fw-bold mb-2">檢測完成！</h4>
+                        <p class="text-muted small mb-4" id="quiz-score-text">你答對了 3 題中的 3 題！</p>
+                        <button id="restart-quiz-btn" class="btn btn-outline-dark px-4 py-2 rounded-3">
+                            重新挑戰
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap & jQuery via CDN -->
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Sidebar Toggle Logic
+            $('#toggle-sidebar-btn').on('click', function () {
+                $('#sidebar').toggleClass('collapsed');
+                $('#content-wrapper').toggleClass('expanded');
+                
+                // Toggle sidebar icon
+                const icon = $(this).find('i');
+                if ($('#sidebar').hasClass('collapsed')) {
+                    icon.removeClass('fa-bars-staggered').addClass('fa-right-to-bracket');
+                } else {
+                    icon.removeClass('fa-right-to-bracket').addClass('fa-bars-staggered');
+                }
+            });
+
+            // Smooth Scrolling and Active Nav Link Update
+            $('.toc-link').on('click', function (e) {
+                e.preventDefault();
+                const targetId = $(this).attr('href');
+                const targetElement = $(targetId);
+
+                if (targetElement.length) {
+                    $('html, body').animate({
+                        scrollTop: targetElement.offset().top - 40
+                    }, 400);
+                }
+
+                // Update active class
+                $('.toc-link').removeClass('active');
+                $(this).addClass('active');
+
+                // On mobile, auto-close sidebar when clicking link
+                if ($(window).width() <= 768) {
+                    $('#sidebar').addClass('collapsed');
+                    $('#content-wrapper').addClass('expanded');
+                    $('#toggle-sidebar-btn').find('i').removeClass('fa-bars-staggered').addClass('fa-right-to-bracket');
+                }
+            });
+
+            // Copy Snippet Clipboard Simulation
+            $('.copy-btn').on('click', function () {
+                const codeText = $(this).closest('.code-container').find('code').text();
+                navigator.clipboard.writeText(codeText);
+
+                const $btn = $(this);
+                const originalHtml = $btn.html();
+                $btn.html('<i class="fa-solid fa-check text-success"></i> 已複製').addClass('border-success');
+                setTimeout(function () {
+                    $btn.html(originalHtml).removeClass('border-success');
+                }, 1500);
+            });
+
+            // Copy Prompt Box Template
+            $('.copy-prompt-btn').on('click', function () {
+                const promptText = $(this).closest('.prompt-box').find('.prompt-text').text();
+                navigator.clipboard.writeText(promptText);
+
+                const $btn = $(this);
+                $btn.html('<i class="fa-solid fa-check me-2"></i>已複製 Prompt').addClass('bg-success');
+                setTimeout(function () {
+                    $btn.html('<i class="fa-regular fa-copy"></i> 複製 AI 提示詞').removeClass('bg-success');
+                }, 1500);
+            });
+
+            // Scrollspy implementation
+            $(window).on('scroll', function () {
+                const scrollPos = $(document).scrollTop();
+                $('section').each(function () {
+                    const top = $(this).offset().top - 120;
+                    const bottom = top + $(this).outerHeight();
+
+                    if (scrollPos >= top && scrollPos <= bottom) {
+                        const id = $(this).attr('id');
+                        $(`.toc-link`).removeClass('active');
+                        $(`.toc-link[href="#${id}"]`).addClass('active');
+                    }
+                });
+            });
+
+            // Quiz Logic
+            const quizQuestions = [
+                {
+                    question: "為什麼在現代前端開發中，寫複雜的交互介面時不推薦使用 jQuery，而推薦使用 Vue.js？",
+                    options: [
+                        "Vue.js 比 jQuery 的執行效能差，但比較好看",
+                        "jQuery 主要著重在 DOM 操作，當畫面複雜且資料高度連動時代碼會極度凌亂；Vue 採用雙向資料綁定與虛擬 DOM 來處理局部更新",
+                        "jQuery 完全無法與 Laravel 後端進行非同步資料串接",
+                        "Vue.js 只能在後端伺服器運行，瀏覽器無法直接載入"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "在 Vue 生態中，如果我們要做到「頁面不重新整理（No Reload）」，在背景傳送請求給後端並接收 JSON，通常使用什麼套件？",
+                    options: [
+                        "Bootstrap",
+                        "jQuery AJAX ONLY",
+                        "Axios",
+                        "Blade Engine"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "當要使用 AI 實作稍微複雜的前後端功能時，最建議的步驟是什麼？",
+                    options: [
+                        "直接貼上幾千行程式碼叫 AI 隨便改",
+                        "叫 AI 幫你直接寫出所有邏輯，自己完全不看直接複製",
+                        "先請 AI 生成施工藍圖（Markdown 檔案）來規劃目錄結構、資料庫、API 路由，確認後再請 AI 實作細節代碼",
+                        "不要使用 AI，純手寫最快"
+                    ],
+                    correct: 2
+                }
+            ];
+
+            let currentQuestionIdx = 0;
+            let score = 0;
+            const quizModal = new bootstrap.Modal(document.getElementById('quizModal'));
+
+            // Open Quiz
+            $('#open-quiz-btn').on('click', function () {
+                resetQuiz();
+                quizModal.show();
+            });
+
+            $('#start-quiz-btn').on('click', function () {
+                $('#quiz-intro-pane').addClass('d-none');
+                $('#quiz-question-pane').removeClass('d-none');
+                renderQuestion();
+            });
+
+            function renderQuestion() {
+                const q = quizQuestions[currentQuestionIdx];
+                $('#quiz-counter').text(`問題 ${currentQuestionIdx + 1} / ${quizQuestions.length}`);
+                $('#quiz-question-text').text(q.question);
+
+                const container = $('#quiz-options-container').empty();
+                q.options.forEach((opt, idx) => {
+                    const btn = $('<button>')
+                        .addClass('quiz-option-btn')
+                        .attr('data-index', idx)
+                        .text(opt);
+                    container.append(btn);
+                });
+            }
+
+            $(document).on('click', '.quiz-option-btn', function () {
+                const selectedIdx = parseInt($(this).attr('data-index'));
+                const correctIdx = quizQuestions[currentQuestionIdx].correct;
+
+                $('.quiz-option-btn').prop('disabled', true);
+
+                if (selectedIdx === correctIdx) {
+                    $(this).addClass('correct').append('<i class="fa-solid fa-circle-check"></i>');
+                    score++;
+                } else {
+                    $(this).addClass('incorrect').append('<i class="fa-solid fa-circle-xmark"></i>');
+                    $(`.quiz-option-btn[data-index="${correctIdx}"]`).addClass('correct').append('<i class="fa-solid fa-circle-check"></i>');
+                }
+
+                setTimeout(function () {
+                    currentQuestionIdx++;
+                    if (currentQuestionIdx < quizQuestions.length) {
+                        renderQuestion();
+                    } else {
+                        showQuizResults();
+                    }
+                }, 1800);
+            });
+
+            function showQuizResults() {
+                $('#quiz-question-pane').addClass('d-none');
+                $('#quiz-result-pane').removeClass('d-none');
+                $('#quiz-score-text').text(`你答對了 ${quizQuestions.length} 題中的 ${score} 題！`);
+            }
+
+            $('#restart-quiz-btn').on('click', function () {
+                resetQuiz();
+                $('#quiz-intro-pane').addClass('d-none');
+                $('#quiz-question-pane').removeClass('d-none');
+                renderQuestion();
+            });
+
+            function resetQuiz() {
+                currentQuestionIdx = 0;
+                score = 0;
+                $('#quiz-intro-pane').removeClass('d-none');
+                $('#quiz-question-pane').addClass('d-none');
+                $('#quiz-result-pane').addClass('d-none');
+            }
+        });
+    </script>
+</body>
+
+</html>

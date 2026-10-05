@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第三專案教學導引｜陳柏安 一對一程式教學</title>
+<meta name="description" content="一對一程式教學教案與學員銜接引導：從 BaaS 前台專案升級到 Laravel + Vue 3 正規全端專案。">
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;800&family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<script>
+tailwind.config = { theme: { extend: { fontFamily: { sans: ['Inter','Noto Sans TC','sans-serif'] } } } }
+</script>
+<style>
+  html{scroll-behavior:smooth;scroll-snap-type:y proximity}
+  body{background:#fff;color:#52525b;font-family:'Inter','Noto Sans TC',sans-serif}
+  section.page{min-height:100vh;scroll-snap-align:start;display:flex;flex-direction:column;justify-content:center;padding:6rem 1.5rem}
+  .wrap{max-width:72rem;margin:0 auto;width:100%}
+  .eyebrow{font-size:.75rem;letter-spacing:.25em;text-transform:uppercase;color:#a1a1aa;font-weight:500}
+  .h2{font-size:clamp(2rem,4.5vw,3.5rem);font-weight:800;color:#09090b;line-height:1.15;letter-spacing:-.02em;margin-top:.75rem}
+  .card{background:#fff;border:1px solid #e4e4e7;border-radius:1rem;transition:transform .35s,box-shadow .35s,border-color .35s}
+  .card:hover{transform:translateY(-6px);box-shadow:0 24px 48px -16px rgba(0,0,0,.12);border-color:#09090b}
+  .num{font-weight:300;font-size:3rem;color:#d4d4d8;line-height:1;font-feature-settings:"tnum"}
+  .label{font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;color:#a1a1aa;font-weight:600;margin-bottom:.35rem}
+  .reveal{opacity:0;transform:translateY(28px);transition:opacity .9s,transform .9s}
+  .reveal.show{opacity:1;transform:none}
+  .dots{position:fixed;right:1.25rem;top:50%;transform:translateY(-50%);z-index:30;display:flex;flex-direction:column;gap:.75rem}
+  .dots a{width:8px;height:8px;border-radius:50%;background:#d4d4d8;transition:.3s}
+  .dots a.on{background:#09090b;transform:scale(1.5)}
+  .toast{transform:translateY(80px);opacity:0;transition:.3s}
+  .toast.show{transform:none;opacity:1}
+  @media(max-width:768px){.dots{display:none}}
+</style>
+</head>
+<body class="antialiased">
+
+<header class="fixed top-0 inset-x-0 z-40 bg-white/80 backdrop-blur border-b border-zinc-100">
+  <div class="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
+    <span class="font-extrabold text-zinc-950 tracking-tight">Project 03</span>
+    <nav class="hidden md:flex gap-8 text-sm text-zinc-500">
+      <a href="#profile" class="hover:text-zinc-950 transition">學員概況</a>
+      <a href="#objectives" class="hover:text-zinc-950 transition">課程目標</a>
+      <a href="#scripts" class="hover:text-zinc-950 transition">想問的問題</a>
+      <a href="#baas" class="hover:text-zinc-950 transition">認識 BaaS</a>
+      <a href="#evolution" class="hover:text-zinc-950 transition">專案對比</a>
+      <a href="#pain" class="hover:text-zinc-950 transition">升級必要性</a>
+      <a href="#laravel" class="hover:text-zinc-950 transition">為何 Laravel</a>
+      <a href="#database" class="hover:text-zinc-950 transition">資料庫選型</a>
+      <a href="#admin" class="hover:text-zinc-950 transition">後台工具</a>
+      <a href="#plan" class="hover:text-zinc-950 transition">教案內容</a>
+    </nav>
+  </div>
+</header>
+
+<nav class="dots" aria-label="頁面導覽">
+  <a href="#hero"></a><a href="#profile"></a><a href="#objectives"></a><a href="#scripts"></a><a href="#baas"></a><a href="#evolution"></a><a href="#pain"></a><a href="#laravel"></a><a href="#database"></a><a href="#admin"></a><a href="#plan"></a>
+</nav>
+
+<main>
+
+
+<section id="hero" class="page">
+  <div class="wrap reveal">
+    <p class="eyebrow">一對一程式教學 · 教案銜接</p>
+    <h1 class="mt-6 font-black text-zinc-950 leading-[1.05] tracking-tight" style="font-size:clamp(2.75rem,8vw,6.5rem)">
+      從 BaaS 快攻，<br>邁向正規全端。
+    </h1>
+    <p class="mt-8 max-w-xl text-lg text-zinc-500 font-light leading-relaxed">第 3 專案教學導引：補齊後端另一半，打造前台與後台管理系統，拉開接案報價與技術競爭力。</p>
+    <a href="#profile" class="inline-block mt-12 text-sm font-medium text-zinc-950 border-b border-zinc-950 pb-1 hover:opacity-60 transition">開始閱讀 ↓</a>
+  </div>
+</section>
+
+
+
+
+
+<section id="profile" class="page bg-zinc-50">
+  <div class="wrap reveal">
+    <p class="eyebrow">Chapter 01 · Student Profile</p>
+    <h2 class="h2">學員概況與動機分析</h2>
+    <div class="mt-14 grid md:grid-cols-3 gap-6">
+      <div class="card p-8">
+        <p class="label">學員姓名</p><p class="text-3xl font-bold text-zinc-950">陳柏安</p>
+        <div class="mt-8 space-y-6 text-sm">
+          <div><p class="label">專業背景</p><p class="text-zinc-800 text-base">資管系</p></div>
+          <div><p class="label">每週學習時間</p><p class="text-zinc-800 text-base">約 10–12 小時</p>
+            <div class="mt-2 h-px bg-zinc-200"><div class="h-px bg-zinc-950 w-4/5"></div></div></div>
+          <div><p class="label">學習性格</p><p class="text-zinc-800 text-base leading-relaxed">剛開始需要稍微督促，喜歡實作方式學習</p></div>
+        </div>
+      </div>
+      <div class="md:col-span-2 grid gap-6">
+        <div class="card p-8 flex gap-6 items-start"><span class="num">01</span><div><p class="label">Goal</p><p class="text-xl text-zinc-900 font-medium">想接案具備額外收入</p></div></div>
+        <div class="card p-8 flex gap-6 items-start"><span class="num">02</span><div><p class="label">Goal</p><p class="text-xl text-zinc-900 font-medium">精進個人專業能力</p></div></div>
+        <div class="card p-8 flex gap-6 items-start"><span class="num">03</span><div><p class="label">Goal</p><p class="text-xl text-zinc-900 font-medium leading-relaxed">短期先往前段工程師發展，最終目標成為具備高競爭力的「全端工程師」</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+
+
+<section id="objectives" class="page">
+  <div class="wrap reveal">
+    <p class="eyebrow">Chapter 02 · Course Objectives</p>
+    <h2 class="h2">課程核心目標</h2>
+    <p class="mt-4 text-center text-zinc-500 max-w-2xl mx-auto">
+      教授學生如何設計包含前後台的互動式動態網頁，涵蓋 CRM 管理系統、電商網站或內容平台等完整系統之開發。
+    </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
+        <div class="card p-6 flex items-start gap-4">
+          <div class="h-10 w-10 rounded-full bg-zinc-100 flex items-center justify-center shrink-0">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-zinc-600"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+          </div>
+          <div>
+            <h3 class="font-bold text-zinc-900 mb-1">熟悉後端框架的使用</h3>
+            <p class="text-sm text-zinc-500">掌握 Laravel 核心概念與架構，能快速建構穩定且高擴展性的後端應用。</p>
+          </div>
+        </div>
+
+        <div class="card p-6 flex items-start gap-4">
+          <div class="h-10 w-10 rounded-full bg-zinc-100 flex items-center justify-center shrink-0">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-zinc-600"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5V19A9 3 0 0 0 21 19V5"/><path d="M3 12A9 3 0 0 0 21 12"/></svg>
+          </div>
+          <div>
+            <h3 class="font-bold text-zinc-900 mb-1">獨立完成資料庫表格設計</h3>
+            <p class="text-sm text-zinc-500">理解關聯式資料庫 (MySQL) 原理，能設計正規化的資料表結構及處理複雜查詢。</p>
+          </div>
+        </div>
+
+        <div class="card p-6 flex items-start gap-4">
+          <div class="h-10 w-10 rounded-full bg-zinc-100 flex items-center justify-center shrink-0">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-zinc-600"><path d="M21 2v6h-6"/><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M3 22v-6h6"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/></svg>
+          </div>
+          <div>
+            <h3 class="font-bold text-zinc-900 mb-1">API 設計與前後端分離</h3>
+            <p class="text-sm text-zinc-500">學習 API 的設計準則，並實作與前端 (Vue 3 / Axios) 的資料交互。</p>
+          </div>
+        </div>
+
+        <div class="card p-6 flex items-start gap-4">
+          <div class="h-10 w-10 rounded-full bg-zinc-100 flex items-center justify-center shrink-0">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-zinc-600"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg>
+          </div>
+          <div>
+            <h3 class="font-bold text-zinc-900 mb-1">導入雲端部署服務</h3>
+            <p class="text-sm text-zinc-500">熟悉 Hostinger 等雲端主機操作，完成環境建置、網域綁定與專案上線流程。</p>
+          </div>
+        </div>
+
+        <div class="card p-6 flex items-start gap-4 md:col-span-2">
+          <div class="h-10 w-10 rounded-full bg-zinc-100 flex items-center justify-center shrink-0">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-zinc-600"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/></svg>
+          </div>
+          <div>
+            <h3 class="font-bold text-zinc-900 mb-1">（選修）導入前端框架進行開發</h3>
+            <p class="text-sm text-zinc-500">若進度允許，將進一步深化 Vue 3 在專案中的應用，打造更高互動性的 SPA 體驗。</p>
+          </div>
+        </div>
+    </div>
+  </div>
+</section>
+
+<section id="scripts" class="page bg-zinc-50">
+  <div class="wrap reveal">
+    <p class="eyebrow">Chapter 03 · Questions for You</p>
+    <h2 class="h2">我想問柏安的問題</h2>
+    <div class="mt-14 grid lg:grid-cols-2 gap-6">
+      <div class="card p-8 flex flex-col">
+        <p class="label">Question 01</p><h3 class="text-xl font-bold text-zinc-950">後端程度摸底</h3>
+        <blockquote id="s1" class="mt-6 flex-1 border-l-2 border-zinc-950 pl-5 text-zinc-700 leading-loose">「柏安，你前端經驗已經很多了，這次我們會把重心放在後端。你在學校有修過資料庫相關的課嗎？以前有沒有碰過原生 PHP 或 MySQL？對於 Laravel、MVC、RESTful API、資料表關聯設計這些，你目前的熟悉程度大概是怎樣？」</blockquote>
+        <button data-target="s1" class="copy mt-8 self-start px-6 py-3 rounded-full bg-zinc-950 text-white text-sm font-medium hover:bg-zinc-700 transition active:scale-95">一鍵複製</button>
+      </div>
+      <div class="card p-8 flex flex-col">
+        <p class="label">Question 02</p><h3 class="text-xl font-bold text-zinc-950">接案與目標</h3>
+        <blockquote id="s2" class="mt-6 flex-1 border-l-2 border-zinc-950 pl-5 text-zinc-700 leading-loose">「你想接的案子大概是哪一類？官網、電商，還是有後台的管理系統？目前有沒有已經在接洽的客戶，或是你理想中的接案時程與收入目標？」</blockquote>
+        <button data-target="s2" class="copy mt-8 self-start px-6 py-3 rounded-full bg-zinc-950 text-white text-sm font-medium hover:bg-zinc-700 transition active:scale-95">一鍵複製</button>
+      </div>
+      <div class="card p-8 flex flex-col lg:col-span-2">
+        <p class="label">Question 03</p><h3 class="text-xl font-bold text-zinc-950">AI 使用經驗與協作方式</h3>
+        <blockquote id="s3" class="mt-6 flex-1 border-l-2 border-zinc-950 pl-5 text-zinc-700 leading-loose">「我看你之前的專案應該有用 AI 輔助寫程式。你都用哪些工具？通常是讓 AI 產生整段程式碼，還是只問語法與排錯？AI 給的程式碼，你會自己讀懂、再修改嗎？這次後端部分我想大量搭配 AI 一起開發，由 AI 產生程式碼草稿，我們把時間放在架構設計、資料庫設計、程式碼審閱和資安觀念上，你願意這樣配合嗎？」</blockquote>
+        <button data-target="s3" class="copy mt-8 self-start px-6 py-3 rounded-full bg-zinc-950 text-white text-sm font-medium hover:bg-zinc-700 transition active:scale-95">一鍵複製</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+
+<section id="baas" class="page">
+  <div class="wrap reveal">
+    <p class="eyebrow">Chapter 04 · What is BaaS</p>
+    <h2 class="h2">認識你用過的 BaaS</h2>
+    <p class="mt-6 max-w-3xl text-lg text-zinc-500 font-light leading-relaxed">BaaS 是 <b class="text-zinc-950 font-semibold">Backend as a Service</b>（後端即服務）的縮寫，念作「貝斯」。意思是：後端不用自己寫、自己架，而是把它當成一項「現成的服務」來租用。</p>
+
+    <div class="mt-14 grid lg:grid-cols-2 gap-6">
+      <div class="card p-8">
+        <p class="label">為什麼叫 BaaS？</p>
+        <h3 class="text-xl font-bold text-zinc-950">把「後端」變成可租用的服務</h3>
+        <p class="mt-4 text-[15px] leading-relaxed">一個完整網站需要：資料庫、會員登入、檔案儲存、API、權限控管。傳統做法要自己寫程式、架伺服器。BaaS 把這些後端功能預先做好，包成服務，開發者只要在前端呼叫 SDK 就能使用。</p>
+        <p class="mt-4 text-[15px] leading-relaxed">名稱沿用雲端運算 <span class="font-mono text-zinc-950">XaaS</span> 的命名邏輯，例如 SaaS（軟體即服務）、IaaS（基礎設施即服務），這裡的 X 就是 Backend。</p>
+        <div class="mt-6 pt-6 border-t border-zinc-100">
+          <p class="label">生活比喻</p>
+          <p class="text-[15px] leading-relaxed text-zinc-800">自己開餐廳要買地、蓋廚房、請廚師（自建後端）；BaaS 像是進駐共享廚房，設備與廚師都備好，你只要專心設計菜單與出餐（前端）。</p>
+        </div>
+      </div>
+
+      <div class="card p-8">
+        <p class="label">Supabase 提供了什麼</p>
+        <h3 class="text-xl font-bold text-zinc-950">第 2 專案用到的核心能力</h3>
+        <dl class="mt-6 divide-y divide-zinc-100 text-[15px]">
+          <div class="py-3 flex gap-4"><dt class="w-28 shrink-0 font-semibold text-zinc-950">Database</dt><dd>託管的 PostgreSQL 資料庫，不用自己安裝維護</dd></div>
+          <div class="py-3 flex gap-4"><dt class="w-28 shrink-0 font-semibold text-zinc-950">Auth</dt><dd>現成的註冊、登入、第三方登入機制</dd></div>
+          <div class="py-3 flex gap-4"><dt class="w-28 shrink-0 font-semibold text-zinc-950">Auto API / SDK</dt><dd>資料表自動產生 API，前端 SDK 直接讀寫</dd></div>
+          <div class="py-3 flex gap-4"><dt class="w-28 shrink-0 font-semibold text-zinc-950">RLS</dt><dd>資料庫層級的列權限規則，決定誰能看哪些資料</dd></div>
+          <div class="py-3 flex gap-4"><dt class="w-28 shrink-0 font-semibold text-zinc-950">Storage</dt><dd>圖片與檔案的雲端儲存</dd></div>
+        </dl>
+      </div>
+    </div>
+
+    <div class="mt-6 grid md:grid-cols-2 gap-6">
+      <div class="card p-8">
+        <p class="label">資料流：BaaS</p>
+        <p class="font-mono text-sm text-zinc-950">Vue 3 前端 → SDK → Supabase（DB + Auth）</p>
+        <p class="mt-3 text-sm text-zinc-500">沒有自己的後端，前端直接連資料庫服務。快、省成本。</p>
+      </div>
+      <div class="card p-8 bg-zinc-950 border-zinc-950">
+        <p class="label">資料流：正規全端（第 3 專案）</p>
+        <p class="font-mono text-sm text-white">Vue 3 前端 → Laravel API → MySQL / PostgreSQL</p>
+        <p class="mt-3 text-sm text-zinc-400">多了一層自己掌控的 API 伺服器，邏輯與機密集中在這裡。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+
+
+<section id="evolution" class="page bg-zinc-50">
+  <div class="wrap reveal">
+    <p class="eyebrow">Chapter 05 · Curriculum Evolution</p>
+    <h2 class="h2">專案階段對比與轉型策略</h2>
+    <div class="mt-14 grid lg:grid-cols-2 gap-6">
+      <article class="card p-8">
+        <div class="flex justify-between items-baseline"><h3 class="text-2xl font-bold text-zinc-950">第 2 專案</h3><span class="text-xs text-zinc-400 tracking-widest">已完成 / 現況</span></div>
+        <dl class="mt-8 divide-y divide-zinc-100 text-[15px]">
+          <div class="py-4"><dt class="label">核心定位</dt><dd class="text-zinc-800">僅前台動態互動網頁</dd></div>
+          <div class="py-4"><dt class="label">架構特點</dt><dd class="text-zinc-800">Serverless / BaaS（Vue 3 + Supabase + Vercel 部署）</dd></div>
+          <div class="py-4"><dt class="label">實作方式</dt><dd class="text-zinc-800 leading-relaxed">前端直接透過 SDK 串接資料庫，邏輯集中在前端與 PostgreSQL RLS / Trigger</dd></div>
+          <div class="py-4"><dt class="label">優勢</dt><dd class="text-zinc-800">接案打快攻、快速產出 MVP</dd></div>
+        </dl>
+      </article>
+      <article class="card p-8 bg-zinc-950 border-zinc-950 text-zinc-300 hover:border-zinc-950">
+        <div class="flex justify-between items-baseline"><h3 class="text-2xl font-bold text-white">第 3 專案</h3><span class="text-xs text-zinc-500 tracking-widest">本次目標 / 正規全端</span></div>
+        <dl class="mt-8 divide-y divide-zinc-800 text-[15px]">
+          <div class="py-4"><dt class="label">核心定位</dt><dd class="text-zinc-100 leading-relaxed">包含「前台 + 後台管理系統」之完整專案（CRM / 電商 / 內容平台）</dd></div>
+          <div class="py-4"><dt class="label">架構特點</dt><dd class="text-zinc-100">正規前後端分離架構（Laravel API + Vue 3）</dd></div>
+          <div class="py-4"><dt class="label">實作方式</dt><dd class="text-zinc-100 leading-relaxed">獨立關聯式資料庫 Schema 設計、RESTful API、Controller、Middleware、自建雲端伺服器部署</dd></div>
+          <div class="py-4"><dt class="label">目標價值</dt><dd class="text-zinc-100 leading-relaxed">承接具備客製化管理後台、高資安要求與複雜商業邏輯的中大型企業專案</dd></div>
+        </dl>
+      </article>
+    </div>
+  </div>
+</section>
+
+
+
+
+
+<section id="pain" class="page">
+  <div class="wrap reveal">
+    <p class="eyebrow">Chapter 06 · Architectural Pain Points</p>
+    <h2 class="h2">為什麼不能停留在純 BaaS 模式</h2>
+    <div class="mt-14 grid md:grid-cols-3 gap-6">
+      <div class="card p-8"><span class="num">01</span>
+        <h3 class="mt-6 text-xl font-bold text-zinc-950">商業邏輯分散，維護不易</h3>
+        <p class="mt-4 text-[15px] leading-relaxed">邏輯散落在前端 Vue 元件與資料庫 SQL Trigger 之間，面對多重折扣、庫存風控等複雜邏輯時除錯極難。</p></div>
+      <div class="card p-8"><span class="num">02</span>
+        <h3 class="mt-6 text-xl font-bold text-zinc-950">金流私鑰與機密資料風險</h3>
+        <p class="mt-4 text-[15px] leading-relaxed">串接綠界等金流時，HashKey/HashIV 等私密金鑰不能放在前端，必須由獨立的 Application Server 集中處理。</p></div>
+      <div class="card p-8"><span class="num">03</span>
+        <h3 class="mt-6 text-xl font-bold text-zinc-950">無法應對私有化部署（On-Premise）</h3>
+        <p class="mt-4 text-[15px] leading-relaxed">企業客戶與公部門因法規無法將資料放在第三方雲端平台，必須具備在獨立 Linux 伺服器自建 API 與資料庫的能力。</p></div>
+    </div>
+  </div>
+</section>
+
+
+
+
+
+<section id="laravel" class="page bg-zinc-50">
+  <div class="wrap reveal">
+    <p class="eyebrow">Chapter 07 · Why Laravel</p>
+    <h2 class="h2">為什麼選擇 Laravel？</h2>
+    <p class="mt-6 max-w-3xl text-lg text-zinc-500 font-light leading-relaxed">從技術完整度、商業接案優勢與生態系深度三個角度，為什麼 Laravel 是接案型全端工程師的高效率選擇。</p>
+
+    <div class="mt-14 grid md:grid-cols-2 gap-6">
+      <div class="card p-8"><span class="num">01</span>
+        <h3 class="mt-5 text-xl font-bold text-zinc-950">生態系與套件庫極度龐大</h3>
+        <p class="mt-2 text-sm text-zinc-400">開箱即用，拒絕重複造輪子</p>
+        <ul class="mt-4 space-y-3 text-[15px] leading-relaxed list-disc pl-5">
+          <li><b class="text-zinc-950">Composer 與 Packagist：</b>綠界 / 藍新金流、電子發票、PDF 報表、Excel 匯入匯出、簡訊驗證、圖表統計等需求，社群多半已有成熟套件可用，能把數週的開發時程壓縮很多。</li>
+          <li><b class="text-zinc-950">Filament 後台：</b>不用從零手刻管理後台，幾行 PHP 就能長出美觀、安全的 Admin 介面，大幅降低交付成本。</li>
+        </ul>
+      </div>
+      <div class="card p-8"><span class="num">02</span>
+        <h3 class="mt-5 text-xl font-bold text-zinc-950">SEO 友善與行銷支援</h3>
+        <p class="mt-2 text-sm text-zinc-400">中小企業客戶最在意的商業價值</p>
+        <ul class="mt-4 space-y-3 text-[15px] leading-relaxed list-disc pl-5">
+          <li>純 CSR 的前端 SPA 對搜尋引擎爬蟲較不利。</li>
+          <li>Laravel 可由伺服器輸出頁面，搭配套件輕鬆產生動態 Meta Tags、OpenGraph 社群預覽與 XML Sitemap。</li>
+          <li>能兼顧「前台 Vue 的流暢互動」與「搜尋引擎的最佳化結構」。</li>
+        </ul>
+      </div>
+      <div class="card p-8"><span class="num">03</span>
+        <h3 class="mt-5 text-xl font-bold text-zinc-950">內建現代全端基建</h3>
+        <p class="mt-2 text-sm text-zinc-400">Batteries-Included</p>
+        <ul class="mt-4 space-y-3 text-[15px] leading-relaxed list-disc pl-5">
+          <li><b class="text-zinc-950">認證與授權：</b>內建登入機制與 Breeze 腳手架，免去手刻 Session 與防護的繁瑣。</li>
+          <li><b class="text-zinc-950">Eloquent ORM：</b>寫法優雅直覺，輕鬆處理一對多、多對多關聯。</li>
+          <li><b class="text-zinc-950">Queue 與 Task Scheduling：</b>寄信、訂單逾時取消、統計報表，不用自己拼 crontab。</li>
+          <li><b class="text-zinc-950">Form Request 驗證：</b>統一資料驗證，避免髒資料進入資料庫。</li>
+        </ul>
+      </div>
+      <div class="card p-8"><span class="num">04</span>
+        <h3 class="mt-5 text-xl font-bold text-zinc-950">程式碼規範度高，利於維護與交付</h3>
+        <p class="mt-2 text-sm text-zinc-400">Convention over Configuration</p>
+        <ul class="mt-4 space-y-3 text-[15px] leading-relaxed list-disc pl-5">
+          <li>嚴格、標準的 MVC 慣例，目錄與命名都有約定。</li>
+          <li>半年後自己回頭看，或客戶轉交給其他 Laravel 工程師，都能很快看懂結構，降低交付與售後保固成本。</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mt-14">
+      <p class="label">具體對比 · 自幹輕量框架（如純 Express）vs Laravel</p>
+      <div class="mt-4 card overflow-hidden hover:translate-y-0">
+        <div class="overflow-x-auto">
+        <table class="w-full text-[15px] text-left">
+          <thead class="bg-zinc-50 text-zinc-950"><tr><th class="p-4 font-semibold w-36">接案需求</th><th class="p-4 font-semibold">輕量框架（需自行組裝）</th><th class="p-4 font-semibold">Laravel</th></tr></thead>
+          <tbody class="divide-y divide-zinc-100">
+            <tr><td class="p-4 font-medium text-zinc-950">登入與權限</td><td class="p-4">自選套件、自己設計流程</td><td class="p-4">內建認證與 Middleware</td></tr>
+            <tr><td class="p-4 font-medium text-zinc-950">資料庫操作</td><td class="p-4">需自行選擇 ORM 與設定</td><td class="p-4">Eloquent 與 Migration 內建</td></tr>
+            <tr><td class="p-4 font-medium text-zinc-950">管理後台</td><td class="p-4">常需從零手刻</td><td class="p-4">Filament 快速生成</td></tr>
+            <tr><td class="p-4 font-medium text-zinc-950">排程與佇列</td><td class="p-4">自己拼 cron 與佇列套件</td><td class="p-4">原生支援</td></tr>
+            <tr><td class="p-4 font-medium text-zinc-950">接案風險</td><td class="p-4">缺少內建工具，容易因補基礎建設而延宕專案</td><td class="p-4">專注商業邏輯，時程較可控</td></tr>
+          </tbody>
+        </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-14 card p-8 flex flex-col">
+      <p class="label">Teacher Script · 架構師對學員說帖</p>
+      <blockquote id="s-laravel" class="mt-4 border-l-2 border-zinc-950 pl-5 text-zinc-700 leading-loose">「柏安，你前端已經很強了，接下來我想讓你拿到『接案的重武器』。你可以想像，客戶要一個有金流、報表、管理後台的系統，如果每樣都自己從零寫，光基礎建設就會拖你好幾週。但在 Laravel 裡，登入、資料庫、排程、後台都有現成、穩定的工具，你只要專心解決客戶真正的問題。而且它的程式碼規範很明確，半年後你自己回來看，或客戶交給別的工程師，都能很快上手。這樣你不只交付得快，售後也輕鬆，客戶會更放心把案子交給你。這就是我們這次選 Laravel 的原因，我會陪你一步一步把它練成你的接案利器。」</blockquote>
+      <button data-target="s-laravel" class="copy mt-6 self-start px-6 py-3 rounded-full bg-zinc-950 text-white text-sm font-medium hover:bg-zinc-700 transition active:scale-95">一鍵複製</button>
+    </div>
+  </div>
+</section>
+
+
+
+
+
+<section id="database" class="page">
+  <div class="wrap reveal">
+    <p class="eyebrow">Chapter 08 · Why MySQL</p>
+    <h2 class="h2">資料庫選型與架構升級指南</h2>
+    <p class="mt-6 max-w-3xl text-lg text-zinc-500 font-light leading-relaxed">第 2 專案我們用 PostgreSQL（Supabase），第 3 專案改用 <b class="text-zinc-950 font-semibold">MySQL</b>。這不是誰比較強，而是「架構不同，最佳解也不同」。</p>
+
+    <!-- 1. Technical comparison -->
+    <div class="mt-14">
+      <p class="label">Part 1 · 技術特性客觀對比</p>
+      <div class="mt-4 card overflow-hidden hover:translate-y-0">
+        <div class="overflow-x-auto">
+        <table class="w-full text-[15px] text-left">
+          <thead class="bg-zinc-50 text-zinc-950">
+            <tr><th class="p-4 font-semibold w-32">面向</th><th class="p-4 font-semibold">PostgreSQL（第 2 專案）</th><th class="p-4 font-semibold">MySQL（第 3 專案）</th></tr>
+          </thead>
+          <tbody class="divide-y divide-zinc-100">
+            <tr><td class="p-4 font-medium text-zinc-950">設計哲學</td><td class="p-4">強調嚴謹標準與功能完整度</td><td class="p-4">強調簡單、極速與易維運</td></tr>
+            <tr><td class="p-4 font-medium text-zinc-950">擅長場景</td><td class="p-4">複雜關聯聚合、分析型查詢、Serverless BaaS</td><td class="p-4">讀多寫少的 Web 應用（官網、電商、管理系統）</td></tr>
+            <tr><td class="p-4 font-medium text-zinc-950">資料型態</td><td class="p-4">JSONB、陣列支援強大</td><td class="p-4">支援 JSON，但以傳統關聯式欄位為主</td></tr>
+            <tr><td class="p-4 font-medium text-zinc-950">擴展能力</td><td class="p-4">豐富外掛（PostGIS、pgvector）</td><td class="p-4">內建功能精簡，擴展以應用層為主</td></tr>
+            <tr><td class="p-4 font-medium text-zinc-950">權限控管</td><td class="p-4">內建 RLS（Row Level Security）</td><td class="p-4">不依賴 RLS，權限由應用層處理</td></tr>
+            <tr><td class="p-4 font-medium text-zinc-950">普及度</td><td class="p-4">成長快速，社群活躍</td><td class="p-4">全球 Web 生態普及度極高</td></tr>
+          </tbody>
+        </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Business reasons -->
+    <div class="mt-14">
+      <p class="label">Part 2 · 商業與接案現實面：選擇 MySQL 的四個核心理由</p>
+      <div class="mt-4 grid md:grid-cols-2 gap-6">
+        <div class="card p-8"><span class="num">01</span>
+          <h3 class="mt-5 text-xl font-bold text-zinc-950">主機與維運成本最低</h3>
+          <p class="mt-3 text-[15px] leading-relaxed">中小企業客戶預算有限。常見的虛擬主機（cPanel、Hostinger）、平價 VPS、DigitalOcean，到 AWS RDS、GCP Cloud SQL，都把 MySQL 當作標配選項，門檻最低。選 MySQL 能降低客戶的長期持有成本（TCO），報價更具競爭力。</p></div>
+        <div class="card p-8"><span class="num">02</span>
+          <h3 class="mt-5 text-xl font-bold text-zinc-950">企業客戶交接與相容性最高</h3>
+          <p class="mt-3 text-[15px] leading-relaxed">中小企業與外包市場中，絕大多數現存系統（WordPress、Laravel、舊有 ERP / CRM）都跑在 MySQL 上。掌握 MySQL 的 Schema 設計與效能優化，能無縫接軌客戶現有的資料庫伺服器，不必強迫客戶額外購買或學習 PostgreSQL 維運。</p></div>
+        <div class="card p-8"><span class="num">03</span>
+          <h3 class="mt-5 text-xl font-bold text-zinc-950">生態系與除錯社群極致成熟</h3>
+          <p class="mt-3 text-[15px] leading-relaxed">Laravel 與 MySQL 是業界十幾年來最經典的黃金搭檔，踩坑紀錄最完整。接案最怕冷門 Bug 卡死時程，MySQL 龐大的中文與國際社群，讓突發狀況更容易在短時間內找到解法，幫助專案如期驗收交付。</p></div>
+        <div class="card p-8"><span class="num">04</span>
+          <h3 class="mt-5 text-xl font-bold text-zinc-950">回歸應用層架構的純粹性</h3>
+          <p class="mt-3 text-[15px] leading-relaxed">上次用 PostgreSQL，是因為 Supabase 需要靠 RLS 擋權限。這次是正規企業級全端，權限校驗、商業邏輯與 API 驗證都收斂在 Laravel 中介層與 Filament 後台。資料庫回歸最純粹的高效 CRUD，MySQL 就是高效且穩健的基底。</p></div>
+      </div>
+    </div>
+
+    <!-- 3. Architecture shift -->
+    <div class="mt-14 grid md:grid-cols-2 gap-6">
+      <div class="card p-8">
+        <p class="label">第 2 專案：權限在資料庫</p>
+        <p class="font-mono text-sm text-zinc-950">Vue → SDK → PostgreSQL（RLS / Trigger）</p>
+        <p class="mt-3 text-sm text-zinc-500">資料庫承擔權限與部分邏輯。</p>
+      </div>
+      <div class="card p-8 bg-zinc-950 border-zinc-950">
+        <p class="label">第 3 專案：權限在應用層</p>
+        <p class="font-mono text-sm text-white">Vue → Axios → Laravel（Middleware）→ MySQL</p>
+        <p class="mt-3 text-sm text-zinc-400">資料庫專注儲存，驗證與邏輯集中在 Laravel。</p>
+      </div>
+    </div>
+
+    <!-- 4. Teacher script -->
+    <div class="mt-14 card p-8 flex flex-col">
+      <p class="label">Teacher Script · 老師對學員的對話引導</p>
+      <blockquote id="s-db" class="mt-4 border-l-2 border-zinc-950 pl-5 text-zinc-700 leading-loose">「柏安，上一個專案你用 PostgreSQL，那是因為 Supabase 需要靠資料庫的 RLS 來擋權限，它很適合 Serverless 的快攻。但這次我們要做的是企業級全端，權限、邏輯和驗證都會收斂在 Laravel 和 Filament，資料庫就回到最單純、最高效的資料儲存角色。而在接案現場，客戶的主機、既有系統和預算，大多都是建立在 MySQL 上，所以你學會 MySQL，就能直接接手客戶的系統，報價也更有競爭力。這不是 PostgreSQL 不好，而是在『接案賺錢』這件事上，MySQL 是最穩、最好落地的選擇。等你將來遇到需要 JSONB 或 GIS 的專案，再把 PostgreSQL 拿出來，這就是架構師跟工匠的差別——根據場景選工具。」</blockquote>
+      <button data-target="s-db" class="copy mt-6 self-start px-6 py-3 rounded-full bg-zinc-950 text-white text-sm font-medium hover:bg-zinc-700 transition active:scale-95">一鍵複製</button>
+    </div>
+  </div>
+</section>
+
+
+
+
+
+<section id="admin" class="page bg-zinc-50">
+  <div class="wrap reveal">
+    <p class="eyebrow">Chapter 09 · Admin Panel Tooling</p>
+    <h2 class="h2">後台工具選型：Filament vs Voyager</h2>
+    <p class="mt-6 max-w-3xl text-lg text-zinc-500 font-light leading-relaxed">第 3 專案的管理後台不從零刻起，而是用 Laravel 生態的後台套件快速建立。主力採用 Filament，Voyager 作為備選評估。</p>
+    <div class="mt-14 grid lg:grid-cols-2 gap-6">
+      <article class="card p-8 bg-zinc-950 border-zinc-950">
+        <div class="flex justify-between items-baseline"><h3 class="text-2xl font-bold text-white">Laravel Filament</h3><span class="text-xs text-zinc-500 tracking-widest">主力選擇</span></div>
+        <p class="mt-3 text-sm text-zinc-400">以 Livewire + Alpine.js + Tailwind CSS 打造的現代後台框架，以程式碼定義資源（Resource）。</p>
+        <p class="label mt-8 !text-zinc-500">優點</p>
+        <ul class="space-y-2 text-[15px] text-zinc-200 leading-relaxed list-disc pl-5">
+          <li>社群活躍、更新頻繁，跟上新版 Laravel</li>
+          <li>表單、表格、篩選、通知等元件完整，介面現代美觀</li>
+          <li>全程用 PHP 程式碼定義，易於版本控管與客製化</li>
+          <li>插件生態豐富，支援多 Panel、權限與多租戶擴充</li>
+          <li>不需要寫前端 JS，快速交付完整 CRUD 後台</li>
+        </ul>
+        <p class="label mt-6 !text-zinc-500">缺點</p>
+        <ul class="space-y-2 text-[15px] text-zinc-400 leading-relaxed list-disc pl-5">
+          <li>需要理解 Livewire 的運作方式，學習曲線較陡</li>
+          <li>大版本升級時，客製化部分可能要調整</li>
+          <li>後台自成一體，與 Vue 3 前台是兩套前端思維</li>
+        </ul>
+      </article>
+      <article class="card p-8">
+        <div class="flex justify-between items-baseline"><h3 class="text-2xl font-bold text-zinc-950">Laravel Voyager</h3><span class="text-xs text-zinc-400 tracking-widest">備選評估</span></div>
+        <p class="mt-3 text-sm text-zinc-500">以資料庫表格為核心的 BREAD（Browse / Read / Edit / Add / Delete）後台，偏向用介面設定。</p>
+        <p class="label mt-8">優點</p>
+        <ul class="space-y-2 text-[15px] text-zinc-800 leading-relaxed list-disc pl-5">
+          <li>安裝後可直接在介面中設定資料表，上手快</li>
+          <li>內建媒體管理、選單、角色權限等功能</li>
+          <li>適合快速產出簡單的內容管理後台</li>
+        </ul>
+        <p class="label mt-6">缺點</p>
+        <ul class="space-y-2 text-[15px] text-zinc-600 leading-relaxed list-disc pl-5">
+          <li>更新與維護較不穩定，對新版 Laravel 支援可能落後</li>
+          <li>設定存在資料庫中，不易版本控管與團隊協作</li>
+          <li>複雜商業邏輯與深度客製化較吃力</li>
+          <li>介面與生態不如 Filament 現代，長期風險較高</li>
+        </ul>
+      </article>
+    </div>
+    <p class="mt-8 text-sm text-zinc-500">結論：中大型、需客製與長期維護的專案以 <b class="text-zinc-950">Filament</b> 為首選；Voyager 僅適合極簡、短期的內容管理需求。（版本與維護狀態請於選型前再次確認官方現況。）</p>
+  </div>
+</section>
+
+
+
+
+
+<section id="plan" class="page">
+  <div class="wrap reveal">
+    <p class="eyebrow">Chapter 10 · Course Plan</p>
+    <h2 class="h2">學校填寫資料：第四項</h2>
+
+    <div class="mt-14 grid lg:grid-cols-2 gap-6">
+      <div class="card p-8">
+        <p class="label">4-1 專案名稱</p>
+        <h3 class="text-3xl font-black text-zinc-950 leading-tight">ShopFlow</h3>
+        <p class="mt-2 text-lg text-zinc-800">前後端分離訂單管理平台（前台 + 後台）</p>
+        <p class="mt-4 text-[15px] leading-relaxed">精簡範圍：前台商品瀏覽、購物車、下單；後台商品、訂單、會員管理。金流以模擬付款實作，綠界串接作為進階選修。</p>
+        <div class="mt-6 pt-6 border-t border-zinc-100">
+          <p class="label">教學方式</p>
+          <p class="text-[15px] leading-relaxed text-zinc-800">AI 協作開發：AI 負責產生程式碼草稿與排錯，老師帶領架構設計、Code Review 與原理講解。</p>
+        </div>
+      </div>
+
+      <div class="card p-8">
+        <p class="label">4-2 用到的技術（精簡版）</p>
+        <dl class="divide-y divide-zinc-100 text-[15px]">
+          <div class="py-3 flex gap-4"><dt class="w-24 shrink-0 font-semibold text-zinc-950">前端</dt><dd>Vue 3、Tailwind CSS（沿用第 2 專案經驗）</dd></div>
+          <div class="py-3 flex gap-4"><dt class="w-24 shrink-0 font-semibold text-zinc-950">後端</dt><dd>Laravel（RESTful API、Middleware、內建 Session 登入驗證）</dd></div>
+          <div class="py-3 flex gap-4"><dt class="w-24 shrink-0 font-semibold text-zinc-950">資料庫</dt><dd>MySQL（Migration 與關聯式設計）</dd></div>
+          <div class="py-3 flex gap-4"><dt class="w-24 shrink-0 font-semibold text-zinc-950">後台</dt><dd>Laravel Filament</dd></div>
+          <div class="py-3 flex gap-4"><dt class="w-24 shrink-0 font-semibold text-zinc-950">部署</dt><dd>Hostinger 主機上線</dd></div>
+          <div class="py-3 flex gap-4"><dt class="w-24 shrink-0 font-semibold text-zinc-950">AI 工具</dt><dd>ChatGPT / Claude / Cursor / Copilot（擇一為主）</dd></div>
+        </dl>
+      </div>
+    </div>
+
+    <div class="mt-10">
+      <p class="label">4-3 時程表（每週一堂課，共 10 堂）</p>
+      <ol class="mt-4 grid md:grid-cols-2 gap-4">
+        <li class="card p-6 flex gap-5"><span class="num !text-4xl">01</span><div><h4 class="font-bold text-zinc-950">架構認知、環境與 AI 協作方式</h4><p class="mt-1 text-sm leading-relaxed">BaaS 與前後端分離的差異；安裝 Laravel；約定 AI 使用規則與 Prompt 技巧。</p></div></li>
+        <li class="card p-6 flex gap-5"><span class="num !text-4xl">02</span><div><h4 class="font-bold text-zinc-950">Laravel 基礎與 MVC</h4><p class="mt-1 text-sm leading-relaxed">路由、Controller、請求流程；第一支 API。</p></div></li>
+        <li class="card p-6 flex gap-5"><span class="num !text-4xl">03</span><div><h4 class="font-bold text-zinc-950">資料庫設計與 Eloquent</h4><p class="mt-1 text-sm leading-relaxed">ER 圖、Migration、Model 關聯；用 AI 輔助生成 Schema 並審閱。</p></div></li>
+        <li class="card p-6 flex gap-5"><span class="num !text-4xl">04</span><div><h4 class="font-bold text-zinc-950">RESTful API 與驗證</h4><p class="mt-1 text-sm leading-relaxed">商品 CRUD API、表單驗證、錯誤處理。</p></div></li>
+        <li class="card p-6 flex gap-5"><span class="num !text-4xl">05</span><div><h4 class="font-bold text-zinc-950">會員認證與 Middleware</h4><p class="mt-1 text-sm leading-relaxed">Laravel 內建登入註冊（Session）、角色權限、自訂 Middleware。</p></div></li>
+        <li class="card p-6 flex gap-5"><span class="num !text-4xl">06</span><div><h4 class="font-bold text-zinc-950">Vue 3 + Axios 與 Laravel 整合</h4><p class="mt-1 text-sm leading-relaxed">前後端放在同一專案（Vite 整合）；用 Axios 大量呼叫 Laravel API，取代 Supabase SDK。</p></div></li>
+        <li class="card p-6 flex gap-5"><span class="num !text-4xl">07</span><div><h4 class="font-bold text-zinc-950">訂單流程與商業邏輯</h4><p class="mt-1 text-sm leading-relaxed">下單、庫存扣除、模擬付款；DB Transaction。</p></div></li>
+        <li class="card p-6 flex gap-5"><span class="num !text-4xl">08</span><div><h4 class="font-bold text-zinc-950">Filament 後台 I</h4><p class="mt-1 text-sm leading-relaxed">商品與訂單 Resource、篩選與搜尋。</p></div></li>
+        <li class="card p-6 flex gap-5"><span class="num !text-4xl">09</span><div><h4 class="font-bold text-zinc-950">Filament 後台 II 與基本資安</h4><p class="mt-1 text-sm leading-relaxed">會員管理、權限控管、儀表板；金鑰與環境變數保護觀念。</p></div></li>
+        <li class="card p-6 flex gap-5"><span class="num !text-4xl">10</span><div><h4 class="font-bold text-zinc-950">Hostinger 上線與成果發表</h4><p class="mt-1 text-sm leading-relaxed">簡單帶過 Hostinger 部署重點：資料庫建立、環境變數 .env、檔案上傳與網域設定；Demo 與接案報價討論。</p></div></li>
+      </ol>
+    </div>
+  </div>
+</section>
+</main>
+
+<div id="toast" class="toast fixed bottom-6 right-6 z-50 px-5 py-3 rounded-full bg-zinc-950 text-white text-sm shadow-xl">已複製到剪貼簿</div>
+
+<script>
+  const io = new IntersectionObserver(es => es.forEach(e => e.isIntersecting && e.target.classList.add('show')), {threshold:.15});
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  const dots = [...document.querySelectorAll('.dots a')];
+  const secs = [...document.querySelectorAll('section.page')];
+  const so = new IntersectionObserver(es => es.forEach(e => {
+    if(e.isIntersecting){ const i = secs.indexOf(e.target); dots.forEach((d,k)=>d.classList.toggle('on',k===i)); }
+  }), {threshold:.5});
+  secs.forEach(s => so.observe(s));
+
+  const toast = document.getElementById('toast');
+  document.querySelectorAll('.copy').forEach(btn => btn.addEventListener('click', async () => {
+    const text = document.getElementById(btn.dataset.target).textContent.trim();
+    try { await navigator.clipboard.writeText(text); }
+    catch { const t=document.createElement('textarea'); t.value=text; document.body.appendChild(t); t.select(); document.execCommand('copy'); t.remove(); }
+    toast.classList.add('show'); setTimeout(()=>toast.classList.remove('show'),1800);
+    const o = btn.textContent; btn.textContent = '已複製'; setTimeout(()=>btn.textContent=o,1500);
+  }));
+</script>
+</body>
+</html>
